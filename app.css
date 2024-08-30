@@ -1,0 +1,148 @@
+/* App.css */
+body {
+    font-family: 'Chakra Petch', sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .input-group,
+  .slider-group {
+    margin-bottom: 20px;
+  }
+  
+  .input-group label,
+  .slider-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .input-group input {
+    width: 30%;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-top: 10px;
+    font-family: "Chakra Petch", sans-serif;
+    appearance: textfield;
+  }
+  
+  .slider-container {
+    position: relative;
+    width: 100%;
+    margin-top: 40px;
+  }
+  
+  .slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 16px;
+    background: #000000;
+    outline: none;
+    border-radius: 40px;
+  }
+  
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    background: #000000;
+    border: 15px solid #000;
+    cursor: pointer;
+    border-radius: 50%;
+  }
+  
+  .slider-label {
+    position: absolute;
+    top: -30px;
+    left: 0;
+    background: transparent;
+    color: black;
+    width: 40px;
+    height: 75px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  
+  .blue-slider {
+    background: #00d0ff;
+  }
+  
+  .blue-slider::-webkit-slider-thumb {
+    background: #00d0ff;
+  }
+  
+  .pink-slider {
+    background: #ff68b3;
+  }
+  
+  .pink-slider::-webkit-slider-thumb {
+    background: #ff68b3;
+  }
+  
+  .pool-stats {
+    margin-top: 20px;
+    border: 4px dashed #bcbcbc;
+    width: 100%;
+    margin: 40px auto;
+    text-align: left;
+    padding: 30px;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  
+  .pool-stats h2,
+  .pool-stats h3 {
+    margin: 0;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .pool-stats p {
+    margin: 5px 0;
+  }
+  
+  .bold-text {
+    font-weight: bold;
+  }
+  
+  .underhead {
+    text-decoration: underline;
+  }
+  
+  .spacer {
+    padding-bottom: 20px;
+  }
+  
+  .notey {
+    font-style: italic;
+    padding-top: 60px;
+  }
+  
+  @media (max-width: 768px) {
+    .container {
+      padding: 10px;
+    }
+  
+    .input-group input {
+      width: 100%;
+    }
+  
+    .pool-stats {
+      padding: 20px;
+    }
+  }
