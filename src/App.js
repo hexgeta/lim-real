@@ -22,9 +22,6 @@ function App() {
         >
           Visit my Site
         </a>
-        
-  
-        
       </header>
     </div>
   );
