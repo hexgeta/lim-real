@@ -1,28 +1,24 @@
-import logo from './logo.svg';
-import './App.css';
-import DiscountChart from './components/chartcomponent';
-
-const number_id = '@Hexgeta';
+import React from 'react';
+import DiscountChart from './components/DiscountChart';
 
 function App() {
+  const chartConfigs = [
+    { tableName: 'pMAXI - DiscountChart', title: 'pMaxi Ⓜ️' },
+    { tableName: 'pDECI - DiscountChart', title: 'pDECI 🛡️' },
+    { tableName: 'pLUCKY - DiscountChart', title: 'pLUCKY 🍀' },
+    { tableName: 'pTRIO - DiscountChart', title: 'pTRIO 🎲' },
+    { tableName: 'pBASE- DiscountChart', title: 'pBASE 🟠' },
+  ];
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Hi, my name is {number_id}.
-        </p>
-
-        <div><DiscountChart /></div>
-        <a
-          className="App-link"
-          href="https://lookintomaxi.com/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Visit my Site
-        </a>
-      </header>
+      {chartConfigs.map((config, index) => (
+        <DiscountChart 
+          key={index}
+          tableName={config.tableName}
+          title={config.title}
+        />
+      ))}
     </div>
   );
 }
