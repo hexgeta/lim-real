@@ -7,7 +7,7 @@ function App() {
     { tableName: 'pDECI - DiscountChart', title: 'pDECI 🛡️' },
     { tableName: 'pLUCKY - DiscountChart', title: 'pLUCKY 🍀' },
     { tableName: 'pTRIO - DiscountChart', title: 'pTRIO 🎲' },
-    { tableName: 'pBASE- DiscountChart', title: 'pBASE 🟠' },
+    { tableName: 'pBASE - DiscountChart', title: 'pBASE 🟠' },
   ];
 
   return (
