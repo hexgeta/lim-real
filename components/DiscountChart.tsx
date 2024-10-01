@@ -81,8 +81,17 @@ function DiscountChart({
         {title}</h2>
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data}>
-          <XAxis dataKey="day" ticks={xAxisTicks} tickFormatter={(tick) => tick.toString()}/>
-          <YAxis domain={yAxisDomain} ticks={[0, 0.5, 1, 1.5, 2, 2.5]}/>
+          <XAxis dataKey="day" 
+                      axisLine={false}
+                      tickLine={false}
+                      tick={false}/>
+          <YAxis 
+          domain={yAxisDomain} 
+          ticks={[0, 0.5, 1, 1.5, 2, 2.5]}
+          axisLine={false}
+          tickLine={false}
+          tick={false}
+          />
           <Tooltip 
             contentStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', border: '1px solid white', borderRadius: '10px'}}
             labelStyle={{ color: 'white' }}

@@ -1798,7 +1798,7 @@ const HEXPriceChart = () => {
             tick={false}
           />
           <Tooltip 
-            contentStyle={{ backgroundColor: '#000', border: 'solid 1px #fff', borderRadius: '5px'}}
+            contentStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', border: 'solid 1px #fff', borderRadius: '5px'}}
             labelStyle={{ color: 'white' }}
             itemStyle={{ color: '#ff00ff' }}
             formatter={(value) => (typeof value === 'number' ? value.toFixed(6) : value)}
