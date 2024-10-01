@@ -9,6 +9,11 @@ self.__BUILD_MANIFEST = {
   "lowPriorityFiles": [],
   "rootMainFiles": [],
   "pages": {
+    "/Buy": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/Buy.js"
+    ],
     "/CombinedChart": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
