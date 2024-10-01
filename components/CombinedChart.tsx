@@ -1801,7 +1801,7 @@ const HEXPriceChart = () => {
             contentStyle={{ backgroundColor: '#000', border: 'solid 1px #fff', borderRadius: '5px'}}
             labelStyle={{ color: 'white' }}
             itemStyle={{ color: '#ff00ff' }}
-            formatter={(value) => value.toFixed(6)}
+            formatter={(value) => (typeof value === 'number' ? value.toFixed(6) : value)}
           />
           <Line 
             type="monotone" 
