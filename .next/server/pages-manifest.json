@@ -2,7 +2,5 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/CombinedChart": "pages/CombinedChart.js",
-  "/DeltaDiscounts": "pages/DeltaDiscounts.js",
-  "/Table": "pages/Table.js"
+  "/": "pages/index.js"
 }
