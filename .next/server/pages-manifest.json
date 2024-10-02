@@ -4,5 +4,5 @@
   "/_document": "pages/_document.js",
   "/CombinedChart": "pages/CombinedChart.js",
   "/DeltaDiscounts": "pages/DeltaDiscounts.js",
-  "/Buy": "pages/Buy.js"
+  "/Table": "pages/Table.js"
 }

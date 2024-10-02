@@ -5,9 +5,8 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
-import { AlertCircle } from 'lucide-react'
 
-export function CryptoStaking() {
+export function MaxiStaking() {
   const [amount, setAmount] = useState('')
   const [stakedAmount, setStakedAmount] = useState(0)
   const [error, setError] = useState('')
