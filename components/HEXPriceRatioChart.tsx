@@ -102,7 +102,7 @@ const HEXPriceRatioChart: React.FC = () => {
             tick={false}
           />
           <Tooltip 
-            content={<CustomTooltip />}
+            content={<CustomTooltip formatDate={formatDate} />} 
             labelStyle={{ color: 'white' }}
             formatter={(value, name, props) => {
               if (value !== null) {
