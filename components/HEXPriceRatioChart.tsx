@@ -1,15 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import axios from 'axios';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, ReferenceLine } from 'recharts';
 
 interface PriceData {
   date: string;
-  pricePulseX: number | null;
-  priceEthereum: number | null;
-  combinedPrice: number | null;
+  priceRatio: number | null;
 }
 
-const HEXPriceChart2: React.FC = () => {
+const HEXPriceRatioChart: React.FC = () => {
   const [data, setData] = useState<PriceData[]>([]);
 
   useEffect(() => {
@@ -28,29 +26,24 @@ const HEXPriceChart2: React.FC = () => {
           Number(item.priceUV2UV3)
         ]));
 
-        let firstPulseChainPriceFound = false;
-
         const formattedData = pulsechainData.map((item: any) => {
           const dateStr = new Date(item.date).toISOString().split('T')[0];
           const pricePulseX = Number(item.pricePulseX) || null;
           const priceEthereum = ethereumMap.get(dateStr) || null;
 
-          if (pricePulseX && pricePulseX > 0) {
-            firstPulseChainPriceFound = true;
+          let priceRatio = null;
+          if (pricePulseX && priceEthereum && pricePulseX > 0) {
+            priceRatio = priceEthereum / pricePulseX;
           }
 
           return {
             date: dateStr,
-            pricePulseX: pricePulseX,
-            priceEthereum: priceEthereum,
-            combinedPrice: firstPulseChainPriceFound && pricePulseX !== null && priceEthereum !== null
-              ? pricePulseX + priceEthereum
-              : null
+            priceRatio: priceRatio
           };
         });
 
         formattedData.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-        setData(formattedData);
+        setData(formattedData.filter(item => item.priceRatio !== null));
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -59,9 +52,33 @@ const HEXPriceChart2: React.FC = () => {
     fetchData();
   }, []);
 
+  const maxRatio = useMemo(() => {
+    return Math.max(...data.map(item => item.priceRatio || 0)) + 1;
+  }, [data]);
+
   const formatDate = (dateStr: string) => {
     const [year, month, day] = dateStr.split('-');
     return `${year}-${month}-${day}`;
+  };
+
+  // Add this custom tooltip component
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      const ratio = Number(payload[0].value).toFixed(4);
+      return (
+        <div style={{ 
+          backgroundColor: 'rgba(0, 0, 0, 0.8)', 
+          border: 'solid 1px #fff', 
+          borderRadius: '5px',
+          padding: '10px',
+          color: 'white'
+        }}>
+          <p>{formatDate(label)}</p>
+          <p>1 eHEX = {ratio} pHEX</p>
+        </div>
+      );
+    }
+    return null;
   };
 
   return (
@@ -79,43 +96,29 @@ const HEXPriceChart2: React.FC = () => {
           />
           <YAxis 
             stroke="#888" 
-            scale="log"
-            domain={['auto', 'auto']}
+            domain={[0, maxRatio]}
             axisLine={false}
             tickLine={false}
             tick={false}
           />
           <Tooltip 
-            contentStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', border: 'solid 1px #fff', borderRadius: '5px'}}
+            content={<CustomTooltip />}
             labelStyle={{ color: 'white' }}
-            itemStyle={(entry) => ({
-              color: entry.name === "Ethereum Price" ? '#00FFFF' : 
-                     entry.name === "PulseChain Price" ? '#FF00FF' : '#FFFFFF'
-            })}
-            formatter={(value) => (value !== null ? `$${Number(value).toFixed(6)}` : 'N/A')}
+            formatter={(value, name, props) => {
+              if (value !== null) {
+                const ratio = Number(value).toFixed(4);
+                return [`1 eHEX = ${ratio} pHEX`, ''];
+              }
+              return ['N/A', ''];
+            }}
             labelFormatter={(label) => formatDate(label)}
           />
           <Legend />
+          <ReferenceLine y={1} stroke="#888" strokeDasharray="3 3" label={{ value: '1:1', position: 'top', offset: 6, fill: '#888', fontSize: 20 }}/>
           <Line 
             type="monotone" 
-            dataKey="pricePulseX" 
-            name="pHEX Price"
-            stroke="#FF00FF" 
-            dot={false} 
-            strokeWidth={2}
-          />
-          <Line 
-            type="monotone" 
-            dataKey="priceEthereum" 
-            name="eHEX Price"
-            stroke="#00FFFF" 
-            dot={false} 
-            strokeWidth={2}
-          />
-          <Line 
-            type="monotone" 
-            dataKey="combinedPrice" 
-            name="Combined HEX Price"
+            dataKey="priceRatio" 
+            name="eHEX:pHEX Price Ratio"
             stroke="#FFFFFF" 
             dot={false} 
             strokeWidth={2}
@@ -126,4 +129,4 @@ const HEXPriceChart2: React.FC = () => {
   );
 };
 
-export default HEXPriceChart2;
+export default HEXPriceRatioChart;

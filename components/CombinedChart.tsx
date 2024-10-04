@@ -1808,7 +1808,7 @@ const HEXPriceChart = () => {
             dataKey="price" 
             stroke="#FF00FF" 
             dot={false} 
-            strokeWidth={3}
+            strokeWidth={2}
           />
         </LineChart>
       </ResponsiveContainer>

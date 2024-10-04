@@ -1,15 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import axios from 'axios';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, ReferenceLine } from 'recharts';
 
 interface PriceData {
   date: string;
-  pricePulseX: number | null;
-  priceEthereum: number | null;
-  combinedPrice: number | null;
+  price: number | null;
+  isPulseChainLaunched: boolean;
 }
 
-const HEXPriceChart2: React.FC = () => {
+const CombinedChartAverage: React.FC = () => {
   const [data, setData] = useState<PriceData[]>([]);
 
   useEffect(() => {
@@ -28,26 +27,25 @@ const HEXPriceChart2: React.FC = () => {
           Number(item.priceUV2UV3)
         ]));
 
-        let firstPulseChainPriceFound = false;
+        let pulseChainLaunched = false;
 
         const formattedData = pulsechainData.map((item: any) => {
           const dateStr = new Date(item.date).toISOString().split('T')[0];
-          const pricePulseX = Number(item.pricePulseX) || null;
-          const priceEthereum = ethereumMap.get(dateStr) || null;
+          const pricePulseX = Number(item.pricePulseX) || 0;
+          const priceEthereum = ethereumMap.get(dateStr) || 0;
 
-          if (pricePulseX && pricePulseX > 0) {
-            firstPulseChainPriceFound = true;
+          if (pricePulseX > 0 && !pulseChainLaunched) {
+            pulseChainLaunched = true;
           }
 
           return {
             date: dateStr,
-            pricePulseX: pricePulseX,
-            priceEthereum: priceEthereum,
-            combinedPrice: firstPulseChainPriceFound && pricePulseX !== null && priceEthereum !== null
-              ? pricePulseX + priceEthereum
-              : null
+            price: pulseChainLaunched ? pricePulseX + priceEthereum : priceEthereum,
+            isPulseChainLaunched: pulseChainLaunched
           };
         });
+
+        console.log("Formatted data:", formattedData);
 
         formattedData.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
         setData(formattedData);
@@ -63,6 +61,13 @@ const HEXPriceChart2: React.FC = () => {
     const [year, month, day] = dateStr.split('-');
     return `${year}-${month}-${day}`;
   };
+
+  const medianPrice = useMemo(() => {
+    if (data.length === 0) return 0;
+    const sortedPrices = data.map(d => d.price).sort((a, b) => a - b);
+    const mid = Math.floor(sortedPrices.length / 2);
+    return sortedPrices.length % 2 !== 0 ? sortedPrices[mid] : (sortedPrices[mid - 1] + sortedPrices[mid]) / 2;
+  }, [data]);
 
   return (
     <div style={{ width: '100%', height: '450px', backgroundColor: '#000', padding: '20px'}}>
@@ -81,6 +86,7 @@ const HEXPriceChart2: React.FC = () => {
             stroke="#888" 
             scale="log"
             domain={['auto', 'auto']}
+            allowDataOverflow={true}
             axisLine={false}
             tickLine={false}
             tick={false}
@@ -88,37 +94,26 @@ const HEXPriceChart2: React.FC = () => {
           <Tooltip 
             contentStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', border: 'solid 1px #fff', borderRadius: '5px'}}
             labelStyle={{ color: 'white' }}
-            itemStyle={(entry) => ({
-              color: entry.name === "Ethereum Price" ? '#00FFFF' : 
-                     entry.name === "PulseChain Price" ? '#FF00FF' : '#FFFFFF'
-            })}
-            formatter={(value) => (value !== null ? `$${Number(value).toFixed(6)}` : 'N/A')}
+            formatter={(value, name, props) => {
+              const formattedValue = `$${Number(value).toFixed(6)}`;
+              const medianInfo = `Median: $${medianPrice.toFixed(6)}`;
+              return [
+                <span>{formattedValue} <br/> {medianInfo}</span>,
+                props.payload.isPulseChainLaunched ? 'Combined HEX Price' : 'eHEX Price'
+              ];
+            }}
             labelFormatter={(label) => formatDate(label)}
           />
           <Legend />
+          <ReferenceLine y={medianPrice} stroke="#888" strokeDasharray="3 3" label={{ value: 'Median', position: 'insideTopLeft', fill: '#888' }} />
           <Line 
             type="monotone" 
-            dataKey="pricePulseX" 
-            name="pHEX Price"
-            stroke="#FF00FF" 
-            dot={false} 
-            strokeWidth={2}
-          />
-          <Line 
-            type="monotone" 
-            dataKey="priceEthereum" 
-            name="eHEX Price"
-            stroke="#00FFFF" 
-            dot={false} 
-            strokeWidth={2}
-          />
-          <Line 
-            type="monotone" 
-            dataKey="combinedPrice" 
+            dataKey="price" 
             name="Combined HEX Price"
-            stroke="#FFFFFF" 
+            stroke="#FFFFFF"
             dot={false} 
             strokeWidth={2}
+            connectNulls={true}
           />
         </LineChart>
       </ResponsiveContainer>
@@ -126,4 +121,4 @@ const HEXPriceChart2: React.FC = () => {
   );
 };
 
-export default HEXPriceChart2;
+export default CombinedChartAverage;

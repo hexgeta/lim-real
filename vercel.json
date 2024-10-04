@@ -1,3 +1,13 @@
 {
-    "rewrites": [{ "source": "/(.*)", "destination": "/" }]
+    "builds": [
+      {
+        "src": "package.json",
+        "use": "@vercel/node"
+      }
+    ],
+    "build": {
+      "env": {
+        "NPM_FLAGS": "--prefer-offline --no-audit"
+      }
+    }
   }
