@@ -18,11 +18,11 @@
     "build": "next build",
     "start": "next start"
   },
-  "devDependencies": {
-    "@thttp://y/pes/react": "18.3.5",
-    "autoprefixer": "^10.4.20",
-    "postcss": "^8.4.45",
-    "tailwindcss": "^3.4.11",
-    "typescript": "5.6.2"
-  }
+"devDependencies": {
+  "@types/react": "^18.3.5",
+  "autoprefixer": "^10.4.20",
+  "postcss": "^8.4.45",
+  "tailwindcss": "^3.4.11",
+  "typescript": "5.6.2"
+}
 }
