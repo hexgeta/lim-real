@@ -5,8 +5,10 @@ import HEXPriceRatioChart from '../components/HEXPriceRatioChart';
 import CombinedChartAverage from '@/components/CombinedChartAverage';
 import CombinedChartMovingAverage from '@/components/CombinedChartMovingAverage';
 import CombinedChartMovingAverageLive from '@/components/CombinedChartMovingAverageLive';
-
-
+import PlsPlsxRatioChart from '@/components/PlsPlsxRatioChart';
+import HEXLiquidityChart from '@/components/HEXLiquidityChart';
+import EHEXLiquidityChart from '@/components/EHEXLiquidityChart';
+import TSharesChart from '@/components/TshareChart';
 const CombinedChartPage: React.FC = () => {
   return (
     <div className="p-4">
@@ -22,6 +24,14 @@ const CombinedChartPage: React.FC = () => {
       <CombinedChartMovingAverage/>
       <h1 className="text-2xl font-bold mb-4 text-center">Combined HEX Price Live</h1>
       <CombinedChartMovingAverageLive/>
+      <h1 className="text-2xl font-bold mb-4 text-center">PLSX/PLS Ratio</h1>
+      <PlsPlsxRatioChart/>
+      <h1 className="text-2xl font-bold mb-4 text-center">pHEX Liquidity</h1>
+      <HEXLiquidityChart/>
+      <h1 className="text-2xl font-bold mb-4 text-center">eHEX Liquidity</h1>
+      <EHEXLiquidityChart/>
+      <h1 className="text-2xl font-bold mb-4 text-center">TShares</h1>
+      <TSharesChart/>
     </div>
   );
 };

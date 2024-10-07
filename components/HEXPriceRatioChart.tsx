@@ -114,7 +114,45 @@ const HEXPriceRatioChart: React.FC = () => {
             labelFormatter={(label) => formatDate(label)}
           />
           <Legend />
-          <ReferenceLine y={1} stroke="#888" strokeDasharray="3 3" label={{ value: '1:1', position: 'top', offset: 6, fill: '#888', fontSize: 20 }}/>
+          <ReferenceLine 
+            y={1} 
+            stroke="#888" 
+            strokeDasharray="3 3" 
+            label={{ 
+              value: '1', 
+              position: 'left', 
+              offset: 5, 
+              fill: '#888', 
+              fontSize: 12,
+              dy: 0
+            }}
+          />
+          <ReferenceLine 
+            y={0.5} 
+            stroke="#888" 
+            strokeDasharray="3 3" 
+            label={{ 
+              value: '0.5', 
+              position: 'left', 
+              offset: 5, 
+              fill: '#888', 
+              fontSize: 12,
+              dy: 0
+            }}
+          />
+          <ReferenceLine 
+            y={0.3} 
+            stroke="#888" 
+            strokeDasharray="3 3" 
+            label={{ 
+              value: '0.3', 
+              position: 'left', 
+              offset: 5, 
+              fill: '#888', 
+              fontSize: 12,
+              dy: 0
+            }}
+          />
           <Line 
             type="monotone" 
             dataKey="priceRatio" 

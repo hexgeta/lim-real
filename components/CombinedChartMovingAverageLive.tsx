@@ -12,33 +12,12 @@ interface PriceData {
 
 const CombinedChartMovingAverageLive: React.FC = () => {
   const [data, setData] = useState<PriceData[]>([]);
+  const [xAxisTicks, setXAxisTicks] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const calculateCumulativeAverageAndMedian = (data: PriceData[]) => {
-      let sum = 0;
-      let count = 0;
-      const validPrices: number[] = [];
-
-      return data.map((item, index) => {
-        if (item.price !== null) {
-          sum += item.price;
-          count++;
-          validPrices.push(item.price);
-        }
-
-        validPrices.sort((a, b) => a - b);
-        const mid = Math.floor(validPrices.length / 2);
-        const median = validPrices.length % 2 !== 0 ? validPrices[mid] : (validPrices[mid - 1] + validPrices[mid]) / 2;
-
-        return {
-          ...item,
-          cumulativeAverage: count > 0 ? sum / count : null,
-          median: median
-        };
-      });
-    };
-
     const fetchData = async () => {
+      setIsLoading(true);
       try {
         const [pulsechainResponse, ethereumResponse] = await Promise.all([
           axios.get('https://hexdailystats.com/fulldatapulsechain'),
@@ -78,18 +57,49 @@ const CombinedChartMovingAverageLive: React.FC = () => {
         formattedData.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
         const dataWithAverageAndMedian = calculateCumulativeAverageAndMedian(formattedData);
         setData(dataWithAverageAndMedian);
+        setXAxisTicks(formattedData.map((item) => item.date));
       } catch (error) {
         console.error('Error fetching data:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchData();
   }, []);
 
+  const calculateCumulativeAverageAndMedian = (data: PriceData[]) => {
+    let sum = 0;
+    let count = 0;
+    const validPrices: number[] = [];
+
+    return data.map((item, index) => {
+      if (item.price !== null) {
+        sum += item.price;
+        count++;
+        validPrices.push(item.price);
+      }
+
+      validPrices.sort((a, b) => a - b);
+      const mid = Math.floor(validPrices.length / 2);
+      const median = validPrices.length % 2 !== 0 ? validPrices[mid] : (validPrices[mid - 1] + validPrices[mid]) / 2;
+
+      return {
+        ...item,
+        cumulativeAverage: count > 0 ? sum / count : null,
+        median: median
+      };
+    });
+  };
+
   const formatDate = (dateStr: string) => {
     const [year, month, day] = dateStr.split('-');
     return `${year}-${month}-${day}`;
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>; // Or any loading indicator you prefer
+  }
 
   return (
     <div style={{ width: '100%', height: '450px', backgroundColor: '#000', padding: '20px'}}>
@@ -103,6 +113,7 @@ const CombinedChartMovingAverageLive: React.FC = () => {
             axisLine={false}
             tickLine={false}
             tick={false}
+            interval={20}
           />
           <YAxis 
             stroke="#888" 
@@ -130,7 +141,6 @@ const CombinedChartMovingAverageLive: React.FC = () => {
             stroke="#FF00FF"
             dot={false} 
             strokeWidth={2}
-            connectNulls={true}
           />
           <Line 
             type="monotone" 

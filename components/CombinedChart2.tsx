@@ -43,9 +43,9 @@ const HEXPriceChart2: React.FC = () => {
             date: dateStr,
             pricePulseX: pricePulseX,
             priceEthereum: priceEthereum,
-combinedPrice: firstPulseChainPriceFound && pricePulseX !== null && priceEthereum !== null
-  ? pricePulseX + priceEthereum
-  : null
+            combinedPrice: firstPulseChainPriceFound && pricePulseX !== null && priceEthereum !== null
+              ? Number(pricePulseX) + Number(priceEthereum)
+              : null
           };
         });
 

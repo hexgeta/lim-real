@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import axios from 'axios';
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, Text } from 'recharts';
 
 interface PriceData {
   date: string;
@@ -12,6 +12,7 @@ interface PriceData {
 
 const CombinedChartMovingAverage: React.FC = () => {
   const [data, setData] = useState<PriceData[]>([]);
+  const [multiplier, setMultiplier] = useState<number | null>(null);
 
   useEffect(() => {
     const calculateCumulativeAverageAndMedian = (data: PriceData[]) => {
@@ -86,6 +87,16 @@ const CombinedChartMovingAverage: React.FC = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    if (data.length > 0) {
+      const validPrices = data.filter(item => item.price !== null).map(item => item.price as number);
+      const lowestPrice = Math.min(...validPrices);
+      const currentPrice = validPrices[validPrices.length - 1];
+      const calculatedMultiplier = currentPrice / lowestPrice;
+      setMultiplier(calculatedMultiplier);
+    }
+  }, [data]);
+
   const formatDate = (dateStr: string) => {
     const [year, month, day] = dateStr.split('-');
     return `${year}-${month}-${day}`;
@@ -150,6 +161,16 @@ const CombinedChartMovingAverage: React.FC = () => {
             strokeWidth={2}
             connectNulls={true}
           />
+          {multiplier !== null && (
+            <Text
+              x={50}
+              y={50}
+              fill="#FFFFFF"
+              fontSize={16}
+            >
+              {`${multiplier.toFixed(2)}X from lowest`}
+            </Text>
+          )}
         </LineChart>
       </ResponsiveContainer>
     </div>
