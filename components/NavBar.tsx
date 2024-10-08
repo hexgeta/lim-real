@@ -17,6 +17,7 @@ const NavigationBar = () => {
           <Link href="/Form" className="text-white hover:text-gray-300">Form</Link>
           <Link href="/Table" className="text-white hover:text-gray-300">Table</Link>
           <Link href="/CombinedChart" className="text-white hover:text-gray-300">CombinedPrice</Link>
+          <Link href="/Btc-Eth-Hex" className="text-white hover:text-gray-300">BTC vs ETH vs HEX</Link>
         </div>
         <Link href="/Buy" className="bg-transparent text-white font-normal py-1 px-4 border border-white rounded justify-self-end debug-buy  hover:text-gray-300">
           Buy

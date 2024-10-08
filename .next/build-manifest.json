@@ -17,10 +17,20 @@
       "static/chunks/main.js",
       "static/chunks/pages/index.js"
     ],
-    "/CombinedChart": [
+    "/Btc-Eth-Hex": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/CombinedChart.js"
+      "static/chunks/pages/Btc-Eth-Hex.js"
+    ],
+    "/Gas": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/Gas.js"
+    ],
+    "/Table": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/Table.js"
     ],
     "/_app": [
       "static/chunks/webpack.js",
