@@ -10,13 +10,7 @@ const NavigationBar = () => {
         </Link>
         <div className="flex justify-center space-x-6 debug-links">
           <Link href="/DeltaDiscounts" className="text-white hover:text-gray-300">Δ Discounts</Link>
-          <Link href="/Arbs" className="text-white hover:text-gray-300">Arbs</Link>
-          <Link href="/Apy" className="text-white hover:text-gray-300">Apy</Link>
-          <Link href="/Leagues" className="text-white hover:text-gray-300">Leagues</Link>
-          <Link href="/Gas" className="text-white hover:text-gray-300">Gas</Link>
-          <Link href="/Form" className="text-white hover:text-gray-300">Form</Link>
-          <Link href="/Table" className="text-white hover:text-gray-300">Table</Link>
-          <Link href="/CombinedChart" className="text-white hover:text-gray-300">CombinedPrice</Link>
+          <Link href="/HEXCharts" className="text-white hover:text-gray-300">Charts</Link>
           <Link href="/Btc-Eth-Hex" className="text-white hover:text-gray-300">BTC vs ETH vs HEX</Link>
         </div>
         <Link href="/Buy" className="bg-transparent text-white font-normal py-1 px-4 border border-white rounded justify-self-end debug-buy  hover:text-gray-300">

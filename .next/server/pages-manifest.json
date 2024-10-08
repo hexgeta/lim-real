@@ -2,8 +2,8 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/Gas": "pages/Gas.js",
-  "/Btc-Eth-Hex": "pages/Btc-Eth-Hex.js",
+  "/DeltaDiscounts": "pages/DeltaDiscounts.js",
   "/": "pages/index.js",
-  "/Table": "pages/Table.js"
+  "/Btc-Eth-Hex": "pages/Btc-Eth-Hex.js",
+  "/HEXCharts": "pages/HEXCharts.js"
 }

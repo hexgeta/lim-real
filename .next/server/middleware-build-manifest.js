@@ -19,15 +19,15 @@ self.__BUILD_MANIFEST = {
       "static/chunks/main.js",
       "static/chunks/pages/Btc-Eth-Hex.js"
     ],
-    "/Gas": [
+    "/DeltaDiscounts": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/Gas.js"
+      "static/chunks/pages/DeltaDiscounts.js"
     ],
-    "/Table": [
+    "/HEXCharts": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/Table.js"
+      "static/chunks/pages/HEXCharts.js"
     ],
     "/_app": [
       "static/chunks/webpack.js",
