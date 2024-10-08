@@ -86,14 +86,20 @@ const HEXPriceChart2: React.FC = () => {
             tick={false}
           />
           <Tooltip 
-            contentStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', border: 'solid 1px #fff', borderRadius: '5px'}}
             labelStyle={{ color: 'white' }}
-            itemStyle={(entry) => ({
-              color: entry.name === "Ethereum Price" ? '#00FFFF' : 
-                     entry.name === "PulseChain Price" ? '#FF00FF' : '#FFFFFF'
-            })}
-            formatter={(value) => (value !== null ? `$${Number(value).toFixed(6)}` : 'N/A')}
-            labelFormatter={(label) => formatDate(label)}
+            itemStyle={{
+              color: '#FFFFFF',
+              fillOpacity: 1,
+              strokeOpacity: 1,
+            }}
+            contentStyle={{
+              backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            }}
+            formatter={(value, name) => {
+              const color = name === "Ethereum Price" ? '#00FFFF' : 
+                            name === "PulseChain Price" ? '#FF00FF' : '#FFFFFF';
+              return [value, name, color];
+            }}
           />
           <Legend />
           <Line 

@@ -56,5 +56,8 @@
     		}
     	}
     },
-    plugins: [require("tailwindcss-animate")],
+    plugins: [
+      require('tailwindcss-animate'),
+      // ... any other plugins you're using
+    ],
   }
