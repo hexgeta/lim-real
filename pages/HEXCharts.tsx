@@ -11,7 +11,7 @@ import EHEXLiquidityChart from '@/components/EHEXLiquidityChart';
 import TSharesChart from '@/components/TshareChart';
 const CombinedChartPage: React.FC = () => {
   return (
-    <div className="p-4">
+    <div>
       <h1 className="text-2xl font-bold mb-4 text-center">Combined HEX Price</h1>
       <HEXPriceChart2 />
       <h1 className="text-2xl font-bold mb-4 text-center">HEX Price Ratios</h1>

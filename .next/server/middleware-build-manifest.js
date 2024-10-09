@@ -9,20 +9,10 @@ self.__BUILD_MANIFEST = {
   "lowPriorityFiles": [],
   "rootMainFiles": [],
   "pages": {
-    "/": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/index.js"
-    ],
     "/Btc-Eth-Hex": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/Btc-Eth-Hex.js"
-    ],
-    "/DeltaDiscounts": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/DeltaDiscounts.js"
     ],
     "/HEXCharts": [
       "static/chunks/webpack.js",

@@ -107,21 +107,22 @@ const PriceComparison: React.FC = () => {
 
   return (
     <div className="bg-[#fff200] p-2 max-w-3xl mx-auto rounded-lg">
-      <div className="bg-black text-white p-8 rounded-lg">
-        <h2 className="text-3xl font-bold mb-8 text-center">Price performance from the <span className="underline">local bottom</span>:</h2>
-        <div className="flex justify-around items-center">
+      <div className="bg-black text-white p-4 sm:p-6 md:p-8 rounded-lg">
+        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6 md:mb-8 text-center">
+          Price performance from the <span className="underline">local bottom</span>:
+        </h2>
+        <div className="flex flex-col sm:flex-row justify-around items-center space-y-6 sm:space-y-0">
           {cryptoData.map((crypto) => (
-            <div key={crypto.symbol} className="text-center">
-              <div className={`text-4xl font-bold mb-4 ${crypto.priceChange >= 0 ? 'text-[#00FF00]' : 'text-red-400'}`}>
-                {/* This is the only part that changes */}
+            <div key={crypto.symbol} className="text-center w-full sm:w-auto">
+              <div className={`text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-4 ${crypto.priceChange >= 0 ? 'text-[#00FF00]' : 'text-red-400'}`}>
                 {crypto.priceChange >= 0 ? '+' : '-'}
                 {Math.abs(Math.round(crypto.priceChange))}%
               </div>
-              <div className="bg-black rounded-full w-24 h-24 mx-auto mb-1 flex items-center justify-center">
-                <img src={crypto.logo} alt={crypto.symbol} className="w-24 h-24" />
+              <div className="bg-black rounded-full w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 mx-auto mb-1 flex items-center justify-center">
+                <img src={crypto.logo} alt={crypto.symbol} className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24" />
               </div>
-              <div className="text-2xl font-bold pt-4">{crypto.symbol}</div>
-              <div className="text-lg">${formatPrice(crypto.symbol, crypto.currentPrice)}</div>
+              <div className="text-xl sm:text-2xl font-bold pt-2 sm:pt-4">{crypto.symbol}</div>
+              <div className="text-base sm:text-lg">${formatPrice(crypto.symbol, crypto.currentPrice)}</div>
             </div>
           ))}
         </div>

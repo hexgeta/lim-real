@@ -65,11 +65,11 @@ const HEXPriceChart2: React.FC = () => {
   };
 
   return (
-    <div style={{ width: '100%', height: '450px', backgroundColor: '#000', padding: '20px'}}>
+    <div style={{ width: '100%', height: '490px', backgroundColor: '#000', padding: '0px'}}>
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={data}
-          margin={{ top: 20, right: 30, left: 50, bottom: 20 }}
+          margin={{ top: 10, right: 0, left: 0, bottom: 10 }}
         >
           <XAxis 
             dataKey="date" 
