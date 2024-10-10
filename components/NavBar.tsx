@@ -36,10 +36,9 @@ const NavigationBar = () => {
       </div>
       {isMenuOpen && (
         <div className="md:hidden mt-4">
-          <Link href="/DeltaDiscounts" className="block text-white py-2">Δ Discounts</Link>
-          <Link href="/HEXCharts" className="block text-white py-2">Charts</Link>
-          <Link href="/Btc-Eth-Hex" className="block text-white py-2">BTC vs ETH vs HEX</Link>
-          <Link href="/Buy" className="block text-white py-2">Buy</Link>
+          <Link href="/delta-discounts" className="block text-white py-2">Δ Discounts</Link>
+          <Link href="/hex-charts" className="block text-white py-2">Charts</Link>
+          <Link href="/btc-eth-hex" className="block text-white py-2">BTC vs ETH vs HEX</Link>
         </div>
       )}
     </nav>
