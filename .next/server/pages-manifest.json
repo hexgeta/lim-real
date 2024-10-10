@@ -1,9 +1,1 @@
-{
-  "/_app": "pages/_app.js",
-  "/_error": "pages/_error.js",
-  "/_document": "pages/_document.js",
-  "/": "pages/index.js",
-  "/btc-eth-hex": "pages/btc-eth-hex.js",
-  "/hex-charts": "pages/hex-charts.js",
-  "/delta-discounts": "pages/delta-discounts.js"
-}
+{}

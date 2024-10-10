@@ -23,12 +23,12 @@ module.exports = {
     return [
       {
         source: '/HEXCharts',
-        destination: '/hexcharts',
+        destination: '/hex-charts',
         permanent: true,
       },
       {
         source: '/DeltaDiscounts',
-        destination: '/deltadiscounts',
+        destination: '/delta-discounts',
         permanent: true,
       },
       {
