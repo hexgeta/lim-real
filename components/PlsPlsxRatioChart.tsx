@@ -61,11 +61,11 @@ const PlsPlsxRatioChart: React.FC = () => {
   }
 
   return (
-    <div style={{ width: '100%', height: '450px', backgroundColor: '#000', padding: '20px'}}>
+    <div style={{ width: '100%', height: '450px', backgroundColor: '#000', padding: '0px'}}>
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={data}
-          margin={{ top: 20, right: 30, left: 50, bottom: 20 }}
+          margin={{ top: 10, right: 50, left: 0, bottom: 0 }}
         >
           <XAxis 
             dataKey="date" 
@@ -76,7 +76,7 @@ const PlsPlsxRatioChart: React.FC = () => {
           />
           <YAxis 
             stroke="#888" 
-            domain={[0, 2]}
+            domain={[0, 1.1]}
             allowDataOverflow={true}
             axisLine={false}
             tickLine={false}
@@ -94,6 +94,7 @@ const PlsPlsxRatioChart: React.FC = () => {
           <Legend />
           <ReferenceLine y={1} stroke="#888" strokeDasharray="3 3" label={{ value: '1:1', position: 'top', offset: 6, fill: '#888', fontSize: 20 }}/>
           <ReferenceLine y={0.5} stroke="#888" strokeDasharray="3 3" label={{ value: '1:0.5', position: 'top', offset: 6, fill: '#888', fontSize: 20 }}/>
+          <ReferenceLine y={0} stroke="#888" strokeDasharray="3 3" label={{ value: '0', position: 'top', offset: 6, fill: '#888', fontSize: 20 }}/>
           <Line 
             type="monotone" 
             dataKey="ratio" 

@@ -14,23 +14,6 @@ function DiscountChart({
 }) {
   const [data, setData] = useState([]);
 
-    //   // Use static data for testing
-  // useEffect(() => {
-  //   const formattedData = [
-  //     { day: 881, discount: 1.0, backingValue: 1.0 },
-  //     { day: 997, discount: 2.0, backingValue: 1.1 },
-  //     { day: 1113, discount: 1.5, backingValue: 1.2 },
-  //     { day: 1229, discount: 1.3, backingValue: 1.3 },
-  //     { day: 1345, discount: 1.4, backingValue: 1.4 },
-  //     { day: 1461, discount: 1.5, backingValue: 1.5 },
-  //     { day: 1577, discount: 1.2, backingValue: 1.6 },
-  //     { day: 1693, discount: 1.3, backingValue: 1.7 },
-  //   ];
-
-  //   // Set static data to the state
-  //   setData(formattedData);
-  // }, []);
-
   useEffect(() => {
     const fetchData = async () => {
       const { data, error } = await supabase.from(tableName).select('*');
@@ -76,7 +59,7 @@ function DiscountChart({
 
 
   return (
-    <div style={{ width: '100%', height: 400, margin: '100px 200px 100px 0px'}}>
+    <div style={{ width: '100%', height: 400, margin: '100px 00px 100px 00px'}}>
       <h2 style={{ textAlign: 'left', color: 'white', fontSize: '24px', marginBottom: '20px', marginLeft: '40px'}}>
         {title}</h2>
       <ResponsiveContainer width="100%" height="100%">

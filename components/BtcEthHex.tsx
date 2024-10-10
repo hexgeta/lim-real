@@ -13,7 +13,7 @@ interface CryptoData {
 
 const fixedPrices = {
   'WBTC': 15466,
-  'WETH': 2103,
+  'WETH': 884,
   'HEX': 0.003575
 }
 

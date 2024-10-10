@@ -9,16 +9,43 @@
   --text-color: #ffffff;
 }
 
+html,
+body {
+  width: 100%;
+  overflow-x: hidden;
+  padding: 10px;
+  margin: 0;
+  font-family: 'Chakra Petch', -apple-system;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
 .App {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px 40px 20px 40px;
 }
 
-@media (max-width: 1240px) {
+/* Framer's standard breakpoints */
+@media (max-width: 1199px) {
   .App {
     max-width: 100%;
-    padding: 20px 4px 20px 4px;
+  }
+}
+
+@media (max-width: 991px) {
+  .App {
+
+  }
+}
+
+@media (max-width: 767px) {
+  .App {
+
+  }
+}
+
+@media (max-width: 479px) {
+  .App {
   }
 }
 
@@ -26,14 +53,7 @@
   box-sizing: border-box;
 }
 
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: 'Chakra Petch', -apple-system;
-  background-color: var(--background-color);
-  color: var(--text-color);
-}
+
 
 a {
   color: inherit;
@@ -124,4 +144,14 @@ input, textarea {
     @apply bg-background text-foreground;
   }
 }
+
+.hamburger-line {
+  width: 25px;
+  height: 3px;
+  background-color: white;
+  margin: 4px 0;
+  transition: 0.4s;
+}
+
+/* ... rest of your existing CSS ... */
 
