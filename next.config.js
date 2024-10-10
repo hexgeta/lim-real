@@ -22,58 +22,21 @@ module.exports = {
   async redirects() {
     return [
       {
-        source: '/:path*',
-        has: [
-          {
-            type: 'host',
-            value: '(?!www\\.).*',
-          },
-        ],
-        destination: 'https://www.lookintomaxi.com/:path*',
+        source: '/HEXCharts',
+        destination: '/hexcharts',
         permanent: true,
       },
       {
-        source: '/:path((?!api/).*)',
-        has: [
-          {
-            type: 'query',
-            key: '(.*)',
-            value: '(.*)',
-          },
-        ],
-        destination: '/:path*/:key*=:value*',
+        source: '/DeltaDiscounts',
+        destination: '/deltadiscounts',
         permanent: true,
       },
       {
-        source: '/:path(.*)',
-        destination: '/:path*',
+        source: '/Btc-Eth-Hex',
+        destination: '/btc-eth-hex',
         permanent: true,
-        has: [
-          {
-            type: 'header',
-            key: 'x-forwarded-host',
-          },
-        ],
-        missing: [
-          {
-            type: 'header',
-            key: 'x-forwarded-proto',
-            value: 'https',
-          },
-        ],
       },
-      {
-        source: '/:path(.*)',
-        destination: '/:path*/",
-        permanent: true,
-        has: [
-          {
-            type: 'header',
-            key: 'x-forwarded-proto',
-            value: 'https',
-          },
-        ],
-      },
+      // Add more redirects as needed
     ]
   },
 }
