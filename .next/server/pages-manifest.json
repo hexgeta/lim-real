@@ -3,6 +3,7 @@
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
   "/HEXCharts": "pages/HEXCharts.js",
+  "/": "pages/index.js",
   "/DeltaDiscounts": "pages/DeltaDiscounts.js",
   "/Buy": "pages/Buy.js",
   "/Btc-Eth-Hex": "pages/Btc-Eth-Hex.js"
