@@ -19,4 +19,61 @@ module.exports = {
     // !! WARN !!
     ignoreBuildErrors: true,
   },
+  async redirects() {
+    return [
+      {
+        source: '/:path*',
+        has: [
+          {
+            type: 'host',
+            value: '(?!www\\.).*',
+          },
+        ],
+        destination: 'https://www.lookintomaxi.com/:path*',
+        permanent: true,
+      },
+      {
+        source: '/:path((?!api/).*)',
+        has: [
+          {
+            type: 'query',
+            key: '(.*)',
+            value: '(.*)',
+          },
+        ],
+        destination: '/:path*/:key*=:value*',
+        permanent: true,
+      },
+      {
+        source: '/:path(.*)',
+        destination: '/:path*',
+        permanent: true,
+        has: [
+          {
+            type: 'header',
+            key: 'x-forwarded-host',
+          },
+        ],
+        missing: [
+          {
+            type: 'header',
+            key: 'x-forwarded-proto',
+            value: 'https',
+          },
+        ],
+      },
+      {
+        source: '/:path(.*)',
+        destination: '/:path*/",
+        permanent: true,
+        has: [
+          {
+            type: 'header',
+            key: 'x-forwarded-proto',
+            value: 'https',
+          },
+        ],
+      },
+    ]
+  },
 }

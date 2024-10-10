@@ -12,9 +12,9 @@ const NavigationBar = () => {
         </Link>
         <div className="hidden md:flex items-center justify-left flex-grow ml-10">
           <div className="flex space-x-6">
-            <Link href="/DeltaDiscounts" className="text-[rgb(153,153,153)] hover:text-gray-300">Δ Discounts</Link>
-            <Link href="/HEXCharts" className="text-[rgb(153,153,153)] hover:text-gray-300">Charts</Link>
-            <Link href="/Btc-Eth-Hex" className="text-[rgb(153,153,153)] hover:text-gray-300">BTC vs ETH vs HEX</Link>
+            <Link href="/delta-discounts" className="text-[rgb(153,153,153)] hover:text-gray-300">Δ Discounts</Link>
+            <Link href="/hex-charts" className="text-[rgb(153,153,153)] hover:text-gray-300">Charts</Link>
+            <Link href="/btc-eth-hex" className="text-[rgb(153,153,153)] hover:text-gray-300">BTC vs ETH vs HEX</Link>
           </div>
         </div>
         <div className="hidden md:flex items-center">

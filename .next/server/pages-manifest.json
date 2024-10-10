@@ -2,7 +2,5 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/": "pages/index.js",
-  "/HEXCharts": "pages/HEXCharts.js",
-  "/DeltaDiscounts": "pages/DeltaDiscounts.js"
+  "/delta-discounts": "pages/delta-discounts.js"
 }
