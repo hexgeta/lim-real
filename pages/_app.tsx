@@ -3,17 +3,22 @@ import React from 'react';
 import type { AppProps } from 'next/app';
 import NavigationBar from '../components/NavBar';
 import Footer from '../components/Footer';
+import Head from 'next/head';
 
-function App({ Component, pageProps }: AppProps) {
+function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
-    <NavigationBar />
-    <div className="App">
-      <Component {...pageProps} />
-    </div>
-    <Footer/>
+      <Head>
+        <title>LookIntoMaxi Ⓜ️🛡️🍀🎲🟠</title>
+        <meta name="description" content="Don't fade liquid hex stakes bro - This is a Maximus Dao stats & charts site. Earn passive yield in your cold hardware wallet & sell at any time!" />
+      </Head>
+      <NavigationBar />
+      <div className="App">
+        <Component {...pageProps} />
+      </div>
+      <Footer/>
     </>
   );
 }
 
-export default App;
+export default MyApp;

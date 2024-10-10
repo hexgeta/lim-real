@@ -14,11 +14,6 @@ self.__BUILD_MANIFEST = {
       "static/chunks/main.js",
       "static/chunks/pages/index.js"
     ],
-    "/Btc-Eth-Hex": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/Btc-Eth-Hex.js"
-    ],
     "/DeltaDiscounts": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
