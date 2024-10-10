@@ -9,9 +9,6 @@ const nextConfig = {
     });
     return config;
   },
-};
-
-module.exports = {
   typescript: {
     // !! WARN !!
     // Dangerously allow production builds to successfully complete even if
@@ -39,4 +36,6 @@ module.exports = {
       // Add more redirects as needed
     ]
   },
-}
+};
+
+module.exports = nextConfig;
