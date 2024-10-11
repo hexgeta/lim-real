@@ -29,7 +29,7 @@ const nextConfig = {
         permanent: true,
       },
       {
-        source: '/Btc-Eth-Hex',
+        source: '/BtcEthHex',
         destination: '/btc-eth-hex',
         permanent: true,
       },
