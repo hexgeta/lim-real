@@ -33,7 +33,18 @@ const nextConfig = {
         destination: '/btc-eth-hex',
         permanent: true,
       },
-      // Add more redirects as needed
+      // Add a catch-all redirect to prevent potential loops
+      {
+        source: '/:path*',
+        has: [
+          {
+            type: 'host',
+            value: 'app.lookintomaxi.com',
+          },
+        ],
+        destination: 'https://your-main-domain.com/:path*',
+        permanent: true,
+      },
     ]
   },
 };
