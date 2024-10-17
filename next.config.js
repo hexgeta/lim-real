@@ -28,11 +28,6 @@ const nextConfig = {
         destination: '/delta-discounts',
         permanent: true,
       },
-      {
-        source: '/Btc-Eth-Hex',
-        destination: '/btc-eth-hex',
-        permanent: true,
-      },
       // Add a catch-all redirect to prevent potential loops
     ]
   },

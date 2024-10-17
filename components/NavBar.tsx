@@ -14,7 +14,7 @@ const NavigationBar = () => {
           <div className="flex space-x-6">
             <Link href="/delta-discounts" className="text-[rgb(153,153,153)] hover:text-gray-300">Δ Discounts</Link>
             <Link href="/hex-charts" className="text-[rgb(153,153,153)] hover:text-gray-300">Charts</Link>
-            {/* <Link href="/btc-eth-hex" className="text-[rgb(153,153,153)] hover:text-gray-300">BTC vs ETH vs HEX</Link> */}
+            <Link href="/btc-eth-hex" className="text-[rgb(153,153,153)] hover:text-gray-300">BTC vs ETH vs HEX</Link>
             <Link href="/hex-gains" className="text-[rgb(153,153,153)] hover:text-gray-300">Hex Xs</Link>
 
           </div>
