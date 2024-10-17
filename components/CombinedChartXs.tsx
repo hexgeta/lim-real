@@ -134,7 +134,7 @@ const CombinedChartXs: React.FC = () => {
     <div style={{ width: '100%', height: '450px', backgroundColor: '#000', padding: '20px', color: '#fff', position: 'relative' }}>
       {/* Labels container */}
       <div style={{ position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 1 }}>
-        <div style={{ position: 'absolute', top: '62%', right: '5%', transform: 'translateY(-50%)', fontSize: '22px', fontWeight: 'bold', color: 'rgb(153,153,153)'}}>
+        <div style={{ position: 'absolute', top: '62%', right: '5%', transform: 'translateY(-50%)', fontSize: '22px', fontWeight: 'bold', color: '#fff'}}>
           <div>
             <span style={{ textDecoration: 'underline' }}>
               {xCalculations.fromATL === 1 ? "At ATL" : `${xCalculations.fromATL.toFixed(0)}X`}
@@ -149,14 +149,14 @@ const CombinedChartXs: React.FC = () => {
           transform: 'translateY(-50%)', 
           fontSize: '22px', 
           fontWeight: 'bold', 
-          color: 'rgb(153,153,153)',
+          color: '#fff',
         }}>
           <span style={{ textDecoration: 'underline' }}>
             {xCalculations.fromLocalLow === 1 ? "At Local Low" : `${xCalculations.fromLocalLow.toFixed(1)}X`}
           </span>
           {xCalculations.fromLocalLow !== 1 && " up from local low"}
         </div>
-        <div style={{ position: 'absolute', top: '2%', right: '40%', fontSize: '22px', fontWeight: '600', color: 'rgb(153,153,153)'}}>
+        <div style={{ position: 'absolute', top: '2%', right: '40%', fontSize: '22px', fontWeight: '600', color: '#fff'}}>
           <span style={{ textDecoration: 'underline' }}>
             {xCalculations.toATH === 1 ? "At ATH" : `${xCalculations.toATH.toFixed(1)}X`}
           </span>
@@ -174,7 +174,6 @@ const CombinedChartXs: React.FC = () => {
             <XAxis dataKey="date" hide={true} />
             <YAxis hide={true} scale="log" domain={['auto', 'auto']} />
             <Tooltip content={customTooltip} />
-            <ReferenceLine y={currentPrice} stroke="#888" strokeDasharray="3 3" />
             <Line
               type="monotone"
               dataKey="price"
