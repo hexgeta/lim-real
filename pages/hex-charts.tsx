@@ -28,7 +28,7 @@ const CombinedChartPage: React.FC = () => {
       <HEXLiquidityChart/>
       <h1 className="text-[rgb(153,153,153)] text-2xl font-bold mt-20 mb-4 text-center">eHEX Liquidity</h1>
       <EHEXLiquidityChart/>
-      <h1 className="text-[rgb(153,153,153)] text-2xl font-bold mt-20 mb-4 text-center">Combined HEX Price (X to Lowest/Highest)</h1>
+      <h1 className="text-[rgb(153,153,153)] text-2xl font-bold mt-20 mb-4 text-center">Combined HEX Price with Xs</h1>
       <CombinedChartXs/>
     </div>
   );

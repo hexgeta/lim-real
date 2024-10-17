@@ -10,9 +10,11 @@ interface PriceData {
 
 const CombinedChartXs: React.FC = () => {
   const [data, setData] = useState<PriceData[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
       try {
         const [pulsechainResponse, ethereumResponse] = await Promise.all([
           axios.get('https://hexdailystats.com/fulldatapulsechain'),
@@ -51,6 +53,8 @@ const CombinedChartXs: React.FC = () => {
         setData(formattedData);
       } catch (error) {
         console.error('Error fetching data:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -72,43 +76,100 @@ const CombinedChartXs: React.FC = () => {
     return data[data.length - 1].price || 0;
   }, [data]);
 
-  const calculateX = (price: number) => {
-    if (currentPrice === 0) return 0;
-    return Math.round((price / currentPrice) * 100) / 100;
+  const localLowPrice = 0.004; // Fixed local low price
+
+  const calculateX = (price: number, current: number) => {
+    if (current === 0 || Math.abs(current - price) < 1e-10) {
+      return 1;
+    }
+    return price / current;
   };
 
-  const highestX = calculateX(highestPrice);
-  const lowestX = calculateX(lowestPrice);
+  const highestX = calculateX(highestPrice, currentPrice);
+  const lowestX = calculateX(lowestPrice, currentPrice);
+  const localLowX = calculateX(localLowPrice, currentPrice);
+
+  const customTooltip = (props: any) => {
+    const { active, payload } = props;
+    if (active && payload && payload.length) {
+      const currentPrice = payload[0].value;
+      const highestX = calculateX(highestPrice, currentPrice);
+      const lowestX = calculateX(lowestPrice, currentPrice);
+      const localLowX = calculateX(localLowPrice, currentPrice);
+
+      return (
+        <div style={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', border: '1px solid #fff', borderRadius: '5px', padding: '10px' }}>
+          <p style={{ color: '#fff' }}>{`Date: ${payload[0].payload.date}`}</p>
+          <p style={{ color: '#fff' }}>{`Price: $${currentPrice.toFixed(6)}`}</p>
+          <p style={{ color: '#fff' }}>{`${highestX.toFixed(1)}X to ATH`}</p>
+          <p style={{ color: '#fff' }}>{`${(1/lowestX).toFixed(0)}X from ATL`}</p>
+          <p style={{ color: '#fff' }}>{`${(1/localLowX).toFixed(1)}X from local low`}</p>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div style={{ width: '100%', height: '450px', backgroundColor: '#000', padding: '20px', color: '#fff', position: 'relative' }}>
-      <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Combined HEX Price (All-time Median)</h2>
       <ResponsiveContainer width="100%" height="90%">
         <LineChart
           data={data}
-          margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+          margin={{ top: 5, right: 10, left: 10, bottom: 5 }}
         >
           <XAxis dataKey="date" hide={true} />
           <YAxis hide={true} scale="log" domain={['auto', 'auto']} />
-          <Tooltip
-            contentStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', border: '1px solid #fff' }}
-            labelStyle={{ color: '#fff' }}
-            formatter={(value) => [`$${Number(value).toFixed(6)}`, 'Price']}
-          />
+          <Tooltip content={customTooltip} />
+          <ReferenceLine y={currentPrice} stroke="#888" strokeDasharray="3 3" />
           <Line
             type="monotone"
             dataKey="price"
-            stroke="#fff"
+            stroke="#ff00ff"
             dot={false}
             strokeWidth={2}
           />
         </LineChart>
       </ResponsiveContainer>
-      <div style={{ position: 'absolute', top: '70%', right: '10%', transform: 'translateY(-50%)' }}>
-        <div>{(1/lowestX).toFixed(2)}X from ATL</div>
+      <div style={{ position: 'absolute', top: '80%', right: '5%', transform: 'translateY(-50%)', fontSize: '22px', fontWeight: 'bold', color: 'rgb(153,153,153)'}}>
+        <div>
+        <span style={{ textDecoration: 'underline' }}>
+          {lowestX === 1 ? 
+            "At ATL" : 
+            `${(1/lowestX).toFixed(0)}X`
+          }
+        </span>
+        {lowestX !== 1 && " up from ATL"}
+        </div>
       </div>
-      <div style={{ position: 'absolute', top: '30%', right: '10%' }}>
-        <div>{highestX.toFixed(2)}X to ATH</div>
+      <div style={{ 
+        position: 'absolute', 
+        top: '50%', 
+        right: '5%', 
+        transform: 'translateY(-50%)', 
+        fontSize: '22px', 
+        fontWeight: 'bold', 
+        color: 'rgb(153,153,153)',
+      }}>
+        <span style={{ textDecoration: 'underline' }}>
+          {localLowX === 1 ? 
+            "At Local Low" : 
+            `${(1/localLowX).toFixed(1)}X`
+          }
+          </span>
+          {lowestX !== 1 && " up from local low"}
+      </div>
+      <div style={{ position: 'absolute', top: '0%', right: '5%', fontSize: '22px', fontWeight: '600', color: 'rgb(153,153,153)'}}>
+        <span style={{ textDecoration: 'underline' }}>
+          {highestX === 1 ? 
+            "At ATH" : 
+            `${highestX.toFixed(0)}X`
+          }
+        </span>
+        {highestX !== 1 && " until ATH"}
       </div>
     </div>
   );
