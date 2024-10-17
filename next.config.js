@@ -42,7 +42,7 @@ const nextConfig = {
             value: 'app.lookintomaxi.com',
           },
         ],
-        destination: 'https://your-main-domain.com/:path*',
+        destination: 'https://app.lookintomaxi.com/:path*',
         permanent: true,
       },
     ]

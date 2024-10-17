@@ -9,6 +9,8 @@ import PlsPlsxRatioChart from '@/components/PlsPlsxRatioChart';
 import HEXLiquidityChart from '@/components/HEXLiquidityChart';
 import EHEXLiquidityChart from '@/components/EHEXLiquidityChart';
 import TSharesChart from '@/components/TshareChart';
+import CombinedChartXs from '@/components/CombinedChartXs';
+
 const CombinedChartPage: React.FC = () => {
   return (
     <div>
@@ -26,6 +28,8 @@ const CombinedChartPage: React.FC = () => {
       <HEXLiquidityChart/>
       <h1 className="text-[rgb(153,153,153)] text-2xl font-bold mt-20 mb-4 text-center">eHEX Liquidity</h1>
       <EHEXLiquidityChart/>
+      <h1 className="text-[rgb(153,153,153)] text-2xl font-bold mt-20 mb-4 text-center">Combined HEX Price (X to Lowest/Highest)</h1>
+      <CombinedChartXs/>
     </div>
   );
 };

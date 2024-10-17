@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import axios from 'axios';
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, ReferenceLine } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 
 interface PriceData {
   date: string;
@@ -8,7 +8,7 @@ interface PriceData {
   isPulseChainLaunched: boolean;
 }
 
-const CombinedChartAverage: React.FC = () => {
+const CombinedChartXs: React.FC = () => {
   const [data, setData] = useState<PriceData[]>([]);
 
   useEffect(() => {
@@ -57,94 +57,61 @@ const CombinedChartAverage: React.FC = () => {
     fetchData();
   }, []);
 
-  const formatDate = (dateStr: string) => {
-    const [year, month, day] = dateStr.split('-');
-    return `${year}-${month}-${day}`;
-  };
-
-  const medianPrice = useMemo(() => {
+  const highestPrice = useMemo(() => {
     if (data.length === 0) return 0;
-    const sortedPrices = data.map(d => d.price).sort((a, b) => a - b);
-    const mid = Math.floor(sortedPrices.length / 2);
-    return sortedPrices.length % 2 !== 0 ? sortedPrices[mid] : (sortedPrices[mid - 1] + sortedPrices[mid]) / 2;
+    return Math.max(...data.map(d => d.price || 0));
   }, [data]);
 
-  const { lowestPrice, highestPrice, currentPrice } = useMemo(() => {
-    if (data.length === 0) return { lowestPrice: 0, highestPrice: 0, currentPrice: 0 };
-    const prices = data.map(d => d.price).filter(p => p !== null) as number[];
-    return {
-      lowestPrice: Math.min(...prices),
-      highestPrice: Math.max(...prices),
-      currentPrice: prices[prices.length - 1]
-    };
+  const lowestPrice = useMemo(() => {
+    if (data.length === 0) return 0;
+    return Math.min(...data.map(d => d.price || 0));
   }, [data]);
 
-  const calculateX = (from: number, to: number) => {
-    if (from === 0 || to === 0) return 0;
-    return Math.round((to / from - 1) * 100) / 100;
+  const currentPrice = useMemo(() => {
+    if (data.length === 0) return 0;
+    return data[data.length - 1].price || 0;
+  }, [data]);
+
+  const calculateX = (price: number) => {
+    if (currentPrice === 0) return 0;
+    return Math.round((price / currentPrice) * 100) / 100;
   };
 
-  const xToLowest = calculateX(lowestPrice, currentPrice);
-  const xToHighest = calculateX(currentPrice, highestPrice);
+  const highestX = calculateX(highestPrice);
+  const lowestX = calculateX(lowestPrice);
 
   return (
-    <div style={{ width: '100%', height: '450px', backgroundColor: '#000', padding: '0px'}}>
-      <ResponsiveContainer width="100%" height="100%">
+    <div style={{ width: '100%', height: '450px', backgroundColor: '#000', padding: '20px', color: '#fff', position: 'relative' }}>
+      <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Combined HEX Price (All-time Median)</h2>
+      <ResponsiveContainer width="100%" height="90%">
         <LineChart
           data={data}
-          margin={{ top: 10, right: 50, left: 0, bottom: 0 }}
+          margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
         >
-          <XAxis 
-            dataKey="date" 
-            axisLine={false}
-            tickLine={false}
-            tick={false}
+          <XAxis dataKey="date" hide={true} />
+          <YAxis hide={true} scale="log" domain={['auto', 'auto']} />
+          <Tooltip
+            contentStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', border: '1px solid #fff' }}
+            labelStyle={{ color: '#fff' }}
+            formatter={(value) => [`$${Number(value).toFixed(6)}`, 'Price']}
           />
-          <YAxis 
-            stroke="#888" 
-            scale="log"
-            domain={['auto', 'auto']}
-            allowDataOverflow={true}
-            axisLine={false}
-            tickLine={false}
-            tick={false}
-          />
-          <Tooltip 
-            contentStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', border: 'solid 1px #fff', borderRadius: '5px'}}
-            labelStyle={{ color: 'white' }}
-            formatter={(value, name, props) => {
-              const formattedValue = `$${Number(value).toFixed(6)}`;
-              const medianInfo = `Median: $${medianPrice.toFixed(6)}`;
-              return [
-                <span>{formattedValue} <br/> {medianInfo}</span>,
-                props.payload.isPulseChainLaunched ? 'Combined HEX Price' : 'eHEX Price'
-              ];
-            }}
-            labelFormatter={(label) => formatDate(label)}
-          />
-          <Legend />
-          <ReferenceLine y={medianPrice} stroke="#888" strokeDasharray="3 3" label={{ value: 'Median', position: 'insideTopLeft', fill: '#888' }} />
-          <ReferenceLine y={lowestPrice} stroke="#00FF00" strokeDasharray="3 3" label={{ value: `Lowest: $${lowestPrice.toFixed(6)}`, position: 'insideBottomLeft', fill: '#00FF00' }} />
-          <ReferenceLine y={currentPrice} stroke="#FFFF00" strokeDasharray="3 3" label={{ value: `Current: $${currentPrice.toFixed(6)}`, position: 'insideBottomLeft', fill: '#FFFF00' }} />
-          <ReferenceLine y={highestPrice} stroke="#FF0000" strokeDasharray="3 3" label={{ value: `Highest: $${highestPrice.toFixed(6)}`, position: 'insideTopLeft', fill: '#FF0000' }} />
-          <Line 
-            type="monotone" 
-            dataKey="price" 
-            name="Combined HEX Price"
-            stroke="#FFFFFF"
-            dot={false} 
+          <Line
+            type="monotone"
+            dataKey="price"
+            stroke="#fff"
+            dot={false}
             strokeWidth={2}
-            connectNulls={true}
           />
         </LineChart>
       </ResponsiveContainer>
-      <div style={{ color: '#FFFFFF', textAlign: 'center', marginTop: '10px' }}>
-        <span style={{ color: '#00FF00' }}>X to Lowest: {xToLowest}x</span>
-        {' | '}
-        <span style={{ color: '#FF0000' }}>X to Highest: {xToHighest}x</span>
+      <div style={{ position: 'absolute', top: '70%', right: '10%', transform: 'translateY(-50%)' }}>
+        <div>5X from ATL</div>
+      </div>
+      <div style={{ position: 'absolute', top: '30%', right: '10%' }}>
+        <div>{highestX.toFixed(0)}X to ATH</div>
       </div>
     </div>
   );
 };
 
-export default CombinedChartAverage;
+export default CombinedChartXs;
