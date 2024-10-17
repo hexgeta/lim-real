@@ -34,17 +34,6 @@ const nextConfig = {
         permanent: true,
       },
       // Add a catch-all redirect to prevent potential loops
-      {
-        source: '/:path*',
-        has: [
-          {
-            type: 'host',
-            value: 'app.lookintomaxi.com',
-          },
-        ],
-        destination: 'https://app.lookintomaxi.com/:path*',
-        permanent: true,
-      },
     ]
   },
 };
