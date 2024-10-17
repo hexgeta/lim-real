@@ -105,10 +105,10 @@ const CombinedChartXs: React.FC = () => {
         </LineChart>
       </ResponsiveContainer>
       <div style={{ position: 'absolute', top: '70%', right: '10%', transform: 'translateY(-50%)' }}>
-        <div>5X from ATL</div>
+        <div>{(1/lowestX).toFixed(2)}X from ATL</div>
       </div>
       <div style={{ position: 'absolute', top: '30%', right: '10%' }}>
-        <div>{highestX.toFixed(0)}X to ATH</div>
+        <div>{highestX.toFixed(2)}X to ATH</div>
       </div>
     </div>
   );
