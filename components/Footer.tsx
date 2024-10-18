@@ -8,31 +8,30 @@ const Footer = () => {
         <div className="col-span-1">
           <h3 className="text-lg font-semibold mb-2">LOOKINTOMAXI 2024</h3>
           <p className="text-sm">Donation address:</p>
-          <p className="text-sm break-all">0x1F12DAE5450522b445Fe1882C4F8D2Cf67B38a43</p>
+          <p className="text-sm break-all text-[rgb(153,153,153)] hover:text-gray-300 cursor-pointer" onClick={() => navigator.clipboard.writeText('0x1F12DAE5450522b445Fe1882C4F8D2Cf67B38a43')}>
+            0x1F12DAE5450522b445Fe1882C4F8D2Cf67B38a43
+          </p>
         </div>
         <div className="col-span-1">
-          <h3 className="text-lg font-semibold mb-2">More stats</h3>
+          <h3 className="text-lg font-semibold mb-2">More charts</h3>
           <ul className="text-sm space-y-1">
-            <li><Link href="/">Vs solo</Link></li>
-            <li><Link href="/">Ended stakes</Link></li>
-            <li><Link href="/">ETH vs PLS gas</Link></li>
-            <li><Link href="/">Prices</Link></li>
+            <li><Link href="/vs-hex" className="text-[rgb(153,153,153)] hover:text-gray-300">BTC vs ETH vs HEX</Link></li>
+            <li><Link href="/hex-gains" className="text-[rgb(153,153,153)] hover:text-gray-300">HEX Xs</Link></li>
+
           </ul>
         </div>
         <div className="col-span-1">
-          <h3 className="text-lg font-semibold mb-2">More info</h3>
+          <h3 className="text-lg font-semibold mb-2">Learn more</h3>
           <ul className="text-sm space-y-1">
-            <li><Link href="/">Calendar</Link></li>
-            <li><Link href="/">Buy</Link></li>
-            <li><Link href="https://docs.lookintomaxi.com/">Docs</Link></li>
-            <li><Link href="https://www.maximusdao.com/">Learn more</Link></li>
+            <li><Link href="https://docs.lookintomaxi.com/" className="text-[rgb(153,153,153)] hover:text-gray-300">Docs</Link></li>
+            <li><Link href="https://www.maximusdao.com/" className="text-[rgb(153,153,153)] hover:text-gray-300">Official site</Link></li>
           </ul>
         </div>
         <div className="col-span-1">
           <h3 className="text-lg font-semibold mb-2">Legal</h3>
           <ul className="text-sm space-y-1">
-            <li><Link href="https://lookintomaxi.com/terms-and-conditions/">T&C</Link></li>
-            <li><Link href="https://lookintomaxi.com/privacy-policy/">Privacy</Link></li>
+            <li><Link href="/terms-and-conditions" className="text-[rgb(153,153,153)] hover:text-gray-300">T&C</Link></li>
+            <li><Link href="/privacy-policy" className="text-[rgb(153,153,153)] hover:text-gray-300">Privacy</Link></li>
           </ul>
         </div>
       </div>
