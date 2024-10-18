@@ -1,7 +1,5 @@
 import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from 'next/link';
-import PriceComparison from '../components/BtcEthHex';
 
 const Home = () => {
   return (
