@@ -17,7 +17,6 @@ const Footer = () => {
           <ul className="text-sm space-y-1">
             <li><Link href="/vs-hex" className="text-[rgb(153,153,153)] hover:text-gray-300">BTC vs ETH vs HEX</Link></li>
             <li><Link href="/hex-gains" className="text-[rgb(153,153,153)] hover:text-gray-300">HEX Xs</Link></li>
-            <li><Link href="/vs-hex" className="text-[rgb(153,153,153)] hover:text-gray-300">BTC vs ETH vs HEX</Link></li>
 
           </ul>
         </div>

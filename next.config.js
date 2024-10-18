@@ -28,7 +28,12 @@ const nextConfig = {
         destination: '/delta-discounts',
         permanent: true,
       },
-      // Add a catch-all redirect to prevent potential loops
+      // a catch-all redirect to prevent potential loops
+      {
+        source: '/Btc-Eth-Hex',
+        destination: '/vs-hex',
+        permanent: true,
+      },
     ]
   },
 };
