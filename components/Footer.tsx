@@ -4,9 +4,9 @@ import Link from 'next/link';
 const Footer = () => {
   return (
     <footer className="w-full bg-black px-1 py-8">
-      <div className="max-w-[1200px] mx-auto grid grid-cols-4 gap-8">
+      <div className="max-w-[1200px] mx-auto grid grid-cols-4 gap-12">
         <div className="col-span-1">
-          <h3 className="text-lg font-semibold mb-2">LOOKINTOMAXI 2024</h3>
+          <h3 className="text-lg font-semibold mb-2 break-all">LOOKINTOMAXI 2024</h3>
           <p className="text-sm">Donation address:</p>
           <p className="text-sm break-all text-[rgb(153,153,153)] hover:text-gray-300 cursor-pointer" onClick={() => navigator.clipboard.writeText('0x1F12DAE5450522b445Fe1882C4F8D2Cf67B38a43')}>
             0x1F12DAE5450522b445Fe1882C4F8D2Cf67B38a43
@@ -17,6 +17,7 @@ const Footer = () => {
           <ul className="text-sm space-y-1">
             <li><Link href="/vs-hex" className="text-[rgb(153,153,153)] hover:text-gray-300">BTC vs ETH vs HEX</Link></li>
             <li><Link href="/hex-gains" className="text-[rgb(153,153,153)] hover:text-gray-300">HEX Xs</Link></li>
+            <li><Link href="/hex-pls-ratio" className="text-[rgb(153,153,153)] hover:text-gray-300">HEX:PLS Ratio</Link></li>
 
           </ul>
         </div>

@@ -20,9 +20,13 @@ const PlsPlsxRatioChart: React.FC = () => {
 
         const formattedData = pulsechainData.map((item: any) => {
           const dateStr = new Date(item.date).toISOString().split('T')[0];
-          const ratio = item.pricePulseX_PLSX && item.pricePulseX_PLS
-            ? item.pricePulseX_PLSX / item.pricePulseX_PLS
-            : null;
+          const hexPrice = Number(item.pricePulseX) || null;
+          const plsPrice = item.pricePulseX_PLS ? 1 / Number(item.pricePulseX_PLS) : null;
+
+          let ratio = null;
+          if (hexPrice && plsPrice && plsPrice > 0) {
+            ratio = hexPrice / plsPrice;
+          }
 
           return {
             date: dateStr,
