@@ -53,7 +53,7 @@ const HEXPriceRatioChart: React.FC = () => {
   }, []);
 
   const maxRatio = useMemo(() => {
-    return Math.max(...data.map(item => item.priceRatio || 0)) + 1;
+    return Math.max(...data.map(item => item.priceRatio || 0)) +1;
   }, [data]);
 
   const formatDate = (dateStr: string) => {
