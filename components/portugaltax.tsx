@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { ComposedChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { ComposedChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, ReferenceLine } from 'recharts';
 
 // Portuguese tax rules for 2023 (replace with actual data)
 const taxRules = {
@@ -184,6 +184,7 @@ const PortugalTaxRateChart: React.FC = () => {
           data={data}
           margin={{ top: 10, right: 50, left: 0, bottom: 0 }}
         >
+          
           <XAxis 
             dataKey="grossIncome" 
             axisLine={false}
@@ -196,7 +197,7 @@ const PortugalTaxRateChart: React.FC = () => {
           <YAxis 
             yAxisId="left"
             stroke="#888" 
-            domain={[0, maxRate]}
+            domain={[0, 100]}
             axisLine={false}
             tickLine={false}
             tickFormatter={(value) => `${value}%`}
@@ -206,11 +207,12 @@ const PortugalTaxRateChart: React.FC = () => {
             yAxisId="right"
             orientation="right"
             stroke="#33FF57"
-            domain={[0, maxNetIncome]}
+            domain={[0, 140000]}
             axisLine={false}
             tickLine={false}
-            tickFormatter={formatCurrency}
+            tickFormatter={(value) => `${value / 1000}k`}
             tick={{ fill: '#888', fontSize: 12 }}
+            ticks={[0, 20000, 40000, 60000, 80000, 100000, 120000, 140000]}
           />
           <Tooltip content={<CustomTooltip />} />
           <Legend content={renderCursorLegend} />
@@ -224,6 +226,7 @@ const PortugalTaxRateChart: React.FC = () => {
             strokeWidth={2}
             hide={hiddenSeries.includes('marginalRate')}
           />
+          <ReferenceLine y={50} yAxisId="left" stroke="#888" strokeDasharray="3 3" />
           <Line 
             yAxisId="left"
             type="monotone" 

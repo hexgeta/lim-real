@@ -230,7 +230,7 @@ const UKMarginalTaxRateChart: React.FC = () => {
           <YAxis 
             yAxisId="left"
             stroke="#888" 
-            domain={[0, maxRate]}
+            domain={[0, 100]}
             axisLine={false}
             tickLine={false}
             tickFormatter={(value) => `${value}%`}
@@ -240,13 +240,15 @@ const UKMarginalTaxRateChart: React.FC = () => {
             yAxisId="right"
             orientation="right"
             stroke="#33FF57"
-            domain={[0, maxNetIncome]}
+            domain={[0, 140000]}
             axisLine={false}
             tickLine={false}
-            tickFormatter={formatCurrency}
+            tickFormatter={(value) => `${value / 1000}k`}
+            ticks={Array.from({ length: Math.ceil(maxNetIncome / 20000) + 1 }, (_, i) => i * 20000)}
             tick={{ fill: '#888', fontSize: 12 }}
           />
           <Tooltip content={<CustomTooltip />} />
+          <ReferenceLine y={50} yAxisId="left" stroke="#888" strokeDasharray="3 3" />
           <Legend content={renderCursorLegend} />
           <Line 
             yAxisId="left"

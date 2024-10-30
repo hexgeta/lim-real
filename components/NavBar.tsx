@@ -52,7 +52,7 @@ const NavigationBar = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 z-40">
           <div
             ref={menuRef}
-            className="absolute right-0 top-0 h-auto w-64 bg-black bg-opacity-90 p-4 shadow-lg z-50 border border-white rounded-[10px]"
+            className="absolute right-2 top-2 h-auto w-64 bg-black bg-opacity-90 p-4 shadow-lg z-50 border border-white rounded-[10px]"
           >
             <Link href="/delta-discounts" className="block text-white py-2">Δ Discounts</Link>
             <Link href="/hex-charts" className="block text-white py-2">Charts</Link>
