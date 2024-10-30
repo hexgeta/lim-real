@@ -26,7 +26,7 @@ const VsGains: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       const { data: baselineData, error: baselineError } = await supabase
-        .from('Historic Prices')
+        .from('historic_prices')
         .select('*')
         .eq('date', '2024-09-07T00:00:00.000Z')
         .single();
@@ -46,7 +46,7 @@ const VsGains: React.FC = () => {
       };
 
       const { data: historicPrices, error } = await supabase
-        .from('Historic Prices')
+        .from('historic_prices')
         .select('*')
         .order('date', { ascending: true });
 
