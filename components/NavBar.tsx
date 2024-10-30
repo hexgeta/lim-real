@@ -27,8 +27,6 @@ const NavigationBar = () => {
         <div className="hidden md:flex items-center justify-left flex-grow ml-10">
           <div className="flex space-x-6">
             <Link href="/delta-discounts" className="text-[rgb(153,153,153)] hover:text-gray-300">Δ Discounts</Link>
-            <Link href="/hex-charts" className="text-[rgb(153,153,153)] hover:text-gray-300">HEX Charts</Link>
-
           </div>
         </div>
         <div className="hidden md:flex items-center">
@@ -55,7 +53,6 @@ const NavigationBar = () => {
             className="absolute right-2 top-2 h-auto w-64 bg-black bg-opacity-90 p-4 shadow-lg z-50 border border-white rounded-[10px]"
           >
             <Link href="/delta-discounts" className="block text-white py-2">Δ Discounts</Link>
-            <Link href="/hex-charts" className="block text-white py-2">Charts</Link>
             <Link href="/vs-hex" className="block text-white py-2">BTC vs ETH vs HEX</Link>
             <Link href="/hex-gains" className="block text-white py-2">Hex Xs</Link>
           </div>

@@ -7,6 +7,14 @@ interface PriceData {
   priceRatio: number | null;
 }
 
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: Array<{
+    value: number;
+  }>;
+  label?: string;
+}
+
 const HEXPriceRatioChart: React.FC = () => {
   const [data, setData] = useState<PriceData[]>([]);
 
@@ -57,13 +65,14 @@ const HEXPriceRatioChart: React.FC = () => {
   }, [data]);
 
   const formatDate = (dateStr: string) => {
+    if (!dateStr) return '';
     const [year, month, day] = dateStr.split('-');
     return `${year}-${month}-${day}`;
   };
 
   // Add this custom tooltip component
-  const CustomTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
+  const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
+    if (active && payload && payload.length && label) {
       const ratio = Number(payload[0].value).toFixed(4);
       return (
         <div style={{ 

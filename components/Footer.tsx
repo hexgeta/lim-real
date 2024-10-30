@@ -15,24 +15,26 @@ const Footer = () => {
         <div className="col-span-1">
           <h3 className="text-lg font-semibold mb-2">More charts</h3>
           <ul className="text-sm space-y-1">
+          <li><Link href="/combined-hex" className="text-[rgb(153,153,153)] hover:text-gray-300">Combined HEX Price</Link></li>
             <li><Link href="/vs-hex" className="text-[rgb(153,153,153)] hover:text-gray-300">BTC vs ETH vs HEX</Link></li>
-            <li><Link href="/hex-gains" className="text-[rgb(153,153,153)] hover:text-gray-300">HEX Xs</Link></li>
             <li><Link href="/crypto-gains" className="text-[rgb(153,153,153)] hover:text-gray-300">Crypto Gains</Link></li>
             <li><Link href="/hex-pls-ratio" className="text-[rgb(153,153,153)] hover:text-gray-300">HEX:PLS Ratio</Link></li>
+            <li><Link href="/hex-gains" className="text-[rgb(153,153,153)] hover:text-gray-300">HEX Xs</Link></li>
+            <li><Link href="/hex-charts" className="text-[rgb(153,153,153)] hover:text-gray-300">Other Charts</Link></li>
           </ul>
         </div>
         <div className="col-span-1">
           <h3 className="text-lg font-semibold mb-2">Learn more</h3>
           <ul className="text-sm space-y-1">
+          <li><Link href="https://www.maximusdao.com/" className="text-[rgb(153,153,153)] hover:text-gray-300">Official site</Link></li>
             <li><Link href="https://docs.lookintomaxi.com/" className="text-[rgb(153,153,153)] hover:text-gray-300">Docs</Link></li>
-            <li><Link href="https://www.maximusdao.com/" className="text-[rgb(153,153,153)] hover:text-gray-300">Official site</Link></li>
           </ul>
         </div>
         <div className="col-span-1">
           <h3 className="text-lg font-semibold mb-2">Legal</h3>
           <ul className="text-sm space-y-1">
+          <li><Link href="/privacy-policy" className="text-[rgb(153,153,153)] hover:text-gray-300">Privacy</Link></li>
             <li><Link href="/terms-and-conditions" className="text-[rgb(153,153,153)] hover:text-gray-300">T&C</Link></li>
-            <li><Link href="/privacy-policy" className="text-[rgb(153,153,153)] hover:text-gray-300">Privacy</Link></li>
           </ul>
         </div>
       </div>

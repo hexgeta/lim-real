@@ -253,10 +253,8 @@ const VsGains: React.FC = () => {
             tickFormatter={(value) => `${value.toFixed(1)}X`}
             stroke="#888"
             axisLine={{ stroke: '#888', strokeWidth: 0 }}
-            tickLine= {false}
+            tickLine={false}
             tick={(props) => {
-              // Don't render if value is 1
-              if (props.payload.value === 1) return null;
               return (
                 <text
                   x={props.x}
@@ -264,13 +262,13 @@ const VsGains: React.FC = () => {
                   dy={4}
                   textAnchor="end"
                   fill="#888"
-                  fontSize={18}
+                  fontSize={14}
                 >
-                  {`${props.payload.value.toFixed(0)}X`}
+                  {`${props.payload.value.toFixed(visibleLines.hexX ? 0 : 1)}X`}
                 </text>
               );
             }}
-            domain={['auto', 'auto']}
+            domain={[1, 'auto']}
           />
           <CartesianGrid 
             stroke="rgba(136, 136, 136, 0.2)" 
