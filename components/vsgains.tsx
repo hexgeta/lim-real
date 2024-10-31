@@ -117,7 +117,7 @@ const VsGains: React.FC = () => {
                   <span style={{ 
                     color: entry.color, 
                     marginRight: 5,
-                    fontSize: '24px',
+                    fontSize: '40px',
                     lineHeight: '1'
                   }}>●</span>
                   <span style={{ 
