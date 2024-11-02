@@ -59,7 +59,7 @@ const HEXLiquidityChart: React.FC = () => {
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={data}
-          margin={{ top: 10, right: 50, left: 0, bottom: 0 }}
+          margin={{ top: 10, right: 0, left: 0, bottom: 0 }}
         >
           <XAxis 
             dataKey="date" 
@@ -88,7 +88,7 @@ const HEXLiquidityChart: React.FC = () => {
           />
           <Tooltip 
             position={{ x: 'auto', y: -30 }}
-            contentStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', border: 'solid 1px #fff', borderRadius: '5px'}}
+            contentStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.85)', border: 'solid 1px rgba(255, 255, 255, 0.2)', borderRadius: '5px'}}
             labelStyle={{ color: 'white' }}
             formatter={(value: any, name: string, props: any) => {
               console.log('Tooltip value:', value, 'name:', name, 'type:', typeof value);

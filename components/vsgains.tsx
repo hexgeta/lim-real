@@ -117,12 +117,15 @@ const VsGains: React.FC = () => {
                   <span style={{ 
                     color: entry.color, 
                     marginRight: 5,
-                    fontSize: '40px',
-                    lineHeight: '1'
+                    fontSize: '28px',
+                    lineHeight: '18px',
+                    display: 'flex',
+                    alignItems: 'center'
                   }}>●</span>
                   <span style={{ 
                     color: visibleLines[entry.dataKey] ? '#fff' : '#888',
-                    fontSize: '14px'
+                    fontSize: '12px',
+                    lineHeight: '12px'
                   }}>
                     {entry.value} {formattedX}
                   </span>
@@ -250,7 +253,7 @@ const VsGains: React.FC = () => {
             }, [] as string[])}
           />
           <YAxis 
-            tickFormatter={(value) => `${value.toFixed(1)}X`}
+            tickFormatter={(value) => `${Number.isInteger(value) ? value.toFixed(0) : value.toFixed(1)}X`}
             stroke="#888"
             axisLine={{ stroke: '#888', strokeWidth: 0 }}
             tickLine={false}
@@ -264,19 +267,26 @@ const VsGains: React.FC = () => {
                   fill="#888"
                   fontSize={14}
                 >
-                  {`${props.payload.value.toFixed(visibleLines.hexX ? 0 : 1)}X`}
+                  {`${Number.isInteger(props.payload.value) ? 
+                    props.payload.value.toFixed(0) : 
+                    props.payload.value.toFixed(1)}X`}
                 </text>
               );
             }}
-            domain={[1, 'auto']}
+            domain={visibleLines.hexX ? [1, 4] : [0.9, 1.5]}
+            ticks={visibleLines.hexX ? 
+              [1, 2, 3, 4, 5] : 
+              [0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5]
+            }
           />
           <CartesianGrid 
+            strokeDasharray="3 3" 
             stroke="rgba(136, 136, 136, 0.2)" 
-            vertical={false}
+            vertical={false} 
           />
           <Tooltip 
             contentStyle={{ 
-              backgroundColor: 'rgba(0, 0, 0, 0.75)', 
+              backgroundColor: 'rgba(0, 0, 0, 0.85)', 
               border: '1px solid rgba(255, 255, 255, 0.2)', 
               borderRadius: '10px', 
               padding: '10px',

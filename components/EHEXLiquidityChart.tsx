@@ -167,7 +167,7 @@ const EHEXLiquidityChart: React.FC = () => {
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={data}
-          margin={{ top: 10, right: 0, left: 0, bottom: 0 }}
+          margin={{ top: 30, right: 0, left: 0, bottom: 0 }}
         >
           <XAxis 
             dataKey="date" 
@@ -178,7 +178,7 @@ const EHEXLiquidityChart: React.FC = () => {
           <YAxis 
             yAxisId="liquidity"
             stroke="#888" 
-            domain={['auto', 'auto']}
+            domain={[(dataMin) => dataMin * 0.9, (dataMax) => dataMax * 1.3]}
             allowDataOverflow={true}
             axisLine={false}
             tickLine={false}
@@ -208,7 +208,7 @@ const EHEXLiquidityChart: React.FC = () => {
             scale="log"
           />
           <Tooltip 
-            contentStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', border: 'solid 1px #fff', borderRadius: '5px'}}
+            contentStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.85)', border: 'solid 1px rgba(255, 255, 255, 0.2)', borderRadius: '5px'}}
             labelStyle={{ color: 'white' }}
             formatter={(value: any, name: string, props: any) => {
               if (name === 'eHEX Price') {

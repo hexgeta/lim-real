@@ -17,22 +17,39 @@ const PlsPlsxRatioChart: React.FC = () => {
       try {
         const response = await axios.get('https://hexdailystats.com/fulldatapulsechain');
         const pulsechainData = response.data;
+        console.log('Raw data:', pulsechainData);
+        console.log('Sample data item:', pulsechainData[0]);
 
-        const formattedData = pulsechainData.map((item: any) => {
-          const dateStr = new Date(item.date).toISOString().split('T')[0];
-          const plsxPrice = Number(item.pricePulseX_USD) || null;
-          const plsPrice = Number(item.pricePLS_USD) || null;
+        const formattedData = pulsechainData
+          .filter((item: any) => {
+            // Filter data starting from PulseChain launch (May 2023)
+            const date = new Date(item.date);
+            return date >= new Date('2023-05-10');
+          })
+          .map((item: any) => {
+            const dateStr = new Date(item.date).toISOString().split('T')[0];
+            const plsxPrice = Number(item.pricePulseX_PLSX) || null;
+            const plsPrice = Number(item.pricePulseX_PLS) || null;
 
-          let ratio = null;
-          if (plsxPrice && plsPrice && plsPrice > 0) {
-            ratio = plsxPrice / plsPrice;
-          }
+            console.log(`Date: ${dateStr}`);
+            console.log(`PLSX Price: ${plsxPrice}`);
+            console.log(`PLS Price: ${plsPrice}`);
 
-          return {
-            date: dateStr,
-            ratio: ratio
-          };
-        });
+            let ratio = null;
+            if (plsxPrice && plsPrice && plsPrice > 0) {
+              ratio = plsxPrice / plsPrice;
+              console.log(`Date: ${dateStr}, PLSX: ${plsxPrice}, PLS: ${plsPrice}, Ratio: ${ratio}`);
+            } else {
+              console.log('Could not calculate ratio - missing or invalid prices');
+            }
+
+            return {
+              date: dateStr,
+              ratio: ratio
+            };
+          });
+
+        console.log('Formatted data:', formattedData);
 
         formattedData.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
         
@@ -44,6 +61,7 @@ const PlsPlsxRatioChart: React.FC = () => {
           return acc;
         }, []);
 
+        console.log('Final filtered data:', filteredData);
         setData(filteredData);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -87,7 +105,7 @@ const PlsPlsxRatioChart: React.FC = () => {
             tick={false}
           />
           <Tooltip 
-            contentStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', border: 'solid 1px #fff', borderRadius: '5px'}}
+            contentStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.85)', border: 'solid 1px rgba(255, 255, 255, 0.2)', borderRadius: '5px'}}
             labelStyle={{ color: 'white' }}
             formatter={(value, name, props) => {
               const formattedValue = Number(value).toFixed(6);

@@ -17,9 +17,11 @@ interface CustomTooltipProps {
 
 const HEXPriceRatioChart: React.FC = () => {
   const [data, setData] = useState<PriceData[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
       try {
         const [pulsechainResponse, ethereumResponse] = await Promise.all([
           axios.get('https://hexdailystats.com/fulldatapulsechain'),
@@ -41,7 +43,7 @@ const HEXPriceRatioChart: React.FC = () => {
 
           let priceRatio = null;
           if (pricePulseX && priceEthereum && pricePulseX > 0) {
-            priceRatio = priceEthereum / pricePulseX;
+            priceRatio = Math.min(priceEthereum / pricePulseX, 1);
           }
 
           return {
@@ -54,15 +56,13 @@ const HEXPriceRatioChart: React.FC = () => {
         setData(formattedData.filter(item => item.priceRatio !== null));
       } catch (error) {
         console.error('Error fetching data:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchData();
   }, []);
-
-  const maxRatio = useMemo(() => {
-    return Math.max(...data.map(item => item.priceRatio || 0)) +1;
-  }, [data]);
 
   const formatDate = (dateStr: string) => {
     if (!dateStr) return '';
@@ -70,14 +70,13 @@ const HEXPriceRatioChart: React.FC = () => {
     return `${year}-${month}-${day}`;
   };
 
-  // Add this custom tooltip component
   const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
     if (active && payload && payload.length && label) {
       const ratio = Number(payload[0].value).toFixed(4);
       return (
         <div style={{ 
-          backgroundColor: 'rgba(0, 0, 0, 0.8)', 
-          border: 'solid 1px #fff', 
+          backgroundColor: 'rgba(0, 0, 0, 0.85)', 
+          border: 'solid 1px rgba(255, 255, 255, 0.2)', 
           borderRadius: '5px',
           padding: '10px',
           color: 'white'
@@ -89,6 +88,10 @@ const HEXPriceRatioChart: React.FC = () => {
     }
     return null;
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div style={{ width: '100%', height: '450px', backgroundColor: '#000', padding: '0px'}}>
@@ -105,7 +108,7 @@ const HEXPriceRatioChart: React.FC = () => {
           />
           <YAxis 
             stroke="#888" 
-            domain={[0, maxRatio]}
+            domain={[0, 1]}
             axisLine={false}
             tickLine={false}
             tick={false}

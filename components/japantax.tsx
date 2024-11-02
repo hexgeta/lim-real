@@ -143,8 +143,8 @@ const JapaneseTaxRateChart: React.FC = () => {
     if (active && payload && payload.length) {
       return (
         <div style={{ 
-          backgroundColor: 'rgba(0, 0, 0, 0.8)', 
-          border: 'solid 1px #fff', 
+          backgroundColor: 'rgba(0, 0, 0, 0.85)', 
+          border: 'solid 1px rgba(255, 255, 255, 0.2)', 
           borderRadius: '5px',
           padding: '10px',
           color: 'white'

@@ -58,7 +58,7 @@ const TSharesChart: React.FC = () => {
             scale="log"
           />
           <Tooltip 
-            contentStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', border: 'solid 1px #fff', borderRadius: '5px'}}
+            contentStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.85)', border: 'solid 1px rgba(255, 255, 255, 0.2)', borderRadius: '5px'}}
             labelStyle={{ color: 'white' }}
             formatter={(value: number) => [value.toFixed(2), 'Total T-Shares']}
             labelFormatter={(label) => formatDate(label)}

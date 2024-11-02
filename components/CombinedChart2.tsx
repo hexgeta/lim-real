@@ -11,9 +11,11 @@ interface PriceData {
 
 const HEXPriceChart2: React.FC = () => {
   const [data, setData] = useState<PriceData[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
       try {
         const [pulsechainResponse, ethereumResponse] = await Promise.all([
           axios.get('https://hexdailystats.com/fulldatapulsechain'),
@@ -53,6 +55,8 @@ const HEXPriceChart2: React.FC = () => {
         setData(formattedData);
       } catch (error) {
         console.error('Error fetching data:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -63,6 +67,10 @@ const HEXPriceChart2: React.FC = () => {
     const [year, month, day] = dateStr.split('-');
     return `${year}-${month}-${day}`;
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div style={{ width: '100%', height: '490px', backgroundColor: '#000', padding: '0px'}}>
@@ -87,19 +95,17 @@ const HEXPriceChart2: React.FC = () => {
           />
           <Tooltip 
             labelStyle={{ color: 'white' }}
-            itemStyle={{
-              color: '#FFFFFF',
-              fillOpacity: 1,
-              strokeOpacity: 1,
-            }}
-            contentStyle={{
-              backgroundColor: 'rgba(0, 0, 0, 0.8)',
-            }}
+            contentStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.85)', border: 'solid 1px rgba(255, 255, 255, 0.2)', borderRadius: '5px'}}
             formatter={(value, name) => {
-              const color = name === "Ethereum Price" ? '#00FFFF' : 
-                            name === "PulseChain Price" ? '#FF00FF' : '#FFFFFF';
-              return [value, name, color];
+              const color = name === "eHEX Price" ? '#00FFFF' : 
+                          name === "pHEX Price" ? '#FF00FF' : '#FFFFFF';
+              return [
+                <span style={{ color }}>
+                  {`${name} : $${Number(value).toFixed(6)}`}
+                </span>
+              ];
             }}
+            labelFormatter={(label) => formatDate(label)}
           />
           <Legend />
           <Line 

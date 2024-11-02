@@ -114,8 +114,8 @@ const CombinedChartXs: React.FC = () => {
       const tooltipXs = calculateXs(currentPrice, highestPrice, lowestPrice, localLowPrice);
 
       return (
-        <div style={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', border: '1px solid #fff', borderRadius: '5px', padding: '10px' }}>
-          <p style={{ color: '#fff' }}>{`Date: ${payload[0].payload.date}`}</p>
+        <div style={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', border: '1px solid rgba(255, 255, 255, 0.2)', borderRadius: '5px', padding: '10px' }}>
+          <p style={{ color: '#fff', marginBottom: '4px' }}>{`${payload[0].payload.date}`}</p>
           <p style={{ color: '#fff' }}>{`Price: $${currentPrice.toFixed(4)}`}</p>
           <p style={{ color: '#fff' }}>{`${tooltipXs.toATH.toFixed(1)}X until ATH`}</p>
           <p style={{ color: '#fff' }}>{`${tooltipXs.fromATL.toFixed(0)}X up from ATL`}</p>

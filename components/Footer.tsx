@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 const Footer = () => {
   return (
-    <footer className="w-full bg-black px-1 py-8">
+    <footer className="w-full bg-black px-4 py-8">
       <div className="max-w-[1200px] mx-auto grid grid-cols-4 gap-12">
         <div className="col-span-1">
           <h3 className="text-sm sm:text-lg font-semibold mb-2 break-all">LOOKINTOMAXI 2024</h3>
@@ -25,7 +25,7 @@ const Footer = () => {
         </div>
         <div className="col-span-1">
           <h3 className="text-sm sm:text-lg font-semibold mb-2">Learn more</h3>
-          <ul className="text-sm space-y-1">
+          <ul className="text-xs sm:text-sm space-y-1">
           <li><Link href="https://www.maximusdao.com/" className="text-[rgb(153,153,153)] hover:text-gray-300">Official site</Link></li>
             <li><Link href="https://docs.lookintomaxi.com/" className="text-[rgb(153,153,153)] hover:text-gray-300">Docs</Link></li>
           </ul>
