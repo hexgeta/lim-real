@@ -8,7 +8,7 @@ function DiscountChart({
   tableName, 
   title, 
   xAxisKey = 'Day', 
-  yAxis1Key = 'Discount/Premium', 
+  yAxis1Key = 'Market Value', 
   yAxis2Key = 'Backing Value',
   yAxisDomain = [0, 2.5]
 }) {
