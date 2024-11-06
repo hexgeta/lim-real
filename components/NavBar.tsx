@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const NavigationBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -36,8 +37,10 @@ const NavigationBar = () => {
             </svg>
           </Link>
         </div>
+
+        {/* MOBILE VIEW */}
         <button
-          className="text-white md:hidden flex flex-col justify-center items-center"
+          className="rgba(255, 255, 255, 0.2) md:hidden flex flex-col justify-center items-center"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           aria-label="Toggle menu"
         >
@@ -46,18 +49,30 @@ const NavigationBar = () => {
           <span className="hamburger-line"></span>
         </button>
       </div>
-      {isMenuOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-40">
-          <div
-            ref={menuRef}
-            className="absolute right-2 top-2 h-auto w-64 bg-black bg-opacity-90 p-4 shadow-lg z-50 border border-white rounded-[10px]"
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 bg-black bg-opacity-50 z-40"
           >
-            <Link href="/delta-discounts" className="block text-white py-2">Δ Discounts</Link>
-            <Link href="/vs-hex" className="block text-white py-2">BTC vs ETH vs HEX</Link>
-            <Link href="/hex-gains" className="block text-white py-2">Hex Xs</Link>
-          </div>
-        </div>
-      )}
+            <motion.div
+              ref={menuRef}
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ type: "spring", duration: 0.3 }}
+              className="absolute right-2 top-2 h-auto w-64 bg-black bg-opacity-85 p-4 shadow-lg z-50 border border-white/20 rounded-[10px]"
+            >
+              <Link href="/delta-discounts" className="block text-white/80 hover:text-white py-2" onClick={() => setIsMenuOpen(false)}>Δ Discounts</Link>
+              <Link href="/vs-hex" className="block text-white/80 hover:text-white py-2" onClick={() => setIsMenuOpen(false)}>BTC vs ETH vs HEX</Link>
+              <Link href="/hex-gains" className="block text-white/80 hover:text-white py-2" onClick={() => setIsMenuOpen(false)}>Hex Xs</Link>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 };
