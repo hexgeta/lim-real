@@ -128,8 +128,6 @@ function ExampleChart({
           }
         });
         
-        setData(formattedData.sort((a, b) => a.day - b.day));
-        
         const regression = calculateExponentialRegression(formattedData, EXPONENTIAL_CURVE_INTENSITY);
         const linearRegression = calculateLinearRegression(formattedData, LINEAR_SLOPE_MULTIPLIER);
         
@@ -137,37 +135,29 @@ function ExampleChart({
         console.log('Exponential:', regression.equation);
         console.log('Linear:', linearRegression.equation);
         
-        // Create continuous data arrays for every day
-        const trendPoints = [];
-        const linearTrendPoints = [];
+        // Modify how we create and combine the data points
+        const combinedData = [];
         
         for (let day = START_DAY; day <= END_DAY; day++) {
           const expValue = regression.calculate(day);
           const linValue = linearRegression.calculate(day);
           
-          if (day % 500 === 0) {
-            console.log(`Day ${day} - Exp: ${expValue}, Linear: ${linValue}`);
-          }
+          // Find matching day in original data
+          const originalDataPoint = formattedData.find(d => d.day === day) || {};
           
-          trendPoints.push({
-            day: day,
-            trendValue: expValue
-          });
-          
-          linearTrendPoints.push({
-            day: day,
+          combinedData.push({
+            day,
+            ...originalDataPoint,
+            trendValue: expValue,
             linearTrend: linValue
           });
         }
         
-        // Log first few points of each dataset
-        console.log('First 20 trend points:');
-        trendPoints.slice(0, 20).forEach(point => {
-          console.log(`Day ${point.day}: Trend=${point.trendValue}`);
-        });
+        setData(combinedData);
         
-        setTrendLineData(trendPoints);
-        setLinearTrendData(linearTrendPoints);
+        // Remove these as they're no longer needed
+        // setTrendLineData(trendPoints);
+        // setLinearTrendData(linearTrendPoints);
         
       } catch (error) {
         console.error('Error:', error);
@@ -363,7 +353,6 @@ function ExampleChart({
             isAnimationActive={true}
           />
           <Line 
-            data={trendLineData}
             type="monotone"
             dataKey="trendValue"
             name="Projected Backing Value (Exponential)"
@@ -375,7 +364,6 @@ function ExampleChart({
             hide={!visibleLines.trendValue}
           />
           <Line 
-            data={linearTrendData}
             type="linear"
             dataKey="linearTrend"
             name="Projected Backing Value (Linear)"
