@@ -5,13 +5,13 @@ import {
 } from 'recharts';
 
 // Constants for regression calculations
-const LINEAR_SLOPE_MULTIPLIER = 1.05;  // Adjust this value to change linear trend steepness
-const EXPONENTIAL_CURVE_INTENSITY = 1.0;  // Added this for consistency
+const LINEAR_SLOPE_MULTIPLIER = 1;  // Adjust this value to change linear trend steepness
+const EXPONENTIAL_CURVE_INTENSITY = 1;  // Added this for consistency
 
 const START_DAY = 881;
 const END_DAY = 5555;
 
-function calculateExponentialRegression(data, curveIntensity = 0.1) {
+function calculateExponentialRegression(data, curveIntensity = 0.03) {
   console.log('Curve Intensity:', curveIntensity);
 
   const n = data.length;
@@ -79,6 +79,39 @@ function calculateLinearRegression(data, slopeMultiplier = 1.0) {
     equation: `y = ${slope.toFixed(6)}x + ${intercept.toFixed(6)}`
   };
 }
+
+// Add this custom tooltip component
+const CustomTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    // Reorder the payload items
+    const orderedPayload = [
+      payload.find(p => p.dataKey === "backingValue"),    // Backing Value
+      payload.find(p => p.dataKey === "discount"),        // Market Value
+      payload.find(p => p.dataKey === "trendValue"),      // Projected Backing Value (Exponential)
+      payload.find(p => p.dataKey === "linearTrend"),     // Projected Backing Value (Linear)
+    ].filter(Boolean); // Remove any undefined entries
+
+    return (
+      <div style={{ 
+        backgroundColor: 'rgba(0, 0, 0, 0.85)', 
+        border: '1px solid rgba(255, 255, 255, 0.2)', 
+        borderRadius: '10px',
+        padding: '10px'
+      }}>
+        <p style={{ color: 'white', margin: '0 0 5px' }}>{`Day: ${label}`}</p>
+        {orderedPayload.map((entry, index) => (
+          entry && (
+            <p key={index} style={{ color: 'white', margin: '3px 0' }}>
+              <span style={{ color: entry.color }}>●</span>
+              {` ${entry.name}: ${Number(entry.value).toFixed(2)}`}
+            </p>
+          )
+        ))}
+      </div>
+    );
+  }
+  return null;
+};
 
 function ExampleChart({ 
   tableName = 'pMAXI - DiscountChart',
@@ -205,6 +238,14 @@ function ExampleChart({
   const customLegend = (props: any) => {
     const { payload } = props;
     
+    // Define the desired order of legend items
+    const orderedLegendItems = [
+      payload.find(p => p.dataKey === "backingValue"),    // Backing Value
+      payload.find(p => p.dataKey === "discount"),        // Market Value
+      payload.find(p => p.dataKey === "trendValue"),      // Projected Backing Value (Exponential)
+      payload.find(p => p.dataKey === "linearTrend"),     // Projected Backing Value (Linear)
+    ].filter(Boolean); // Remove any undefined entries
+
     return (
       <div style={{ 
         display: 'flex', 
@@ -220,7 +261,7 @@ function ExampleChart({
           flexWrap: 'wrap', 
           justifyContent: 'center' 
         }}>
-          {payload.map((entry: any, index: number) => (
+          {orderedLegendItems.map((entry: any, index: number) => (
             <li 
               key={`item-${index}`}
               style={{ 
@@ -309,33 +350,40 @@ function ExampleChart({
               }
             }}
           />
-          <Tooltip 
-            contentStyle={{ 
-              backgroundColor: 'rgba(0, 0, 0, 0.85)', 
-              border: '1px solid rgba(255, 255, 255, 0.2)', 
-              borderRadius: '10px'
-            }}
-            labelStyle={{ color: 'white' }}
-            itemStyle={{ color: 'white' }}
-            formatter={(value, name) => {
-              if (typeof value === 'number') {
-                console.log(`Tooltip value for ${name}:`, value); // Debug log
-                return value.toFixed(2);
-              }
-              return value;
-            }}
-            isAnimationActive={true}
-            cursor={{ stroke: 'rgba(255, 255, 255, 0.2)' }}
-          />
+          <Tooltip content={<CustomTooltip />} />
           <Legend content={customLegend} />
+          <Line 
+            type="monotone"
+            dataKey="trendValue"
+            name="Projected Backing Value (Exponential)"
+            dot={false}
+            strokeWidth={2}
+            stroke="#23411F"
+            activeDot={{ r: 4, fill: '#23411F', stroke: 'white' }}
+            connectNulls={false}
+            isAnimationActive={true}
+            hide={!visibleLines.trendValue}
+          />
+          <Line 
+            type="linear"
+            dataKey="linearTrend"
+            name="Projected Backing Value (Linear)"
+            dot={false}
+            strokeWidth={2}
+            stroke="#4D3A3D"
+            activeDot={{ r: 4, fill: '#4D3A3D', stroke: 'white' }}
+            hide={!visibleLines.linearTrend}
+            connectNulls={false}
+            isAnimationActive={true}
+          />
           <Line 
             type="monotone" 
             dataKey="backingValue" 
             name="Backing Value" 
             dot={false} 
             strokeWidth={2} 
-            stroke='rgba(112, 214, 104, 1)'
-            activeDot={{ r: 4, fill: 'rgba(112, 214, 104, 1)', stroke: 'white' }}
+            stroke='rgba(112, 214, 104)'
+            activeDot={{ r: 4, fill: 'rgba(112, 214, 104)', stroke: 'white' }}
             connectNulls={false}
             isAnimationActive={true}
             hide={!visibleLines.backingValue}
@@ -349,28 +397,6 @@ function ExampleChart({
             stroke='#3991ED'
             activeDot={{ r: 4, fill: '#3991ED', stroke: 'white' }}
             hide={!visibleLines.discount}
-            connectNulls={false}
-            isAnimationActive={true}
-          />
-          <Line 
-            type="monotone"
-            dataKey="trendValue"
-            name="Projected Backing Value (Exponential)"
-            dot={false}
-            strokeWidth={2}
-            stroke="rgba(112, 214, 104, 0.3)"
-            connectNulls={false}
-            isAnimationActive={true}
-            hide={!visibleLines.trendValue}
-          />
-          <Line 
-            type="linear"
-            dataKey="linearTrend"
-            name="Projected Backing Value (Linear)"
-            dot={false}
-            strokeWidth={2}
-            stroke="rgba(255, 192, 203, 0.3)"  // Pink with transparency
-            hide={!visibleLines.linearTrend}
             connectNulls={false}
             isAnimationActive={true}
           />
