@@ -101,7 +101,7 @@ const HEXPriceChart2: React.FC = () => {
                           name === "pHEX Price" ? '#FF00FF' : '#FFFFFF';
               return [
                 <span style={{ color }}>
-                  {`${name} : $${Number(value).toFixed(6)}`}
+                  {`${name} : $${Number(value).toFixed(4)}`}
                 </span>
               ];
             }}

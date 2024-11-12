@@ -5,8 +5,18 @@ import {
 } from 'recharts';
 
 // Constants for regression calculations
-const LINEAR_SLOPE_MULTIPLIER = 1;  // Adjust this value to change linear trend steepness
-const EXPONENTIAL_CURVE_INTENSITY = 1;  // Added this for consistency
+const LINEAR_SLOPE_MULTIPLIER = 1;    // Range: 0.1 to 10 - Higher values create steeper linear trends
+const EXPONENTIAL_CURVE_INTENSITY = 1; // Range: 0.1 to 2 - Higher values create more aggressive exponential curves
+
+// Sine wave parameters
+const SINE_AMPLITUDE = 0.8;     // Range: 0.1 to 2 - Controls wave height (peak-to-trough distance)
+const SINE_FREQUENCY = 0.01;    // Range: 0.001 to 0.1 - Controls wave length (lower = longer waves)
+const SINE_PHASE = 4.7;           // Range: 0 to 2π (≈6.28) - Shifts waves left/right by radians
+const SINE_OFFSET = 0.15;          // Range: -1 to 1 - Moves entire sine curve up/down
+
+// End-of-stake dampening parameters
+const DAMPENING_FACTOR = 0.003; // Range: 0.0001 to 0.01 - How quickly waves flatten (lower = more gradual)
+const END_DAMPENING_START = 5000; // Range: 4000 to 5400 - Day to start reducing wave amplitude
 
 const START_DAY = 881;
 const END_DAY = 5555;
@@ -80,6 +90,32 @@ function calculateLinearRegression(data, slopeMultiplier = 1.0) {
   };
 }
 
+function calculateSineRegression(data, exponentialRegression) {
+  const lastDataPoint = data[data.length - 1];
+  const startDay = lastDataPoint.day;
+  
+  return {
+    calculate: (x) => {
+      const expValue = exponentialRegression.calculate(x);
+      const daysAfterLast = x - startDay;
+      
+      if (daysAfterLast <= 0) return null;
+      
+      // Calculate end-dampening multiplier (1 to 0 as we approach day 5555)
+      const daysToEnd = END_DAY - x;
+      const endDampeningMultiplier = x > END_DAMPENING_START 
+        ? Math.exp(-DAMPENING_FACTOR * (x - END_DAMPENING_START))
+        : 1;
+      
+      return expValue + (
+        SINE_AMPLITUDE * Math.sin(SINE_FREQUENCY * (x - startDay) + SINE_PHASE)
+        * endDampeningMultiplier
+      ) + SINE_OFFSET;
+    },
+    equation: `y = exp_trend + ${SINE_AMPLITUDE}*sin(${SINE_FREQUENCY}*(x-${startDay}) + ${SINE_PHASE})*e^(-${DAMPENING_FACTOR}*(x-${END_DAMPENING_START})) + ${SINE_OFFSET}`
+  };
+}
+
 // Add this custom tooltip component
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
@@ -88,8 +124,9 @@ const CustomTooltip = ({ active, payload, label }) => {
       payload.find(p => p.dataKey === "backingValue"),    // Backing Value
       payload.find(p => p.dataKey === "discount"),        // Market Value
       payload.find(p => p.dataKey === "trendValue"),      // Projected Backing Value (Exponential)
+      payload.find(p => p.dataKey === "sineTrend"),       // Market Oscillation
       payload.find(p => p.dataKey === "linearTrend"),     // Projected Backing Value (Linear)
-    ].filter(Boolean); // Remove any undefined entries
+    ].filter(Boolean);
 
     return (
       <div style={{ 
@@ -129,7 +166,8 @@ function ExampleChart({
     backingValue: true,
     discount: true,
     trendValue: true,
-    linearTrend: false
+    linearTrend: false,
+    sineTrend: true
   });
 
   useEffect(() => {
@@ -163,10 +201,14 @@ function ExampleChart({
         
         const regression = calculateExponentialRegression(formattedData, EXPONENTIAL_CURVE_INTENSITY);
         const linearRegression = calculateLinearRegression(formattedData, LINEAR_SLOPE_MULTIPLIER);
+        const sineRegression = calculateSineRegression(formattedData, regression);
         
         console.log('Trend Line Equations:');
         console.log('Exponential:', regression.equation);
         console.log('Linear:', linearRegression.equation);
+        
+        // Find the last day with market value data
+        const lastMarketDay = formattedData[formattedData.length - 1].day;
         
         // Modify how we create and combine the data points
         const combinedData = [];
@@ -174,6 +216,7 @@ function ExampleChart({
         for (let day = START_DAY; day <= END_DAY; day++) {
           const expValue = regression.calculate(day);
           const linValue = linearRegression.calculate(day);
+          const sineValue = day > lastMarketDay ? sineRegression.calculate(day) : null;
           
           // Find matching day in original data
           const originalDataPoint = formattedData.find(d => d.day === day) || {};
@@ -182,7 +225,8 @@ function ExampleChart({
             day,
             ...originalDataPoint,
             trendValue: expValue,
-            linearTrend: linValue
+            linearTrend: linValue,
+            sineTrend: sineValue
           });
         }
         
@@ -243,8 +287,9 @@ function ExampleChart({
       payload.find(p => p.dataKey === "backingValue"),    // Backing Value
       payload.find(p => p.dataKey === "discount"),        // Market Value
       payload.find(p => p.dataKey === "trendValue"),      // Projected Backing Value (Exponential)
+      payload.find(p => p.dataKey === "sineTrend"),       // Market Oscillation
       payload.find(p => p.dataKey === "linearTrend"),     // Projected Backing Value (Linear)
-    ].filter(Boolean); // Remove any undefined entries
+    ].filter(Boolean);
 
     return (
       <div style={{ 
@@ -354,8 +399,20 @@ function ExampleChart({
           <Legend content={customLegend} />
           <Line 
             type="monotone"
+            dataKey="sineTrend"
+            name="Projected Market Value (Exp.)"
+            dot={false}
+            strokeWidth={2}
+            stroke="#132B47"
+            activeDot={{ r: 4, fill: '#132B47', stroke: 'white' }}
+            connectNulls={false}
+            isAnimationActive={true}
+            hide={!visibleLines.sineTrend}
+          />
+          <Line 
+            type="monotone"
             dataKey="trendValue"
-            name="Projected Backing Value (Exponential)"
+            name="Projected Backing Value (Exp.)"
             dot={false}
             strokeWidth={2}
             stroke="#23411F"

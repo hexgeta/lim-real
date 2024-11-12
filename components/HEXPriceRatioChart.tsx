@@ -98,7 +98,7 @@ const HEXPriceRatioChart: React.FC = () => {
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={data}
-          margin={{ top: 10, right: 0, left: 0, bottom: 0 }}
+          margin={{ top: 10, right: 0, left: 0, bottom: 60 }}
         >
           <XAxis 
             dataKey="date" 
@@ -135,7 +135,7 @@ const HEXPriceRatioChart: React.FC = () => {
               position: 'left', 
               offset: 5, 
               fill: '#888', 
-              fontSize: 12,
+              fontSize: 14,
               dy: 0
             }}
           />
@@ -148,7 +148,7 @@ const HEXPriceRatioChart: React.FC = () => {
               position: 'left', 
               offset: 5, 
               fill: '#888', 
-              fontSize: 12,
+              fontSize: 14,
               dy: 0
             }}
           />
@@ -161,7 +161,20 @@ const HEXPriceRatioChart: React.FC = () => {
               position: 'left', 
               offset: 5, 
               fill: '#888', 
-              fontSize: 12,
+              fontSize: 14,
+              dy: 0
+            }}
+          />
+                    <ReferenceLine 
+            y={0} 
+            stroke="#888" 
+            strokeDasharray="3 3" 
+            label={{ 
+              value: '0', 
+              position: 'left', 
+              offset: 5, 
+              fill: '#888', 
+              fontSize: 14,
               dy: 0
             }}
           />

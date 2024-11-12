@@ -87,7 +87,7 @@ const PlsPlsxRatioChart: React.FC = () => {
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={data}
-          margin={{ top: 10, right: 50, left: 0, bottom: 0 }}
+          margin={{ top: 10, right: 0, left: 0, bottom: 60 }}
         >
           <XAxis 
             dataKey="date" 
@@ -109,18 +109,18 @@ const PlsPlsxRatioChart: React.FC = () => {
             labelStyle={{ color: 'white' }}
             formatter={(value, name, props) => {
               const formattedValue = Number(value).toFixed(6);
-              return [formattedValue, 'PLSX/PLS Ratio'];
+              return [formattedValue, 'PLSX:PLS Ratio'];
             }}
             labelFormatter={(label) => formatDate(label)}
           />
           <Legend />
-          <ReferenceLine y={1} stroke="#888" strokeDasharray="3 3" label={{ value: '1:1', position: 'top', offset: 6, fill: '#888', fontSize: 20 }}/>
-          <ReferenceLine y={0.5} stroke="#888" strokeDasharray="3 3" label={{ value: '1:0.5', position: 'top', offset: 6, fill: '#888', fontSize: 20 }}/>
+          <ReferenceLine y={1} stroke="#888" strokeDasharray="3 3" label={{ value: '1 : 1', position: 'top', offset: 6, fill: '#888', fontSize: 20 }}/>
+          <ReferenceLine y={0.5} stroke="#888" strokeDasharray="3 3" label={{ value: '1 : 0.5', position: 'top', offset: 6, fill: '#888', fontSize: 20 }}/>
           <ReferenceLine y={0} stroke="#888" strokeDasharray="3 3" label={{ value: '0', position: 'top', offset: 6, fill: '#888', fontSize: 20 }}/>
           <Line 
             type="monotone" 
             dataKey="ratio" 
-            name="PLSX/PLS Price Ratio"
+            name="PLSX:PLS Price Ratio"
             stroke="#fff"
             dot={false} 
             strokeWidth={2}
