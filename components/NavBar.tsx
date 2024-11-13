@@ -28,6 +28,8 @@ const NavigationBar = () => {
         <div className="hidden md:flex items-center justify-left flex-grow ml-10">
           <div className="flex space-x-6">
             <Link href="/delta-discounts" className="text-[rgb(153,153,153)] hover:text-gray-300">Δ Discounts</Link>
+            <Link href="/projections" className="text-[rgb(153,153,153)] hover:text-gray-300">〰 Projections</Link>
+
           </div>
         </div>
         <div className="hidden md:flex items-center">
@@ -67,8 +69,7 @@ const NavigationBar = () => {
               className="absolute right-2 top-2 h-auto w-64 bg-black bg-opacity-85 p-4 shadow-lg z-50 border border-white/20 rounded-[10px]"
             >
               <Link href="/delta-discounts" className="block text-white/80 hover:text-white py-2" onClick={() => setIsMenuOpen(false)}>Δ Discounts</Link>
-              <Link href="/vs-hex" className="block text-white/80 hover:text-white py-2" onClick={() => setIsMenuOpen(false)}>BTC vs ETH vs HEX</Link>
-              <Link href="/hex-gains" className="block text-white/80 hover:text-white py-2" onClick={() => setIsMenuOpen(false)}>Hex Xs</Link>
+              <Link href="/projections" className="block text-white/80 hover:text-white py-2" onClick={() => setIsMenuOpen(false)}>〰 Projections</Link>
             </motion.div>
           </motion.div>
         )}
