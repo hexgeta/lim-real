@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import ExampleChart from '../components/ExampleChart';
+import ProjectionChartMAXI from '@/components/ProjectionChartMAXI';
 
 const Home = () => {
   return (
@@ -10,7 +10,7 @@ const Home = () => {
       <h2 className="text-1xl font-normal mb-4 text-center">This is an analytics site dedicated to pooled hex staking. Check out what $MAXI could do in 13 years 👇
     
       </h2>
-      <ExampleChart/>
+      <ProjectionChartMAXI/>
     </div>
   );
 };

@@ -20,7 +20,7 @@ const NavigationBar = () => {
   }, []);
 
   return (
-    <nav className="w-full bg-black px-4 py-2 border-b-1 border-[rgba(255,255,255,0.2)]">
+    <nav className="w-full bg-black px-4 pb-4 border-b-1 border-b border-[rgba(255,255,255,0.2)]">
       <div className="max-w-[1200px] mx-auto flex items-center justify-between">
         <Link href="/" className="text-white font-bold text-xl">
           LookIntoMaxi

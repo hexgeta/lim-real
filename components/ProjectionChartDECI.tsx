@@ -15,11 +15,11 @@ const SINE_PHASE = 4.7;         // Adjust as needed for DECI
 const SINE_OFFSET = 0.25;        // Adjust as needed for DECI
 
 // End-of-stake dampening parameters
-const DAMPENING_FACTOR = 0.007; // Adjust as needed for DECI
+const DAMPENING_FACTOR = 0.001; // Adjust as needed for DECI
 const END_DAMPENING_START = 3500; // Adjust as needed for DECI
 
 const START_DAY = 1030;
-const END_DAY = 3696;
+const END_DAY = START_DAY + 3696;
 
 function calculateExponentialRegression(data, curveIntensity = 0.03) {
   console.log('Curve Intensity:', curveIntensity);
@@ -119,6 +119,9 @@ function calculateSineRegression(data, exponentialRegression) {
 // Add this custom tooltip component
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
+    // Format the day number
+    const day = parseInt(label);
+    
     // Reorder the payload items
     const orderedPayload = [
       payload.find(p => p.dataKey === "backingValue"),    // Backing Value
@@ -135,9 +138,11 @@ const CustomTooltip = ({ active, payload, label }) => {
         borderRadius: '10px',
         padding: '10px'
       }}>
-        <p style={{ color: 'white', margin: '0 0 5px' }}>{`Day: ${label}`}</p>
+        <p style={{ color: 'white', margin: '0 0 5px' }}>
+          <strong>Day: {day}</strong>
+        </p>
         {orderedPayload.map((entry, index) => (
-          entry && (
+          entry && entry.value !== null && (
             <p key={index} style={{ color: 'white', margin: '3px 0' }}>
               <span style={{ color: entry.color }}>●</span>
               {` ${entry.name}: ${Number(entry.value).toFixed(2)}`}
@@ -247,18 +252,14 @@ function ProjectionChartDECI({
   }, [tableName, xAxisKey, yAxis1Key, yAxis2Key]);
 
   const xAxisTicks = useMemo(() => {
-    const ticks = [];
-    const startDay = 0;
-    const endDay = 5555;
-    
-    for (let day = startDay; day <= endDay; day += 500) {
+    const ticks = [881]; // Start with day 881
+    // Generate ticks every 500 days starting from 1000
+    for (let day = 1000; day <= 5000; day += 500) {
       ticks.push(day);
     }
+    // Add the final day
+    ticks.push(5555);
     
-    if (ticks[ticks.length - 1] !== endDay) {
-      ticks.push(endDay);
-    }
-
     return ticks;
   }, []);
 
@@ -341,7 +342,7 @@ function ProjectionChartDECI({
   };
 
   // Modify the Y-axis ticks for DECI
-  const yAxisTicks = [0, 0.25, 0.5, 0.75, 1, 1.25, 1.5];
+  const yAxisTicks = [0, 1, 2, 4, 6, 8];
 
   if (isLoading) {
     return <div style={{ color: 'white' }}>Loading...</div>;
@@ -364,7 +365,7 @@ function ProjectionChartDECI({
             tickLine={{ stroke: '#888', strokeWidth: 0}}
             tick={{ fill: '#888', fontSize: 14, dy: 5 }}
             ticks={xAxisTicks}
-            domain={[1030, 5555]}
+            domain={[881, 5555]}
             type="number"
             allowDataOverflow={true}
             scale="linear"
@@ -381,13 +382,13 @@ function ProjectionChartDECI({
           />
           <YAxis 
             domain={yAxisDomain}
-            ticks={[0, 1, 5, 10]} 
+            ticks={[0, 1, 5, 10, 15, 20, 25]} 
             axisLine={false}
             tickLine={{ stroke: '#888', strokeWidth: 0 }}
             tick={{ fill: '#888', fontSize: 14, dx: -5}}
             tickFormatter={(value) => `${value.toFixed(0)}`}
             label={{ 
-              value: 'DECI', 
+              value: 'HEX', 
               position: 'left',
               angle: -90,
               offset: 0,
@@ -401,16 +402,16 @@ function ProjectionChartDECI({
           <Tooltip content={<CustomTooltip />} />
           <Legend content={customLegend} />
           <Line 
-            type="monotone"
-            dataKey="sineTrend"
-            name="Projected Market Value (Exp.)"
+            type="linear"
+            dataKey="linearTrend"
+            name="Projected Backing Value (Linear)"
             dot={false}
             strokeWidth={2}
-            stroke="#764035"
-            activeDot={{ r: 4, fill: '#764035', stroke: 'white' }}
+            stroke="#474747"
+            activeDot={{ r: 4, fill: '#474747', stroke: 'white' }}
+            hide={!visibleLines.linearTrend}
             connectNulls={false}
             isAnimationActive={true}
-            hide={!visibleLines.sineTrend}
           />
           <Line 
             type="monotone"
@@ -424,17 +425,18 @@ function ProjectionChartDECI({
             isAnimationActive={true}
             hide={!visibleLines.trendValue}
           />
-          <Line 
-            type="linear"
-            dataKey="linearTrend"
-            name="Projected Backing Value (Linear)"
+
+                    <Line 
+            type="monotone"
+            dataKey="sineTrend"
+            name="Projected Market Value (Exp.)"
             dot={false}
             strokeWidth={2}
-            stroke="#4D3A3D"
-            activeDot={{ r: 4, fill: '#4D3A3D', stroke: 'white' }}
-            hide={!visibleLines.linearTrend}
+            stroke="#764035"
+            activeDot={{ r: 4, fill: '#764035', stroke: 'white' }}
             connectNulls={false}
             isAnimationActive={true}
+            hide={!visibleLines.sineTrend}
           />
           <Line 
             type="monotone" 

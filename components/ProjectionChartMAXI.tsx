@@ -248,17 +248,13 @@ function ProjectionChartMAXI({
 
   const xAxisTicks = useMemo(() => {
     const ticks = [];
-    const startDay = 0;
-    const endDay = 5555;
-    
-    for (let day = startDay; day <= endDay; day += 500) {
+    // Generate ticks every 500 days starting from 1000
+    for (let day = 1000; day <= 5000; day += 500) {
       ticks.push(day);
     }
+    // Add the final day
+    ticks.push(5555);
     
-    if (ticks[ticks.length - 1] !== endDay) {
-      ticks.push(endDay);
-    }
-
     return ticks;
   }, []);
 
@@ -398,16 +394,16 @@ function ProjectionChartMAXI({
           <Tooltip content={<CustomTooltip />} />
           <Legend content={customLegend} />
           <Line 
-            type="monotone"
-            dataKey="sineTrend"
-            name="Projected Market Value (Exp.)"
+            type="linear"
+            dataKey="linearTrend"
+            name="Projected Backing Value (Linear)"
             dot={false}
             strokeWidth={2}
-            stroke="#132B47"
-            activeDot={{ r: 4, fill: '#132B47', stroke: 'white' }}
+            stroke="#474747"
+            activeDot={{ r: 4, fill: '#474747', stroke: 'white' }}
+            hide={!visibleLines.linearTrend}
             connectNulls={false}
             isAnimationActive={true}
-            hide={!visibleLines.sineTrend}
           />
           <Line 
             type="monotone"
@@ -421,17 +417,18 @@ function ProjectionChartMAXI({
             isAnimationActive={true}
             hide={!visibleLines.trendValue}
           />
-          <Line 
-            type="linear"
-            dataKey="linearTrend"
-            name="Projected Backing Value (Linear)"
+
+                    <Line 
+            type="monotone"
+            dataKey="sineTrend"
+            name="Projected Market Value (Exp.)"
             dot={false}
             strokeWidth={2}
-            stroke="#4D3A3D"
-            activeDot={{ r: 4, fill: '#4D3A3D', stroke: 'white' }}
-            hide={!visibleLines.linearTrend}
+            stroke="#132B47"
+            activeDot={{ r: 4, fill: '#132B47', stroke: 'white' }}
             connectNulls={false}
             isAnimationActive={true}
+            hide={!visibleLines.sineTrend}
           />
           <Line 
             type="monotone" 

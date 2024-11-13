@@ -6,20 +6,21 @@ import {
 
 // Constants for regression calculations
 const LINEAR_SLOPE_MULTIPLIER = 1;    // Adjusted for LUCKY
-const EXPONENTIAL_CURVE_INTENSITY = 0.8; // Adjusted for LUCKY
+const EXPONENTIAL_CURVE_INTENSITY = 1; // Adjusted for LUCKY
 
 // Sine wave parameters
-const SINE_AMPLITUDE = 1.2;     // Adjusted for LUCKY's higher volatility
-const SINE_FREQUENCY = 0.01;    
-const SINE_PHASE = 4.7;         
-const SINE_OFFSET = 0.5;        // Adjusted for LUCKY
+const SINE_AMPLITUDE = 0.6;     // Adjusted for LUCKY's higher volatility
+const SINE_FREQUENCY = 0.006;    
+const SINE_PHASE = 4.5;         
+const SINE_OFFSET = 0.04;        // Adjusted for LUCKY
+
 
 // End-of-stake dampening parameters
-const DAMPENING_FACTOR = 0.005; // Adjusted for LUCKY
-const END_DAMPENING_START = 4000; // Adjusted for LUCKY
+const DAMPENING_FACTOR = 0.003; // Adjusted for LUCKY
+const END_DAMPENING_START = 3000; // Adjusted for LUCKY
 
-const START_DAY = 881;  // Adjusted for LUCKY's start day
-const END_DAY = 5555;
+const START_DAY = 1030;  // Adjusted for LUCKY's start day
+const END_DAY = START_DAY + 2555;
 
 function calculateExponentialRegression(data, curveIntensity = 0.03) {
   console.log('Curve Intensity:', curveIntensity);
@@ -152,11 +153,11 @@ const CustomTooltip = ({ active, payload, label }) => {
 
 function ProjectionChartLUCKY({ 
   tableName = 'pLUCKY - DiscountChart',
-  title = 'LUCKY Price Chart 🍀', 
+  title = 'pLUCKY 🍀', 
   xAxisKey = 'Day', 
   yAxis1Key = 'Discount/Premium', 
   yAxis2Key = 'Backing Value',
-  yAxisDomain = [0, 10] // Adjusted range for LUCKY
+  yAxisDomain = [0, 3] // This will now be controlled by zoom state
 }) {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -169,6 +170,7 @@ function ProjectionChartLUCKY({
     linearTrend: false,
     sineTrend: true
   });
+  const [isZoomed, setIsZoomed] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -247,18 +249,14 @@ function ProjectionChartLUCKY({
   }, [tableName, xAxisKey, yAxis1Key, yAxis2Key]);
 
   const xAxisTicks = useMemo(() => {
-    const ticks = [];
-    const startDay = 0;
-    const endDay = 5555;
-    
-    for (let day = startDay; day <= endDay; day += 500) {
+    const ticks = [881]; // Start with day 881
+    // Generate ticks every 500 days starting from 1000
+    for (let day = 1000; day <= 5000; day += 500) {
       ticks.push(day);
     }
+    // Add the final day
+    ticks.push(5555);
     
-    if (ticks[ticks.length - 1] !== endDay) {
-      ticks.push(endDay);
-    }
-
     return ticks;
   }, []);
 
@@ -340,8 +338,10 @@ function ProjectionChartLUCKY({
     );
   };
 
-  // Modify the Y-axis ticks for LUCKY
-  const yAxisTicks = [0, 2, 4, 6, 8, 10];
+  // Modify the Y-axis ticks based on zoom state
+  const yAxisTicks = isZoomed ? [1, 5, 10, 15, 20, 25] : [0, 1, 2, 3, 4, 5];
+  // Modify the domain based on zoom state
+  const currentYAxisDomain = isZoomed ? [0, 25] : [0, 3];
 
   if (isLoading) {
     return <div style={{ color: 'white' }}>Loading...</div>;
@@ -349,8 +349,29 @@ function ProjectionChartLUCKY({
 
   return (
     <div style={{ width: '100%', height: 450, margin: '40px 0px 40px 00px', padding: '20px', border: '1px solid rgba(255, 255, 255, 0.2)', borderRadius: '15px' }}>
-      <h2 style={{ textAlign: 'left', color: 'white', fontSize: '24px', marginBottom: '0px', marginLeft: '40px'}}>
-        {title}</h2>
+      <div style={{ display: 'flex', alignItems: 'center', marginLeft: '40px', marginBottom: '0px' }}>
+        <h2 style={{ color: 'white', fontSize: '24px', margin: '0' }}>
+          {title}
+        </h2>
+        <button
+          onClick={() => setIsZoomed(!isZoomed)}
+          style={{
+            marginLeft: '15px',
+            padding: '4px 8px',
+            fontSize: '12px',
+            backgroundColor: 'transparent',
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+            borderRadius: '4px',
+            color: '#888',
+            cursor: 'pointer',
+            transition: 'all 0.2s',
+          }}
+          onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)'}
+          onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+        >
+          {isZoomed ? 'Zoom In' : 'Zoom Out'}
+        </button>
+      </div>
       <ResponsiveContainer width="100%" height="100%" debounce={1}>
         <LineChart data={data} margin={{ top: 30, right: 20, left: 20, bottom: 60 }}>
           <CartesianGrid 
@@ -364,7 +385,7 @@ function ProjectionChartLUCKY({
             tickLine={{ stroke: '#888', strokeWidth: 0}}
             tick={{ fill: '#888', fontSize: 14, dy: 5 }}
             ticks={xAxisTicks}
-            domain={[1030, 5555]}
+            domain={[881, 5555]}
             type="number"
             allowDataOverflow={true}
             scale="linear"
@@ -380,14 +401,14 @@ function ProjectionChartLUCKY({
             }}
           />
           <YAxis 
-            domain={yAxisDomain}
+            domain={currentYAxisDomain}
             ticks={yAxisTicks}
             axisLine={false}
             tickLine={{ stroke: '#888', strokeWidth: 0 }}
             tick={{ fill: '#888', fontSize: 14, dx: -5}}
             tickFormatter={(value) => `${value.toFixed(0)}`}
             label={{ 
-              value: 'LUCKY', 
+              value: 'HEX', 
               position: 'left',
               angle: -90,
               offset: 0,
@@ -401,16 +422,16 @@ function ProjectionChartLUCKY({
           <Tooltip content={<CustomTooltip />} />
           <Legend content={customLegend} />
           <Line 
-            type="monotone"
-            dataKey="sineTrend"
-            name="Projected Market Value (Exp.)"
+            type="linear"
+            dataKey="linearTrend"
+            name="Projected Backing Value (Linear)"
             dot={false}
             strokeWidth={2}
-            stroke="#764035"
-            activeDot={{ r: 4, fill: '#764035', stroke: 'white' }}
+            stroke="#474747"
+            activeDot={{ r: 4, fill: '#474747', stroke: 'white' }}
+            hide={!visibleLines.linearTrend}
             connectNulls={false}
             isAnimationActive={true}
-            hide={!visibleLines.sineTrend}
           />
           <Line 
             type="monotone"
@@ -424,17 +445,18 @@ function ProjectionChartLUCKY({
             isAnimationActive={true}
             hide={!visibleLines.trendValue}
           />
-          <Line 
-            type="linear"
-            dataKey="linearTrend"
-            name="Projected Backing Value (Linear)"
+
+                    <Line 
+            type="monotone"
+            dataKey="sineTrend"
+            name="Projected Market Value (Exp.)"
             dot={false}
             strokeWidth={2}
-            stroke="#4D3A3D"
-            activeDot={{ r: 4, fill: '#4D3A3D', stroke: 'white' }}
-            hide={!visibleLines.linearTrend}
+            stroke="#1e381b"
+            activeDot={{ r: 4, fill: '#1e381b', stroke: 'white' }}
             connectNulls={false}
             isAnimationActive={true}
+            hide={!visibleLines.sineTrend}
           />
           <Line 
             type="monotone" 
@@ -454,8 +476,8 @@ function ProjectionChartLUCKY({
             name="Market Value" 
             dot={false} 
             strokeWidth={2} 
-            stroke='#C24C35'
-            activeDot={{ r: 4, fill: '#C24C35', stroke: 'white' }}
+            stroke='#416F22'
+            activeDot={{ r: 4, fill: '#416F22', stroke: 'white' }}
             hide={!visibleLines.discount}
             connectNulls={false}
             isAnimationActive={true}
