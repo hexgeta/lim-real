@@ -161,7 +161,7 @@ function ProjectionChartDECI({
   xAxisKey = 'Day', 
   yAxis1Key = 'Discount/Premium', 
   yAxis2Key = 'Backing Value',
-  yAxisDomain = [0, 1.5] // Adjust this range for DECI
+  yAxisDomain = [0, 1.5]
 }) {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -174,6 +174,7 @@ function ProjectionChartDECI({
     linearTrend: false,
     sineTrend: true
   });
+  const [isZoomed, setIsZoomed] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -252,16 +253,24 @@ function ProjectionChartDECI({
   }, [tableName, xAxisKey, yAxis1Key, yAxis2Key]);
 
   const xAxisTicks = useMemo(() => {
-    const ticks = [881]; // Start with day 881
-    // Generate ticks every 500 days starting from 1000
-    for (let day = 1000; day <= 5000; day += 500) {
-      ticks.push(day);
+    if (!isZoomed) { // Regular wide view
+      const ticks = [881];
+      for (let day = 1000; day <= 5000; day += 500) {
+        ticks.push(day);
+      }
+      ticks.push(5555);
+      return ticks;
+    } else { // Zoomed in view - focus on stake period
+      const ticks = [];
+      for (let day = START_DAY; day <= END_DAY; day += 250) {
+        ticks.push(day);
+      }
+      if (ticks[ticks.length - 1] !== END_DAY) {
+        ticks.push(END_DAY);
+      }
+      return ticks;
     }
-    // Add the final day
-    ticks.push(5555);
-    
-    return ticks;
-  }, []);
+  }, [isZoomed]);
 
   // Add this helper function to generate ticks
   const generateTicks = (min, max) => {
@@ -341,8 +350,12 @@ function ProjectionChartDECI({
     );
   };
 
-  // Modify the Y-axis ticks for DECI
-  const yAxisTicks = [0, 1, 2, 4, 6, 8];
+  // Update yAxisTicks based on zoom state
+  const yAxisTicks = !isZoomed 
+    ? [0, 1, 5, 10, 15, 20, 25]  
+    : [0, 1, 2, 3, 4, 5];     
+
+  const currentYAxisDomain = !isZoomed ? [0, 25] : [0, 5];
 
   if (isLoading) {
     return <div style={{ color: 'white' }}>Loading...</div>;
@@ -350,8 +363,30 @@ function ProjectionChartDECI({
 
   return (
     <div style={{ width: '100%', height: 450, margin: '40px 0px 40px 00px', padding: '20px', border: '1px solid rgba(255, 255, 255, 0.2)', borderRadius: '15px' }}>
-      <h2 style={{ textAlign: 'left', color: 'white', fontSize: '24px', marginBottom: '0px', marginLeft: '40px'}}>
-        {title}</h2>
+      <div style={{ display: 'flex', alignItems: 'center', marginLeft: '40px', marginBottom: '0px' }}>
+        <h2 style={{ color: 'white', fontSize: '24px', margin: '0' }}>
+          {title}
+        </h2>
+        <button
+          onClick={() => setIsZoomed(!isZoomed)}
+          style={{
+            marginLeft: '15px',
+            padding: '4px 8px',
+            fontSize: '12px',
+            backgroundColor: 'transparent',
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+            borderRadius: '4px',
+            color: '#888',
+            cursor: 'pointer',
+            transition: 'all 0.2s',
+          }}
+          onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)'}
+          onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+        >
+          {isZoomed ? 'Zoom Out' : 'Zoom In'}
+        </button>
+      </div>
+
       <ResponsiveContainer width="100%" height="100%" debounce={1}>
         <LineChart data={data} margin={{ top: 30, right: 20, left: 20, bottom: 60 }}>
           <CartesianGrid 
@@ -365,7 +400,7 @@ function ProjectionChartDECI({
             tickLine={{ stroke: '#888', strokeWidth: 0}}
             tick={{ fill: '#888', fontSize: 14, dy: 5 }}
             ticks={xAxisTicks}
-            domain={[881, 5555]}
+            domain={!isZoomed ? [881, 5555] : [START_DAY, END_DAY]}
             type="number"
             allowDataOverflow={true}
             scale="linear"
@@ -381,8 +416,8 @@ function ProjectionChartDECI({
             }}
           />
           <YAxis 
-            domain={yAxisDomain}
-            ticks={[0, 1, 5, 10, 15, 20, 25]} 
+            domain={currentYAxisDomain}
+            ticks={yAxisTicks}
             axisLine={false}
             tickLine={{ stroke: '#888', strokeWidth: 0 }}
             tick={{ fill: '#888', fontSize: 14, dx: -5}}

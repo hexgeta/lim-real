@@ -11,7 +11,7 @@ const EXPONENTIAL_CURVE_INTENSITY = 1; // Adjusted for LUCKY
 // Sine wave parameters
 const SINE_AMPLITUDE = 0.6;     // Adjusted for LUCKY's higher volatility
 const SINE_FREQUENCY = 0.006;    
-const SINE_PHASE = 4.5;         
+const SINE_PHASE = 4.2;         
 const SINE_OFFSET = 0.04;        // Adjusted for LUCKY
 
 
