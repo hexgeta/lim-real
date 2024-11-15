@@ -157,7 +157,7 @@ function ProjectionChartLUCKY({
   xAxisKey = 'Day', 
   yAxis1Key = 'Discount/Premium', 
   yAxis2Key = 'Backing Value',
-  yAxisDomain = [0, 3] // This will now be controlled by zoom state
+  yAxisDomain = [0, 3]
 }) {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -170,7 +170,7 @@ function ProjectionChartLUCKY({
     linearTrend: false,
     sineTrend: true
   });
-  const [isZoomed, setIsZoomed] = useState(false);
+  const [isZoomed, setIsZoomed] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -249,16 +249,24 @@ function ProjectionChartLUCKY({
   }, [tableName, xAxisKey, yAxis1Key, yAxis2Key]);
 
   const xAxisTicks = useMemo(() => {
-    const ticks = [881]; // Start with day 881
-    // Generate ticks every 500 days starting from 1000
-    for (let day = 1000; day <= 5000; day += 500) {
-      ticks.push(day);
+    if (!isZoomed) { // Regular wide view
+      const ticks = [881];
+      for (let day = 1000; day <= 5000; day += 500) {
+        ticks.push(day);
+      }
+      ticks.push(5555);
+      return ticks;
+    } else { // Zoomed in view - focus on stake period
+      const ticks = [];
+      for (let day = START_DAY; day <= END_DAY; day += 250) {
+        ticks.push(day);
+      }
+      if (ticks[ticks.length - 1] !== END_DAY) {
+        ticks.push(END_DAY);
+      }
+      return ticks;
     }
-    // Add the final day
-    ticks.push(5555);
-    
-    return ticks;
-  }, []);
+  }, [isZoomed]);
 
   // Add this helper function to generate ticks
   const generateTicks = (min, max) => {
@@ -338,10 +346,12 @@ function ProjectionChartLUCKY({
     );
   };
 
-  // Modify the Y-axis ticks based on zoom state
-  const yAxisTicks = isZoomed ? [1, 5, 10, 15, 20, 25] : [0, 1, 2, 3, 4, 5];
-  // Modify the domain based on zoom state
-  const currentYAxisDomain = isZoomed ? [0, 25] : [0, 3];
+  // Update the Y-axis ticks generation
+  const yAxisTicks = !isZoomed 
+    ? [1, 5, 10, 15, 20, 25]  // Zoomed out view shows ticks every 5 units up to 25
+    : [0, 1, 2, 3, 4, 5];     // Zoomed in view shows ticks every 1 unit up to 5
+
+  const currentYAxisDomain = !isZoomed ? [0, 25] : [0, 5];
 
   if (isLoading) {
     return <div style={{ color: 'white' }}>Loading...</div>;
@@ -369,7 +379,7 @@ function ProjectionChartLUCKY({
           onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)'}
           onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
         >
-          {isZoomed ? 'Zoom In' : 'Zoom Out'}
+          {isZoomed ? 'Zoom Out' : 'Zoom In'}
         </button>
       </div>
       <ResponsiveContainer width="100%" height="100%" debounce={1}>
@@ -385,7 +395,7 @@ function ProjectionChartLUCKY({
             tickLine={{ stroke: '#888', strokeWidth: 0}}
             tick={{ fill: '#888', fontSize: 14, dy: 5 }}
             ticks={xAxisTicks}
-            domain={[881, 5555]}
+            domain={!isZoomed ? [881, 5555] : [START_DAY, END_DAY]}  // Zoomed in view shows stake period
             type="number"
             allowDataOverflow={true}
             scale="linear"

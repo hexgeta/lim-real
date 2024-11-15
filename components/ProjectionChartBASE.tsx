@@ -247,17 +247,26 @@ function ProjectionChartBASE({
     fetchData();
   }, [tableName, xAxisKey, yAxis1Key, yAxis2Key]);
 
+  // Update xAxisTicks to handle zoom state
   const xAxisTicks = useMemo(() => {
-    const ticks = [881]; // Start with day 881
-    // Generate ticks every 500 days starting from 1000
-    for (let day = 1000; day <= 5000; day += 500) {
-      ticks.push(day);
+    if (!isZoomed) { // Regular wide view
+      const ticks = [881];
+      for (let day = 1000; day <= 5000; day += 500) {
+        ticks.push(day);
+      }
+      ticks.push(5555);
+      return ticks;
+    } else { // Zoomed in view - focus on stake period
+      const ticks = [];
+      for (let day = START_DAY; day <= END_DAY; day += 250) {
+        ticks.push(day);
+      }
+      if (ticks[ticks.length - 1] !== END_DAY) {
+        ticks.push(END_DAY);
+      }
+      return ticks;
     }
-    // Add the final day
-    ticks.push(5555);
-    
-    return ticks;
-  }, []);
+  }, [isZoomed]);
 
   // Add this helper function to generate ticks
   const generateTicks = (min, max) => {
@@ -337,8 +346,12 @@ function ProjectionChartBASE({
     );
   };
 
-  // Modify the Y-axis ticks based on zoom state
-  const yAxisTicks = isZoomed ? [0, 1, 5, 10, 15, 20, 25] : [0, 1, 2];
+  // Update Y-axis ticks and domain
+  const yAxisTicks = !isZoomed 
+    ? [1, 5, 10, 15, 20, 25]  // Zoomed out view shows ticks every 5 units up to 25
+    : [0, 1, 2];     // Zoomed in view shows ticks every 1 unit up to 5
+
+  const currentYAxisDomain = !isZoomed ? [0, 25] : [0, 2];
 
   if (isLoading) {
     return <div style={{ color: 'white' }}>Loading...</div>;
@@ -366,7 +379,7 @@ function ProjectionChartBASE({
           onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)'}
           onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
         >
-          {isZoomed ? 'Zoom In' : 'Zoom Out'}
+          {isZoomed ? 'Zoom Out' : 'Zoom In'}
         </button>
       </div>
       <ResponsiveContainer width="100%" height="100%" debounce={1}>
@@ -382,7 +395,7 @@ function ProjectionChartBASE({
             tickLine={{ stroke: '#888', strokeWidth: 0}}
             tick={{ fill: '#888', fontSize: 14, dy: 5 }}
             ticks={xAxisTicks}
-            domain={[881, 5555]}
+            domain={!isZoomed ? [881, 5555] : [START_DAY, END_DAY]}  // Zoomed in view shows stake period
             type="number"
             allowDataOverflow={true}
             scale="linear"
@@ -398,7 +411,7 @@ function ProjectionChartBASE({
             }}
           />
           <YAxis 
-            domain={yAxisDomain}
+            domain={currentYAxisDomain}
             ticks={yAxisTicks}
             axisLine={false}
             tickLine={{ stroke: '#888', strokeWidth: 0 }}
@@ -430,7 +443,7 @@ function ProjectionChartBASE({
             connectNulls={false}
             isAnimationActive={true}
           />
-          {/* <Line 
+          <Line 
             type="monotone"
             dataKey="trendValue"
             name="Projected Backing Value (Exp.)"
@@ -441,9 +454,9 @@ function ProjectionChartBASE({
             connectNulls={false}
             isAnimationActive={true}
             hide={!visibleLines.trendValue}
-          /> */}
+          />
 
-                    {/* <Line 
+                    <Line 
             type="monotone"
             dataKey="sineTrend"
             name="Projected Market Value (Exp.)"
@@ -454,7 +467,7 @@ function ProjectionChartBASE({
             connectNulls={false}
             isAnimationActive={true}
             hide={!visibleLines.sineTrend}
-          /> */}
+          />
           <Line 
             type="monotone" 
             dataKey="backingValue" 
@@ -471,7 +484,7 @@ function ProjectionChartBASE({
             dataKey="discount" 
             name="Market Value" 
             dot={false} 
-            strokeWidth={1} 
+            strokeWidth={2} 
             stroke='#F09B1A'
             activeDot={{ r: 4, fill: '"#F09B1A"', stroke: 'white' }}
             hide={!visibleLines.discount}

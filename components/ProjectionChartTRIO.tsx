@@ -9,14 +9,14 @@ const LINEAR_SLOPE_MULTIPLIER = 1;    // Adjusted for TRIO
 const EXPONENTIAL_CURVE_INTENSITY = 1; // Adjusted for TRIO
 
 // Sine wave parameters for TRIO
-const SINE_AMPLITUDE = 0.3;     // Adjusted for TRIO's volatility
-const SINE_FREQUENCY = 0.01;    
+const SINE_AMPLITUDE = 0.08;     // Adjusted for TRIO's volatility
+const SINE_FREQUENCY = 0.02;    
 const SINE_PHASE = 4.9;         
-const SINE_OFFSET = -0.03;      // Adjusted for TRIO
+const SINE_OFFSET = 0;      // Adjusted for TRIO
 
 // End-of-stake dampening parameters for TRIO
-const DAMPENING_FACTOR = 0.002; 
-const END_DAMPENING_START = 2300;
+const DAMPENING_FACTOR = 0.005; 
+const END_DAMPENING_START = 2000;
 
 const START_DAY = 1030;  // Adjust if TRIO has a different start day
 const END_DAY = START_DAY + 1111;
@@ -156,7 +156,7 @@ function ProjectionChartTRIO({
   xAxisKey = 'Day', 
   yAxis1Key = 'Discount/Premium', 
   yAxis2Key = 'Backing Value',
-  yAxisDomain = [0, 3] // This will now be controlled by zoom state
+  yAxisDomain = [0, 3]
 }) {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -169,7 +169,7 @@ function ProjectionChartTRIO({
     linearTrend: false,
     sineTrend: true
   });
-  const [isZoomed, setIsZoomed] = useState(false);
+  const [isZoomed, setIsZoomed] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -248,16 +248,24 @@ function ProjectionChartTRIO({
   }, [tableName, xAxisKey, yAxis1Key, yAxis2Key]);
 
   const xAxisTicks = useMemo(() => {
-    const ticks = [881]; // Start with day 881
-    // Generate ticks every 500 days starting from 1000
-    for (let day = 1000; day <= 5000; day += 500) {
-      ticks.push(day);
+    if (!isZoomed) { // Regular wide view
+      const ticks = [881];
+      for (let day = 1000; day <= 5000; day += 500) {
+        ticks.push(day);
+      }
+      ticks.push(5555);
+      return ticks;
+    } else { // Zoomed in view - focus on stake period
+      const ticks = [];
+      for (let day = START_DAY; day <= END_DAY; day += 250) {
+        ticks.push(day);
+      }
+      if (ticks[ticks.length - 1] !== END_DAY) {
+        ticks.push(END_DAY);
+      }
+      return ticks;
     }
-    // Add the final day
-    ticks.push(5555);
-    
-    return ticks;
-  }, []);
+  }, [isZoomed]);
 
   // Add this helper function to generate ticks
   const generateTicks = (min, max) => {
@@ -337,10 +345,12 @@ function ProjectionChartTRIO({
     );
   };
 
-  // Modify the Y-axis ticks based on zoom state
-  const yAxisTicks = isZoomed ? [1, 5, 10, 15, 20, 25] : [0, 1, 2];
-  // Modify the domain based on zoom state
-  const currentYAxisDomain = isZoomed ? [0, 25] : [0, 2];
+  // Update the Y-axis ticks generation
+  const yAxisTicks = !isZoomed 
+    ? [1, 5, 10, 15, 20, 25]  // Zoomed out view shows ticks every 5 units up to 25
+    : [0, 1, 2];     // Zoomed in view shows ticks every 1 unit up to 5
+
+  const currentYAxisDomain = !isZoomed ? [0, 25] : [0, 2];
 
   if (isLoading) {
     return <div style={{ color: 'white' }}>Loading...</div>;
@@ -368,7 +378,7 @@ function ProjectionChartTRIO({
           onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)'}
           onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
         >
-          {isZoomed ? 'Zoom In' : 'Zoom Out'}
+          {isZoomed ? 'Zoom Out' : 'Zoom In'}
         </button>
       </div>
       <ResponsiveContainer width="100%" height="100%" debounce={1}>
@@ -384,7 +394,7 @@ function ProjectionChartTRIO({
             tickLine={{ stroke: '#888', strokeWidth: 0}}
             tick={{ fill: '#888', fontSize: 14, dy: 5 }}
             ticks={xAxisTicks}
-            domain={[881, 5555]}
+            domain={!isZoomed ? [881, 5555] : [START_DAY, END_DAY]}  // Zoomed in view shows stake period
             type="number"
             allowDataOverflow={true}
             scale="linear"
@@ -445,18 +455,18 @@ function ProjectionChartTRIO({
             hide={!visibleLines.trendValue}
           />
 
-                    {/* <Line 
+                    <Line 
             type="monotone"
             dataKey="sineTrend"
             name="Projected Market Value (Exp.)"
             dot={false}
             strokeWidth={2}
-            stroke="#9c9c9c"
-            activeDot={{ r: 4, fill: '#9c9c9c', stroke: 'white' }}
+            stroke="#3d3d3d"
+            activeDot={{ r: 4, fill: '#3d3d3d', stroke: 'white' }}
             connectNulls={false}
             isAnimationActive={true}
             hide={!visibleLines.sineTrend}
-          /> */}
+          />
           <Line 
             type="monotone" 
             dataKey="backingValue" 
@@ -474,7 +484,7 @@ function ProjectionChartTRIO({
             dataKey="discount" 
             name="Market Value" 
             dot={false} 
-            strokeWidth={1} 
+            strokeWidth={2} 
             stroke='white'
             activeDot={{ r: 4, fill: 'white', stroke: 'white' }}
             hide={!visibleLines.discount}
