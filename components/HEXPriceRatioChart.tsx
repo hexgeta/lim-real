@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import axios from 'axios';
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, ReferenceLine } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 
 interface PriceData {
   date: string;
@@ -43,7 +43,7 @@ const HEXPriceRatioChart: React.FC = () => {
 
           let priceRatio = null;
           if (pricePulseX && priceEthereum && pricePulseX > 0) {
-            priceRatio = Math.min(priceEthereum / pricePulseX, 1);
+            priceRatio = pricePulseX / priceEthereum;
           }
 
           return {
@@ -108,10 +108,11 @@ const HEXPriceRatioChart: React.FC = () => {
           />
           <YAxis 
             stroke="#888" 
-            domain={[0, 1]}
+            domain={[0, 10]}
             axisLine={false}
             tickLine={false}
             tick={false}
+            ticks={[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
           />
           <Tooltip 
             content={<CustomTooltip formatDate={formatDate} />} 
@@ -125,59 +126,22 @@ const HEXPriceRatioChart: React.FC = () => {
             }}
             labelFormatter={(label) => formatDate(label)}
           />
-          <Legend />
-          <ReferenceLine 
-            y={1} 
-            stroke="#888" 
-            strokeDasharray="3 3" 
-            label={{ 
-              value: '1', 
-              position: 'left', 
-              offset: 5, 
-              fill: '#888', 
-              fontSize: 14,
-              dy: 0
-            }}
-          />
-          <ReferenceLine 
-            y={0.5} 
-            stroke="#888" 
-            strokeDasharray="3 3" 
-            label={{ 
-              value: '0.5', 
-              position: 'left', 
-              offset: 5, 
-              fill: '#888', 
-              fontSize: 14,
-              dy: 0
-            }}
-          />
-          <ReferenceLine 
-            y={0.3} 
-            stroke="#888" 
-            strokeDasharray="3 3" 
-            label={{ 
-              value: '0.3', 
-              position: 'left', 
-              offset: 5, 
-              fill: '#888', 
-              fontSize: 14,
-              dy: 0
-            }}
-          />
-                    <ReferenceLine 
-            y={0} 
-            stroke="#888" 
-            strokeDasharray="3 3" 
-            label={{ 
-              value: '0', 
-              position: 'left', 
-              offset: 5, 
-              fill: '#888', 
-              fontSize: 14,
-              dy: 0
-            }}
-          />
+          {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(value => (
+            <ReferenceLine 
+              key={value}
+              y={value} 
+              stroke="#888" 
+              strokeDasharray="3 3" 
+              label={{ 
+                value: value.toString(), 
+                position: 'left', 
+                offset: 5, 
+                fill: '#888', 
+                fontSize: 14,
+                dy: 0
+              }}
+            />
+          ))}
           <Line 
             type="monotone" 
             dataKey="priceRatio" 

@@ -353,7 +353,7 @@ function ProjectionChartDECI({
   // Update yAxisTicks based on zoom state
   const yAxisTicks = !isZoomed 
     ? [0, 1, 5, 10, 15, 20, 25]  
-    : [0, 1, 2, 3, 4, 5];     
+    : [0, 1, 5,10,12];     
 
   const currentYAxisDomain = !isZoomed ? [0, 25] : [0, 5];
 

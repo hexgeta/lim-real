@@ -169,7 +169,7 @@ function ProjectionChartBASE({
     linearTrend: false,
     sineTrend: true
   });
-  const [isZoomed, setIsZoomed] = useState(false);
+  const [isZoomed, setIsZoomed] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
