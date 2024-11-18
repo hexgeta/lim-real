@@ -12,8 +12,24 @@ interface TokenData {
   solX: number;
 }
 
+interface DexScreenerResponse {
+  pair: {
+    priceUsd: string;
+    // ... other fields we might need
+  };
+}
+
+// Helper function to format numbers with appropriate decimals and commas
+const formatPrice = (price: number, symbol: string) => {
+  if (symbol === 'BTC' || symbol === 'ETH' || symbol === 'SOL') {
+    return price.toLocaleString('en-US', { maximumFractionDigits: 0 });
+  }
+  return price.toFixed(3);
+};
+
 const VsGains: React.FC = () => {
   const [data, setData] = useState<TokenData[]>([]);
+  const [historicPrices, setHistoricPrices] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [visibleLines, setVisibleLines] = useState({
@@ -38,14 +54,15 @@ const VsGains: React.FC = () => {
         return;
       }
 
-      const baselines = {
-        btc: baselineData.btc_price,
-        eth: baselineData.eth_price,
-        hex: baselineData.hex_price,
-        sol: baselineData.sol_price
-      };
+      // Add logging for baseline prices
+      console.log('Baseline Prices:', {
+        HEX: baselineData.hex_price,
+        BTC: baselineData.btc_price,
+        ETH: baselineData.eth_price,
+        SOL: baselineData.sol_price
+      });
 
-      const { data: historicPrices, error } = await supabase
+      const { data: fetchedHistoricPrices, error } = await supabase
         .from('historic_prices')
         .select('*')
         .order('date', { ascending: true });
@@ -53,17 +70,78 @@ const VsGains: React.FC = () => {
       if (error) {
         console.error('Error fetching data:', error);
         setError(error.message);
-      } else {
-        const formattedData = historicPrices.map((item) => ({
-          date: item.date,
-          hexX: (item.hex_price / baselines.hex),
-          btcX: (item.btc_price / baselines.btc),
-          ethX: (item.eth_price / baselines.eth),
-          solX: (item.sol_price / baselines.sol),
-        }));
-        
-        setData(formattedData);
+        return;
       }
+
+      setHistoricPrices(fetchedHistoricPrices);
+
+      // Log last known prices from database
+      const lastDataPoint = fetchedHistoricPrices[fetchedHistoricPrices.length - 1];
+      console.log('Last Known Prices from DB:', {
+        date: lastDataPoint.date,
+        HEX: lastDataPoint.hex_price,
+        BTC: lastDataPoint.btc_price,
+        ETH: lastDataPoint.eth_price,
+        SOL: lastDataPoint.sol_price
+      });
+
+      const lastDataDate = new Date(lastDataPoint.date);
+      const today = new Date();
+      const yesterday = new Date(today);
+      yesterday.setDate(yesterday.getDate() - 1);
+
+      // If last data point is old, fetch current prices
+      if (lastDataDate <= yesterday) {
+        try {
+          // Fetch current prices from DexScreener
+          const [hexResponse, btcResponse, ethResponse, solResponse] = await Promise.all([
+            fetch('https://api.dexscreener.com/latest/dex/pairs/pulsechain/0xf1F4ee610b2bAbB05C635F726eF8B0C568c8dc65'),
+            fetch('https://api.dexscreener.com/latest/dex/pairs/ethereum/0xCBCdF9626bC03E24f779434178A73a0B4bad62eD'),
+            fetch('https://api.dexscreener.com/latest/dex/pairs/ethereum/0x11b815efB8f581194ae79006d24E0d814B7697F6'),
+            fetch('https://api.dexscreener.com/latest/dex/pairs/ethereum/0x127452F3f9cDc0389b0Bf59ce6131aA3Bd763598')
+          ]);
+
+          const [hexData, btcData, ethData, solData] = await Promise.all([
+            hexResponse.json(),
+            btcResponse.json(),
+            ethResponse.json(),
+            solResponse.json()
+          ]);
+
+          // Log the new prices from DexScreener
+          console.log('New DexScreener Prices:', {
+            date: today.toISOString(),
+            HEX: parseFloat(hexData.pair.priceUsd),
+            BTC: parseFloat(btcData.pair.priceUsd),
+            ETH: parseFloat(ethData.pair.priceUsd),
+            SOL: parseFloat(solData.pair.priceUsd)
+          });
+
+          const todayData = {
+            date: today.toISOString(),
+            hex_price: parseFloat(hexData.pair.priceUsd),
+            btc_price: parseFloat(btcData.pair.priceUsd),
+            eth_price: parseFloat(ethData.pair.priceUsd),
+            sol_price: parseFloat(solData.pair.priceUsd)
+          };
+
+          fetchedHistoricPrices.push(todayData);
+        } catch (error) {
+          console.error('Error fetching current prices:', error);
+        }
+      } else {
+        console.log('Data is current, no need to fetch new prices');
+      }
+
+      const formattedData = fetchedHistoricPrices.map((item) => ({
+        date: item.date,
+        hexX: (item.hex_price / baselineData.hex_price),
+        btcX: (item.btc_price / baselineData.btc_price),
+        ethX: (item.eth_price / baselineData.eth_price),
+        solX: (item.sol_price / baselineData.sol_price),
+      }));
+      
+      setData(formattedData);
       setIsLoading(false);
     };
 
@@ -81,7 +159,7 @@ const VsGains: React.FC = () => {
     const { payload } = props;
     
     if (payload && data.length > 0) {
-      const latestData = data[data.length - 1]; // Get the most recent data point
+      const latestData = data[data.length - 1];
 
       return (
         <div style={{ 
@@ -98,9 +176,11 @@ const VsGains: React.FC = () => {
             justifyContent: 'center' 
           }}>
             {payload.map((entry, index) => {
-              // Get the corresponding X value based on the dataKey
+              const symbol = entry.dataKey.replace('X', '').toUpperCase();
               const xValue = latestData[entry.dataKey];
-              const formattedX = xValue !== undefined ? `(${xValue.toFixed(2)}X)` : '';
+              const currentPrice = historicPrices[historicPrices.length - 1][`${entry.dataKey.replace('X', '_price')}`];
+              const formattedPrice = formatPrice(currentPrice, symbol);
+              const formattedLabel = `${symbol} ($${formattedPrice} | ${xValue.toFixed(1)}X)`;
               
               return (
                 <li 
@@ -127,7 +207,7 @@ const VsGains: React.FC = () => {
                     fontSize: '12px',
                     lineHeight: '12px'
                   }}>
-                    {entry.value} {formattedX}
+                    {formattedLabel}
                   </span>
                 </li>
               );
@@ -213,6 +293,33 @@ const VsGains: React.FC = () => {
     return icons[props.dataKey];
   };
 
+  // Update the CustomTooltip component
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div style={{ 
+          backgroundColor: 'rgba(0, 0, 0, 0.85)', 
+          border: '1px solid rgba(255, 255, 255, 0.2)', 
+          borderRadius: '10px',
+          padding: '10px'
+        }}>
+          <p style={{ color: 'white', margin: '0 0 5px' }}>{`Date: ${label}`}</p>
+          {payload.map((entry, index) => {
+            const symbol = entry.dataKey.replace('X', '').toUpperCase();
+            const formattedPrice = formatPrice(entry.value, symbol);
+            return (
+              <p key={index} style={{ color: 'white', margin: '3px 0' }}>
+                <span style={{ color: entry.color }}>●</span>
+                {` ${symbol}: $${formattedPrice}`}
+              </p>
+            );
+          })}
+        </div>
+      );
+    }
+    return null;
+  };
+
   if (isLoading) {
     return <div className="text-center text-white">Loading...</div>;
   }
@@ -275,8 +382,8 @@ const VsGains: React.FC = () => {
             }}
             domain={visibleLines.hexX ? [1, 4] : [0.9, 1.5]}
             ticks={visibleLines.hexX ? 
-              [1, 2, 3, 4, 5] : 
-              [0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5]
+              [1, 2, 3, 4, 5, 6, 7] : 
+              [0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0]
             }
           />
           <CartesianGrid 

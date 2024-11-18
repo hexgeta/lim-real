@@ -17,6 +17,12 @@ const fixedPrices = {
   'HEX': 0.003575
 }
 
+const displayNames = {
+  'WBTC': 'BTC',
+  'WETH': 'ETH',
+  'HEX': 'HEX'
+};
+
 const PriceComparison: React.FC = () => {
   const [cryptoData, setCryptoData] = useState<CryptoData[]>([])
   const [loading, setLoading] = useState(true)
@@ -106,7 +112,7 @@ const PriceComparison: React.FC = () => {
   };
 
   return (
-    <div className="bg-[#fff200] p-2 max-w-3xl mx-auto rounded-lg">
+    <div className="bg-[#fff200] p-2 max-w-3xl mx-auto rounded-lg my-12">
       <div className="bg-black text-white p-4 sm:p-6 md:p-8 rounded-lg">
         <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6 md:mb-8 text-center">
           Price performance from the <span className="underline">local bottom</span>:
@@ -121,7 +127,9 @@ const PriceComparison: React.FC = () => {
               <div className="bg-black rounded-full w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 mx-auto mb-1 flex items-center justify-center">
                 <img src={crypto.logo} alt={crypto.symbol} className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24" />
               </div>
-              <div className="text-xl sm:text-2xl font-bold pt-2 sm:pt-4">{crypto.symbol}</div>
+              <div className="text-xl sm:text-2xl font-bold pt-2 sm:pt-4">
+                {displayNames[crypto.symbol] || crypto.symbol}
+              </div>
               <div className="text-base sm:text-lg">${formatPrice(crypto.symbol, crypto.currentPrice)}</div>
             </div>
           ))}

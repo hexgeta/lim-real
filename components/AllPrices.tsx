@@ -180,8 +180,8 @@ function PriceChart({
             axisLine={false}
             tickLine={false}
             tick={{ fill: '#888', fontSize: 14, dx: -5}}
-            tickFormatter={(value) => `$${value.toFixed(3)}`}
-            ticks={[0.010, 0.020, 0.050, 0.100, 0.200, 0.500]}
+            tickFormatter={(value) => `$${value.toFixed(2)}`}
+            ticks={[0.001, 0.010, 0.020, 0.050, 0.100, 0.200, 0.500]}
           />
           <Tooltip content={<CustomTooltip />} />
           <Legend content={customLegend} />
