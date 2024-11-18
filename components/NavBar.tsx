@@ -29,6 +29,8 @@ const NavigationBar = () => {
           <div className="flex space-x-6">
             <Link href="/delta-discounts" className="text-[rgb(153,153,153)] hover:text-gray-300">Δ Discounts</Link>
             <Link href="/projections" className="text-[rgb(153,153,153)] hover:text-gray-300">〰 Projections</Link>
+            <Link href="/prices" className="text-[rgb(153,153,153)] hover:text-gray-300">$ Prices</Link>
+
 
           </div>
         </div>
