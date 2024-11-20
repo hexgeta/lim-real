@@ -19,16 +19,19 @@ const EHEXLiquidityChart: React.FC = () => {
     liquidityUV2UV3_HEX: false,
     liquidityPulseX_EHEX: false,
     priceUV2UV3: true,
-    dollarLiquidity: true
+    dollarLiquidity: false
   });
+  const [currentTotalLiquidity, setCurrentTotalLiquidity] = useState<number | null>(null);
+  const [currentPrice, setCurrentPrice] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const [ethereumResponse, pulseChainResponse] = await Promise.all([
+        const [ethereumResponse, pulseChainResponse, liveResponse] = await Promise.all([
           axios.get('https://hexdailystats.com/fulldata'),
-          axios.get('https://hexdailystats.com/fulldatapulsechain')
+          axios.get('https://hexdailystats.com/fulldatapulsechain'),
+          axios.get('https://hexdailystats.com/livedata')
         ]);
 
         const ethereumData = ethereumResponse.data;
@@ -72,6 +75,25 @@ const EHEXLiquidityChart: React.FC = () => {
           formattedData.shift();
         }
 
+        const today = new Date().toISOString().split('T')[0];
+        const liveData = liveResponse.data;
+        
+        const liveLiquidityHEX = liveData.liquidityHEX || 0;
+        const livePrice = liveData.price || null;
+        
+        formattedData.push({
+          date: today,
+          liquidityUV2UV3_HEX: liveLiquidityHEX,
+          priceUV2UV3: livePrice,
+          liquidityPulseX_EHEX: formattedData[formattedData.length - 1]?.liquidityPulseX_EHEX || 0,
+          totalLiquidity: liveLiquidityHEX + (formattedData[formattedData.length - 1]?.liquidityPulseX_EHEX || 0),
+          dollarLiquidity: (liveLiquidityHEX + (formattedData[formattedData.length - 1]?.liquidityPulseX_EHEX || 0)) * (livePrice || 0)
+        });
+
+        const lastDataPoint = formattedData[formattedData.length - 1];
+        setCurrentTotalLiquidity(lastDataPoint.totalLiquidity);
+        setCurrentPrice(lastDataPoint.priceUV2UV3);
+
         setData(formattedData);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -98,64 +120,99 @@ const EHEXLiquidityChart: React.FC = () => {
   const customLegend = (props: LegendProps) => {
     const { payload } = props;
     
-    if (payload) {
-      const customOrder = [
-        'Total eHEX Liquidity',
-        'eHEX Liquidity on ETH',
-        'eHEX Liquidity on PLS',
-        'eHEX Price',
-        'Total $ Liquidity'
-      ];
+    if (!payload) return null;
 
-      const orderedPayload = customOrder.map(itemName => 
-        payload.find(item => item.value === itemName)
-      ).filter(Boolean);
+    // Define the exact names that match what's in the Line components
+    const legendItems = [
+      {
+        dataKey: 'totalLiquidity',
+        value: `Total eHEX Liquidity (${currentTotalLiquidity ? 
+          currentTotalLiquidity >= 1000000000 
+            ? `${(currentTotalLiquidity / 1000000000).toFixed(2)}B` 
+            : `${(currentTotalLiquidity / 1000000).toFixed(0)}M`
+          : '0M'} HEX)`,
+        color: '#fff'
+      },
+      {
+        dataKey: 'liquidityUV2UV3_HEX',
+        value: 'eHEX Liquidity on ETH',
+        color: '#00FFFF'
+      },
+      {
+        dataKey: 'liquidityPulseX_EHEX',
+        value: 'eHEX Liquidity on PLS',
+        color: '#ffc658'
+      },
+      {
+        dataKey: 'priceUV2UV3',
+        value: `eHEX Price (${currentPrice ? `$${currentPrice.toFixed(3)}` : '$0.000'})`,
+        color: '#627EEA'
+      },
+      {
+        dataKey: 'dollarLiquidity',
+        value: `Total $ Liquidity (${currentTotalLiquidity && currentPrice ? 
+          (currentTotalLiquidity * currentPrice) >= 1000000000 
+            ? `$${((currentTotalLiquidity * currentPrice) / 1000000000).toFixed(2)}B` 
+            : `$${((currentTotalLiquidity * currentPrice) / 1000000).toFixed(2)}M`
+          : '$0M'})`,
+        color: '#00ff00'
+      }
+    ];
 
-      return (
-        <div style={{ 
+    return (
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        width: '100%', 
+        marginTop: '10px' 
+      }}>
+        <ul style={{ 
+          listStyle: 'none', 
+          padding: 0, 
           display: 'flex', 
-          justifyContent: 'center', 
-          width: '100%', 
-          marginTop: '10px' 
+          flexWrap: 'wrap', 
+          justifyContent: 'center' 
         }}>
-          <ul style={{ 
-            listStyle: 'none', 
-            padding: 0, 
-            display: 'flex', 
-            flexWrap: 'wrap', 
-            justifyContent: 'center' 
-          }}>
-            {orderedPayload.map((entry, index) => (
-              <li 
-                key={`item-${index}`}
-                style={{ 
-                  display: 'inline-flex', 
-                  alignItems: 'center', 
-                  marginRight: 20, 
-                  marginBottom: 5,
-                  cursor: 'pointer' 
-                }}
-                onClick={() => handleLegendClick(entry.dataKey)}
-              >
-                <span style={{ 
-                  color: entry.color, 
-                  marginRight: 5,
-                  fontSize: '24px',
-                  lineHeight: '1'
-                }}>●</span>
-                <span style={{ 
-                  color: visibleLines[entry.dataKey] ? '#fff' : '#888',
-                  fontSize: '14px'
-                }}>
-                  {entry.value}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      );
-    }
-    return null;
+          {legendItems.map((item, index) => (
+            <li 
+              key={`item-${index}`}
+              style={{ 
+                display: 'inline-flex', 
+                alignItems: 'center', 
+                marginRight: 20, 
+                marginBottom: 5,
+                cursor: 'pointer',
+                opacity: visibleLines[item.dataKey] ? 1 : 0.5
+              }}
+              onClick={() => handleLegendClick(item.dataKey)}
+            >
+              <span style={{ 
+                color: item.color, 
+                marginRight: 5,
+                fontSize: '24px',
+                lineHeight: '1'
+              }}>●</span>
+              <span style={{ 
+                color: visibleLines[item.dataKey] ? '#fff' : '#888',
+                fontSize: '14px'
+              }}>
+                {item.value}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  };
+
+  const formatToMillions = (value: number | null): string => {
+    if (!value) return '0M';
+    return `${(value / 1000000).toFixed(0)}M`;
+  };
+
+  const formatPrice = (value: number | null): string => {
+    if (!value) return '$0.000';
+    return `$${value.toFixed(4)}`;
   };
 
   if (isLoading) {
@@ -205,18 +262,33 @@ const EHEXLiquidityChart: React.FC = () => {
             axisLine={false}
             tickLine={false}
             tick={false}
-            scale="log"
-          />
+            scale="log"          
+            />
           <Tooltip 
             contentStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.85)', border: 'solid 1px rgba(255, 255, 255, 0.2)', borderRadius: '5px'}}
             labelStyle={{ color: 'white' }}
-            formatter={(value: any, name: string, props: any) => {
-              if (name === 'eHEX Price') {
+            formatter={(value: any, name: string) => {
+              if (name.includes('Price')) {
                 return [`$${Number(value).toFixed(4)}`, name];
-              } else if (name === 'Total $ Liquidity') {
-                return [`$${Number(value).toLocaleString(undefined, {maximumFractionDigits: 0})}`, name];
-              } else if (['Total eHEX Liquidity', 'eHEX Liquidity on ETH', 'eHEX Liquidity on PLS'].includes(name)) {
-                return [Number(value).toLocaleString(undefined, {maximumFractionDigits: 0}), name];
+              } else if (name.includes('Liquidity')) {
+                const billions = Number(value) / 1000000000;
+                const millions = Number(value) / 1000000;
+                
+                if (name.includes('$ Liquidity')) {
+                  // Format dollar liquidity with $ symbol
+                  if (billions >= 1) {
+                    return [`$${billions.toFixed(2)}B`, name];
+                  } else {
+                    return [`$${millions.toFixed(2)}M`, name];
+                  }
+                } else {
+                  // Format HEX liquidity
+                  if (billions >= 1) {
+                    return [`${billions.toFixed(2)}B`, name];
+                  } else {
+                    return [`${millions.toFixed(0)}M`, name];
+                  }
+                }
               }
               return [value, name];
             }}
@@ -224,10 +296,30 @@ const EHEXLiquidityChart: React.FC = () => {
           />
           <Legend content={customLegend} />
           <Line 
+            yAxisId="dollarLiquidity"
+            type="monotone" 
+            dataKey="dollarLiquidity" 
+            name={`Total $ Liquidity (${currentTotalLiquidity && currentPrice ? 
+              (currentTotalLiquidity * currentPrice) >= 1000000000 
+                ? `$${((currentTotalLiquidity * currentPrice) / 1000000000).toFixed(2)}B` 
+                : `$${((currentTotalLiquidity * currentPrice) / 1000000).toFixed(2)}M`
+              : '$0M'})`}
+            stroke="#00ff00"
+            dot={false} 
+            strokeWidth={2}
+            connectNulls={true}
+            hide={!visibleLines.dollarLiquidity}
+          />
+
+          <Line 
             yAxisId="liquidity"
             type="monotone" 
             dataKey="totalLiquidity" 
-            name="Total eHEX Liquidity"
+            name={`Total eHEX Liquidity (${currentTotalLiquidity ? 
+              currentTotalLiquidity >= 1000000000 
+                ? `${(currentTotalLiquidity / 1000000000).toFixed(2)}B` 
+                : `${(currentTotalLiquidity / 1000000).toFixed(0)}M`
+              : '0M'} HEX)`}
             stroke="#fff"
             dot={false} 
             strokeWidth={2}
@@ -245,6 +337,17 @@ const EHEXLiquidityChart: React.FC = () => {
             connectNulls={true}
             hide={!visibleLines.liquidityUV2UV3_HEX}
           />
+                              <Line 
+            yAxisId="price"
+            type="monotone" 
+            dataKey="priceUV2UV3" 
+            name={`eHEX Price (${currentPrice ? `$${currentPrice.toFixed(3)}` : '$0.000'})`}
+            stroke="#627EEA"
+            dot={false} 
+            strokeWidth={2}
+            connectNulls={true}
+            hide={!visibleLines.priceUV2UV3}
+          />
           <Line 
             yAxisId="liquidity"
             type="monotone" 
@@ -256,28 +359,8 @@ const EHEXLiquidityChart: React.FC = () => {
             connectNulls={true}
             hide={!visibleLines.liquidityPulseX_EHEX}
           />
-          <Line 
-            yAxisId="price"
-            type="monotone" 
-            dataKey="priceUV2UV3" 
-            name="eHEX Price"
-            stroke="#ff00ff"
-            dot={false} 
-            strokeWidth={2}
-            connectNulls={true}
-            hide={!visibleLines.priceUV2UV3}
-          />
-          <Line 
-            yAxisId="dollarLiquidity"
-            type="monotone" 
-            dataKey="dollarLiquidity" 
-            name="Total $ Liquidity"
-            stroke="#00ff00"
-            dot={false} 
-            strokeWidth={2}
-            connectNulls={true}
-            hide={!visibleLines.dollarLiquidity}
-          />
+
+          
         </LineChart>
       </ResponsiveContainer>
     </div>

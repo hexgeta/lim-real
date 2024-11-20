@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, LegendProps } from 'recharts';
 
 interface ChartData {
   date: string;
   liquidityPulseX_HEX: number | null;
   pricePulseX: number | null;
+  dollarLiquidity: number | null;
 }
 
 const HEXLiquidityChart: React.FC = () => {
@@ -13,6 +14,11 @@ const HEXLiquidityChart: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [currentLiquidity, setCurrentLiquidity] = useState<number | null>(null);
   const [currentPrice, setCurrentPrice] = useState<number | null>(null);
+  const [visibleLines, setVisibleLines] = useState({
+    liquidityPulseX_HEX: true,
+    pricePulseX: true,
+    dollarLiquidity: false
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -25,7 +31,10 @@ const HEXLiquidityChart: React.FC = () => {
         let formattedData = pulsechainData.map((item: any) => ({
           date: new Date(item.date).toISOString().split('T')[0],
           liquidityPulseX_HEX: item.liquidityPulseX_HEX || null,
-          pricePulseX: item.pricePulseX || null
+          pricePulseX: item.pricePulseX || null,
+          dollarLiquidity: item.liquidityPulseX_HEX && item.pricePulseX 
+            ? item.liquidityPulseX_HEX * item.pricePulseX 
+            : null
         }));
 
         formattedData.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
@@ -46,7 +55,10 @@ const HEXLiquidityChart: React.FC = () => {
         formattedData.push({
           date: today,
           liquidityPulseX_HEX: liveData.liquidityHEX_Pulsechain || null,
-          pricePulseX: liveData.price_Pulsechain || null
+          pricePulseX: liveData.price_Pulsechain || null,
+          dollarLiquidity: liveData.liquidityHEX_Pulsechain && liveData.price_Pulsechain
+            ? liveData.liquidityHEX_Pulsechain * liveData.price_Pulsechain
+            : null
         });
 
         // After setting the formatted data, get the current values
@@ -84,16 +96,96 @@ const HEXLiquidityChart: React.FC = () => {
     return `$${value.toFixed(3)}`;
   };
 
+  const handleLegendClick = (dataKey: string) => {
+    setVisibleLines(prev => ({
+      ...prev,
+      [dataKey]: !prev[dataKey]
+    }));
+  };
+
+  const customLegend = (props: LegendProps) => {
+    const { payload } = props;
+    
+    if (!payload) return null;
+
+    const legendItems = [
+      {
+        dataKey: 'liquidityPulseX_HEX',
+        value: `Total pHEX Liquidity (${formatToMillions(currentLiquidity)} HEX)`,
+        color: '#fff'
+      },
+      {
+        dataKey: 'pricePulseX',
+        value: `pHEX Price (${formatPrice(currentPrice)})`,
+        color: '#ff00ff'
+      },
+      {
+        dataKey: 'dollarLiquidity',
+        value: `Total $ Liquidity (${currentLiquidity && currentPrice ? 
+          (currentLiquidity * currentPrice) >= 1000000000 
+            ? `$${((currentLiquidity * currentPrice) / 1000000000).toFixed(2)}B` 
+            : `$${((currentLiquidity * currentPrice) / 1000000).toFixed(2)}M`
+          : '$0M'})`,
+        color: '#00ff00'
+      }
+    ];
+
+    return (
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        width: '100%', 
+        marginTop: '10px' 
+      }}>
+        <ul style={{ 
+          listStyle: 'none', 
+          padding: 0, 
+          display: 'flex', 
+          flexWrap: 'wrap', 
+          justifyContent: 'center' 
+        }}>
+          {legendItems.map((item, index) => (
+            <li 
+              key={`item-${index}`}
+              style={{ 
+                display: 'inline-flex', 
+                alignItems: 'center', 
+                marginRight: 20, 
+                marginBottom: 5,
+                cursor: 'pointer',
+                opacity: visibleLines[item.dataKey] ? 1 : 0.5
+              }}
+              onClick={() => handleLegendClick(item.dataKey)}
+            >
+              <span style={{ 
+                color: item.color, 
+                marginRight: 5,
+                fontSize: '24px',
+                lineHeight: '1'
+              }}>●</span>
+              <span style={{ 
+                color: visibleLines[item.dataKey] ? '#fff' : '#888',
+                fontSize: '14px'
+              }}>
+                {item.value}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  };
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
   return (
-    <div style={{ width: '100%', height: '450px', backgroundColor: '#000', padding: '0px'}}>
+    <div style={{ width: '100%', height: '450px', backgroundColor: '#000', padding: '0px', display: 'flex', flexDirection: 'column'}}>
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={data}
-          margin={{ top: 20, right: 0, left: 0, bottom: 80 }}
+          margin={{ top: 30, right: 0, left: 0, bottom: 80 }}
         >
           <XAxis 
             dataKey="date" 
@@ -120,30 +212,48 @@ const HEXLiquidityChart: React.FC = () => {
             tickLine={false}
             tick={false}
           />
+          <YAxis 
+            yAxisId="dollarLiquidity"
+            orientation="right"
+            stroke="#888" 
+            domain={['auto', 'auto']}
+            allowDataOverflow={true}
+            axisLine={false}
+            tickLine={false}
+            tick={false}
+            scale="log"
+          />
           <Tooltip 
-            position={{ x: 'auto', y: -30 }}
             contentStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.85)', border: 'solid 1px rgba(255, 255, 255, 0.2)', borderRadius: '5px'}}
             labelStyle={{ color: 'white' }}
             formatter={(value: any, name: string) => {
-              if (name.includes('pHEX Price')) {
-                return [`$${Number(value).toFixed(3)}`, name];
-              } else if (name.includes('Total pHEX Liquidity')) {
+              if (name.includes('Price')) {
+                return [`$${Number(value).toFixed(4)}`, name];
+              } else if (name.includes('Liquidity')) {
                 const billions = Number(value) / 1000000000;
                 const millions = Number(value) / 1000000;
                 
-                if (millions >= 1000) {
-                  // If over 1000M, show as billions
-                  return [`${billions.toFixed(2)}B`, name];
+                if (name.includes('$ Liquidity')) {
+                  // Format dollar liquidity with $ symbol
+                  if (billions >= 1) {
+                    return [`$${billions.toFixed(2)}B`, name];
+                  } else {
+                    return [`$${millions.toFixed(2)}M`, name];
+                  }
                 } else {
-                  // Otherwise show as millions
-                  return [`${millions.toFixed(0)}M`, name];
+                  // Format HEX liquidity
+                  if (billions >= 1) {
+                    return [`${billions.toFixed(2)}B`, name];
+                  } else {
+                    return [`${millions.toFixed(0)}M`, name];
+                  }
                 }
               }
               return [value, name];
             }}
             labelFormatter={(label) => formatDate(label)}
           />
-          <Legend />
+          <Legend content={customLegend} />
           <Line 
             yAxisId="left"
             type="monotone" 
@@ -163,6 +273,21 @@ const HEXLiquidityChart: React.FC = () => {
             dot={false} 
             strokeWidth={2}
             connectNulls={true}
+          />
+          <Line 
+            yAxisId="dollarLiquidity"
+            type="monotone" 
+            dataKey="dollarLiquidity" 
+            name={`Total $ Liquidity (${currentLiquidity && currentPrice ? 
+              (currentLiquidity * currentPrice) >= 1000000000 
+                ? `$${((currentLiquidity * currentPrice) / 1000000000).toFixed(2)}B` 
+                : `$${((currentLiquidity * currentPrice) / 1000000).toFixed(2)}M`
+              : '$0M'})`}
+            stroke="#00ff00"
+            dot={false} 
+            strokeWidth={2}
+            connectNulls={true}
+            hide={!visibleLines.dollarLiquidity}
           />
         </LineChart>
       </ResponsiveContainer>
