@@ -506,9 +506,9 @@ const VsGainsEverything: React.FC = () => {
                     cell: "text-center text-sm p-0 relative [&:has([aria-selected])]:bg-transparent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
                     day: "h-9 w-9 p-0 font-normal aria-selected:opacity-100 hover:bg-gray-800 rounded-md text-white",
                     day_selected: "bg-gray-800 text-white hover:bg-gray-700 hover:text-white focus:bg-gray-800 focus:text-white",
-                    day_today: "bg-gray-800/80 text-white",
-                    day_outside: "text-gray-700",
-                    day_disabled: "text-gray-600",
+                    day_today: "bg-gray-800 text-white",
+                    day_outside: "text-gray-700 opacity-50",
+                    day_disabled: "text-gray-700 opacity-50",
                     day_range_middle: "aria-selected:bg-accent aria-selected:text-accent-foreground",
                     day_hidden: "invisible",
                   }}

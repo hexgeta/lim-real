@@ -519,8 +519,8 @@ const VsGainsRHTickers: React.FC = () => {
                     day: "h-9 w-9 p-0 font-normal aria-selected:opacity-100 hover:bg-gray-800 rounded-md text-white",
                     day_selected: "bg-gray-800 text-white hover:bg-gray-700 hover:text-white focus:bg-gray-800 focus:text-white",
                     day_today: "bg-gray-800/80 text-white",
-                    day_outside: "text-gray-700",
-                    day_disabled: "text-gray-600",
+                    day_outside: "text-gray-700 opacity-50",
+                    day_disabled: "text-gray-700 opacity-50",
                     day_range_middle: "aria-selected:bg-accent aria-selected:text-accent-foreground",
                     day_hidden: "invisible",
                   }}
