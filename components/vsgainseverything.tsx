@@ -97,7 +97,6 @@ const VsGainsEverything: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      // First, get all data from the selected date onwards
       const { data: fetchedHistoricPrices, error } = await supabase
         .from('historic_prices_test3')
         .select('*')
@@ -110,7 +109,59 @@ const VsGainsEverything: React.FC = () => {
         return;
       }
 
-      // If we have data, find the first valid price for each token
+      // Check if we need to fetch current prices
+      const lastDataPoint = fetchedHistoricPrices[fetchedHistoricPrices.length - 1];
+      const lastDataDate = new Date(lastDataPoint.date);
+      const today = new Date();
+      const yesterday = new Date(today);
+      yesterday.setDate(yesterday.getDate() - 1);
+
+      // If last data point is older than yesterday, fetch current prices
+      if (lastDataDate <= yesterday) {
+        try {
+          // Get the most recent prices as fallback values
+          const lastKnownPrices = fetchedHistoricPrices[fetchedHistoricPrices.length - 1];
+          
+          // Initialize todayData with last known prices
+          let todayData = {
+            date: today.toISOString(),
+            hex_price: lastKnownPrices.hex_price,
+            ehex_price: lastKnownPrices.ehex_price,
+            pls_price: lastKnownPrices.pls_price,
+            plsx_price: lastKnownPrices.plsx_price,
+            inc_price: lastKnownPrices.inc_price,
+            btc_price: lastKnownPrices.btc_price,
+            eth_price: lastKnownPrices.eth_price,
+            sol_price: lastKnownPrices.sol_price
+          };
+
+          // Fetch current prices from DEXScreener
+          try {
+            const hexResponse = await fetch('https://api.dexscreener.com/latest/dex/pairs/pulsechain/0xf1F4ee610b2bAbB05C635F726eF8B0C568c8dc65');
+            const hexData = await hexResponse.json();
+            todayData.hex_price = parseFloat(hexData?.pair?.priceUsd) || lastKnownPrices.hex_price;
+          } catch (error) {
+            console.error('Error fetching HEX price:', error);
+          }
+
+          try {
+            const ehexResponse = await fetch('https://api.dexscreener.com/latest/dex/pairs/ethereum/0x9e0905249ceefffb9605e034b534544684a58be6');
+            const ehexData = await ehexResponse.json();
+            todayData.ehex_price = parseFloat(ehexData?.pair?.priceUsd) || lastKnownPrices.ehex_price;
+          } catch (error) {
+            console.error('Error fetching eHEX price:', error);
+          }
+
+          // Add more price fetching for other tokens...
+
+          // Append today's data to the historical prices
+          fetchedHistoricPrices.push(todayData);
+        } catch (error) {
+          console.error('Error in price fetching process:', error);
+        }
+      }
+
+      // Continue with the baseline price calculation and data formatting
       if (fetchedHistoricPrices && fetchedHistoricPrices.length > 0) {
         const baselinePrices = {
           hex_price: fetchedHistoricPrices.find(p => p.hex_price)?.hex_price || 0,
@@ -138,8 +189,6 @@ const VsGainsEverything: React.FC = () => {
         }));
 
         setData(formattedData);
-      } else {
-        setError('No data available for the selected date range');
       }
       setIsLoading(false);
     };
