@@ -167,7 +167,7 @@ const EHEXLiquidityChart: React.FC = () => {
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
           data={data}
-          margin={{ top: 30, right: 0, left: 0, bottom: 0 }}
+          margin={{ top: 30, right: 0, left: 0, bottom: 80 }}
         >
           <XAxis 
             dataKey="date" 
