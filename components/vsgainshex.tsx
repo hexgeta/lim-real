@@ -42,7 +42,7 @@ const VsGainsHEX: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       const { data: baselineData, error: baselineError } = await supabase
-        .from('historic_prices')
+        .from('historic_prices_test3')
         .select('*')
         .eq('date', '2024-09-07T00:00:00.000Z')
         .single();
@@ -351,14 +351,14 @@ const VsGainsHEX: React.FC = () => {
           fontSize: '24px',
           margin: 0
         }}>
-          <u>HEX</u> gains vs other core crypto
+          <u>HEX</u> vs the rest
         </h2>
         <p style={{
           color: 'rgba(255, 255, 255, 0.6)',
           fontSize: '14px',
           margin: '0 0 10px 0'
         }}>
-          Xs measurable from the HE bear market bottom
+          Xs measurable from the HEX bear market bottom
         </p>
       </div>
       
