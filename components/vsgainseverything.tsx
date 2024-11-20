@@ -110,121 +110,33 @@ const VsGainsEverything: React.FC = () => {
         return;
       }
 
-      // Check if we need to fetch current prices
-      const lastDataPoint = fetchedHistoricPrices[fetchedHistoricPrices.length - 1];
-      const lastDataDate = new Date(lastDataPoint.date);
-      const today = new Date();
-      const yesterday = new Date(today);
-      yesterday.setDate(yesterday.getDate() - 1);
-
-      // Simple comparison using yesterday
-      if (lastDataDate <= yesterday) {
-        try {
-          // Get the most recent prices as fallback values
-          const lastKnownPrices = fetchedHistoricPrices[fetchedHistoricPrices.length - 1];
-          
-          // Initialize todayData with last known prices
-          let todayData = {
-            date: today.toISOString(),
-            hex_price: lastKnownPrices.hex_price,
-            ehex_price: lastKnownPrices.ehex_price,
-            pls_price: lastKnownPrices.pls_price,
-            plsx_price: lastKnownPrices.plsx_price,
-            inc_price: lastKnownPrices.inc_price,
-            btc_price: lastKnownPrices.btc_price,
-            eth_price: lastKnownPrices.eth_price,
-            sol_price: lastKnownPrices.sol_price
-          };
-
-          // Try to fetch new prices, falling back to last known prices if there's an error
-          try {
-            const hexResponse = await fetch('https://api.dexscreener.com/latest/dex/pairs/pulsechain/0xf1F4ee610b2bAbB05C635F726eF8B0C568c8dc65');
-            const hexData = await hexResponse.json();
-            todayData.hex_price = parseFloat(hexData?.pair?.priceUsd) || lastKnownPrices.hex_price;
-          } catch (error) {
-            console.error('Error fetching HEX price:', error);
-          }
-
-          try {
-            const ehexResponse = await fetch('https://api.dexscreener.com/latest/dex/pairs/ethereum/0x9e0905249ceefffb9605e034b534544684a58be6');
-            const ehexData = await ehexResponse.json();
-            todayData.ehex_price = parseFloat(ehexData?.pair?.priceUsd) || lastKnownPrices.ehex_price;
-          } catch (error) {
-            console.error('Error fetching eHEX price:', error);
-          }
-
-          try {
-            const plsResponse = await fetch('https://api.dexscreener.com/latest/dex/pairs/pulsechain/0x6753560538eca67617a9ce605178f788be7e524e');
-            const plsData = await plsResponse.json();
-            todayData.pls_price = parseFloat(plsData?.pair?.priceUsd) || lastKnownPrices.pls_price;
-          } catch (error) {
-            console.error('Error fetching PLS price:', error);
-          }
-
-          try {
-            const plsxResponse = await fetch('https://api.dexscreener.com/latest/dex/pairs/pulsechain/0x1b45b9148791d3a104184cd5dfe5ce57193a3ee9');
-            const plsxData = await plsxResponse.json();
-            todayData.plsx_price = parseFloat(plsxData?.pair?.priceUsd) || lastKnownPrices.plsx_price;
-          } catch (error) {
-            console.error('Error fetching PLSX price:', error);
-          }
-
-          try {
-            const incResponse = await fetch('https://api.dexscreener.com/latest/dex/pairs/pulsechain/0xf808Bb6265e9Ca27002c0A04562Bf50d4FE37EAA');
-            const incData = await incResponse.json();
-            todayData.inc_price = parseFloat(incData?.pair?.priceUsd) || lastKnownPrices.inc_price;
-          } catch (error) {
-            console.error('Error fetching INC price:', error);
-          }
-
-          try {
-            const btcResponse = await fetch('https://api.dexscreener.com/latest/dex/pairs/ethereum/0xCBCdF9626bC03E24f779434178A73a0B4bad62eD');
-            const btcData = await btcResponse.json();
-            todayData.btc_price = parseFloat(btcData?.pair?.priceUsd) || lastKnownPrices.btc_price;
-          } catch (error) {
-            console.error('Error fetching BTC price:', error);
-          }
-
-          try {
-            const ethResponse = await fetch('https://api.dexscreener.com/latest/dex/pairs/ethereum/0x11b815efB8f581194ae79006d24E0d814B7697F6');
-            const ethData = await ethResponse.json();
-            todayData.eth_price = parseFloat(ethData?.pair?.priceUsd) || lastKnownPrices.eth_price;
-          } catch (error) {
-            console.error('Error fetching ETH price:', error);
-          }
-
-          try {
-            const solResponse = await fetch('https://api.dexscreener.com/latest/dex/pairs/ethereum/0x127452F3f9cDc0389b0Bf59ce6131aA3Bd763598');
-            const solData = await solResponse.json();
-            todayData.sol_price = parseFloat(solData?.pair?.priceUsd) || lastKnownPrices.sol_price;
-          } catch (error) {
-            console.error('Error fetching SOL price:', error);
-          }
-
-          console.log('Today\'s prices:', todayData);
-          fetchedHistoricPrices.push(todayData);
-        } catch (error) {
-          console.error('Error in price fetching process:', error);
-        }
-      }
-
-      // If we have data, use the first data point as baseline
+      // If we have data, find the first valid price for each token
       if (fetchedHistoricPrices && fetchedHistoricPrices.length > 0) {
-        const baselinePrices = fetchedHistoricPrices[0];
+        const baselinePrices = {
+          hex_price: fetchedHistoricPrices.find(p => p.hex_price)?.hex_price || 0,
+          btc_price: fetchedHistoricPrices.find(p => p.btc_price)?.btc_price || 0,
+          eth_price: fetchedHistoricPrices.find(p => p.eth_price)?.eth_price || 0,
+          sol_price: fetchedHistoricPrices.find(p => p.sol_price)?.sol_price || 0,
+          pls_price: fetchedHistoricPrices.find(p => p.pls_price)?.pls_price || 0,
+          plsx_price: fetchedHistoricPrices.find(p => p.plsx_price)?.plsx_price || 0,
+          inc_price: fetchedHistoricPrices.find(p => p.inc_price)?.inc_price || 0,
+          ehex_price: fetchedHistoricPrices.find(p => p.ehex_price)?.ehex_price || 0,
+        };
+
         setHistoricPrices(fetchedHistoricPrices);
 
         const formattedData = fetchedHistoricPrices.map((item) => ({
           date: item.date,
-          hexX: (item.hex_price / baselinePrices.hex_price),
-          btcX: (item.btc_price / baselinePrices.btc_price),
-          ethX: (item.eth_price / baselinePrices.eth_price),
-          solX: (item.sol_price / baselinePrices.sol_price),
-          plsX: (item.pls_price / baselinePrices.pls_price),
-          plsxX: (item.plsx_price / baselinePrices.plsx_price),
-          incX: (item.inc_price / baselinePrices.inc_price),
-          ehexX: (item.ehex_price / baselinePrices.ehex_price)
+          hexX: baselinePrices.hex_price ? (item.hex_price / baselinePrices.hex_price) : null,
+          btcX: baselinePrices.btc_price ? (item.btc_price / baselinePrices.btc_price) : null,
+          ethX: baselinePrices.eth_price ? (item.eth_price / baselinePrices.eth_price) : null,
+          solX: baselinePrices.sol_price ? (item.sol_price / baselinePrices.sol_price) : null,
+          plsX: baselinePrices.pls_price ? (item.pls_price / baselinePrices.pls_price) : null,
+          plsxX: baselinePrices.plsx_price ? (item.plsx_price / baselinePrices.plsx_price) : null,
+          incX: baselinePrices.inc_price ? (item.inc_price / baselinePrices.inc_price) : null,
+          ehexX: baselinePrices.ehex_price ? (item.ehex_price / baselinePrices.ehex_price) : null,
         }));
-        
+
         setData(formattedData);
       } else {
         setError('No data available for the selected date range');
