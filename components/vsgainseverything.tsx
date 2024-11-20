@@ -474,7 +474,7 @@ const VsGainsEverything: React.FC = () => {
             fontSize: '24px',
             margin: 0
           }}>
-            Everything vs everything
+            <u>Everything</u> vs everything
           </h2>
           <p style={{
             color: 'rgba(255, 255, 255, 0.6)',

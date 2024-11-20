@@ -448,7 +448,7 @@ const VsGainsRHTickers: React.FC = () => {
             fontSize: '24px',
             margin: 0
           }}>
-            RH tickers vs one another
+            <u>RH tickers</u> vs one another
           </h2>
           <p style={{
             color: 'rgba(255, 255, 255, 0.6)',
