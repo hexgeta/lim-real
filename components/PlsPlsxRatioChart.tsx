@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, ReferenceLine } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, ReferenceLine, CartesianGrid } from 'recharts';
 
 interface RatioData {
   date: string;
@@ -89,34 +89,36 @@ const PlsPlsxRatioChart: React.FC = () => {
           data={data}
           margin={{ top: 10, right: 0, left: 0, bottom: 60 }}
         >
+          <CartesianGrid 
+            strokeDasharray="3 3" 
+            stroke="rgba(136, 136, 136, 0.2)" 
+            vertical={false} 
+          />
           <XAxis 
             dataKey="date" 
-            axisLine={false}
-            tickLine={false}
-            tick={false}
-            interval={20}
+            axisLine={{ stroke: '#888', strokeWidth: 0 }}
+            tickLine={{ stroke: '#424242', strokeWidth: 1}}
+            tick={{ fill: '#888', fontSize: 14, dy: 10 }}
+            interval={100}
           />
           <YAxis 
             stroke="#888" 
-            domain={[0, 1.1]}
+            domain={[0, 1]}
             allowDataOverflow={true}
             axisLine={false}
             tickLine={false}
-            tick={false}
+            tick={{ fill: '#888', fontSize: 14, dx: -5}}
+            ticks={[0, 0.2,0.4, 0.6, 0.8, 1]}
           />
           <Tooltip 
             contentStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.85)', border: 'solid 1px rgba(255, 255, 255, 0.2)', borderRadius: '5px'}}
             labelStyle={{ color: 'white' }}
             formatter={(value, name, props) => {
-              const formattedValue = Number(value).toFixed(6);
+              const formattedValue = Number(value).toFixed(2);
               return [formattedValue, 'PLSX:PLS Ratio'];
             }}
             labelFormatter={(label) => formatDate(label)}
           />
-          <Legend />
-          <ReferenceLine y={1} stroke="#888" strokeDasharray="3 3" label={{ value: '1 : 1', position: 'top', offset: 6, fill: '#888', fontSize: 20 }}/>
-          <ReferenceLine y={0.5} stroke="#888" strokeDasharray="3 3" label={{ value: '1 : 0.5', position: 'top', offset: 6, fill: '#888', fontSize: 20 }}/>
-          <ReferenceLine y={0} stroke="#888" strokeDasharray="3 3" label={{ value: '0', position: 'top', offset: 6, fill: '#888', fontSize: 20 }}/>
           <Line 
             type="monotone" 
             dataKey="ratio" 

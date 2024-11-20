@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import axios from 'axios';
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine, CartesianGrid } from 'recharts';
 
 interface PriceData {
   date: string;
@@ -100,6 +100,11 @@ const HEXPriceRatioChart: React.FC = () => {
           data={data}
           margin={{ top: 10, right: 0, left: 0, bottom: 60 }}
         >
+          <CartesianGrid 
+            strokeDasharray="3 3" 
+            stroke="rgba(136, 136, 136, 0.2)" 
+            vertical={true} 
+          />
           <XAxis 
             dataKey="date" 
             axisLine={false}
@@ -110,8 +115,8 @@ const HEXPriceRatioChart: React.FC = () => {
             stroke="#888" 
             domain={[0, 10]}
             axisLine={false}
-            tickLine={false}
-            tick={false}
+            tickLine={{ stroke: '#888', strokeWidth: 0 }}
+            tick={{ fill: '#888', fontSize: 14, dx: -5}}
             ticks={[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
           />
           <Tooltip 
@@ -126,22 +131,6 @@ const HEXPriceRatioChart: React.FC = () => {
             }}
             labelFormatter={(label) => formatDate(label)}
           />
-          {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(value => (
-            <ReferenceLine 
-              key={value}
-              y={value} 
-              stroke="#888" 
-              strokeDasharray="3 3" 
-              label={{ 
-                value: value.toString(), 
-                position: 'left', 
-                offset: 5, 
-                fill: '#888', 
-                fontSize: 14,
-                dy: 0
-              }}
-            />
-          ))}
           <Line 
             type="monotone" 
             dataKey="priceRatio" 
