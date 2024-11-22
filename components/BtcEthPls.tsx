@@ -105,7 +105,7 @@ const PriceComparison: React.FC = () => {
 
   const formatPrice = (symbol: string, price: number) => {
     if (symbol === 'PLS') {
-      return price.toFixed(8);
+      return price.toFixed(6);
     } else {
       return Math.round(price).toLocaleString();
     }
