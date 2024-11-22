@@ -11,7 +11,7 @@
 html,
 body {
   width: 100%;
-  padding: 10px;
+  padding: 5px;
   margin: 0;
   font-family: "Chakra Petch", -apple-system;
   background-color: var(--background-color);

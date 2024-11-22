@@ -6,7 +6,7 @@ import BtcEthInc from '@/components/BtcEthInc';
 
 const BtcEthHex2 = () => {
   return (
-    <div className="p-4">
+    <div className="p-2 sm:p-4">
       <PriceComparison/>
       <BtcEthPls/>
       <BtcEthPlsx/>

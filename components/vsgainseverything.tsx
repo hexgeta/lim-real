@@ -480,13 +480,13 @@ const VsGainsEverything: React.FC = () => {
   }
 
   return (
-    <div className="w-full h-[500px] my-20 p-5 bg-black border border-white/20 rounded-xl text-white relative">
+    <div className="w-full h-[650px] sm:h-[550px] md:h-[400px] lg:h-[450px] my-10 p-5 bg-black border border-white/20 rounded-xl text-white relative">
       <div className="flex justify-between items-start mb-2.5 px-6">
         <div className="flex flex-col gap-1">
-          <h2 className="text-white text-2xl m-0 pr-2.5">
+          <h2 className="text-white text-sm lg:text-2xl m-0 pr-2.5">
             <u>Everything</u> vs everything
           </h2>
-          <p className="text-sm text-gray-400">
+          <p className="text-xs sm:text-sm text-gray-400">
           From any token's market bottom
         </p>
         </div>
@@ -500,8 +500,8 @@ const VsGainsEverything: React.FC = () => {
                 <Button
                   variant={"outline"}
                   className={cn(
-                    "w-[140px] sm:w-[180px] justify-start text-left font-normal bg-black border-gray-800 text-white",
-                    "hover:bg-gray-900 hover:border-gray-700 hover:text-white",
+                    "w-[140px] sm:w-[180px] justify-start text-left font-normal bg-black border-white/20 text-white",
+                    "hover:bg-black hover:border-white/20 hover:text-white",
                     !date && "text-muted-foreground"
                   )}
                 >
@@ -509,7 +509,7 @@ const VsGainsEverything: React.FC = () => {
                   {date ? format(date, "yyyy/MM/dd") : <span>Pick a date</span>}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-auto p-0 bg-black border border-gray-800">
+              <PopoverContent className="w-auto p-0 bg-black border border-white/20">
                 <Calendar
                   mode="single"
                   selected={date}
@@ -569,11 +569,11 @@ const VsGainsEverything: React.FC = () => {
                 }
               }}
             >
-              <SelectTrigger className="w-[140px] sm:w-[180px] bg-black border-gray-800 text-white hover:bg-gray-900 hover:border-gray-700">
+              <SelectTrigger className="w-[140px] sm:w-[180px] bg-black border-white/20 text-white hover:bg-gray-900 hover:border-white/20">
                 <SelectValue placeholder="Select low" />
               </SelectTrigger>
               <SelectContent 
-                className="bg-black border border-gray-800 fixed overflow-hidden w-[180px] max-h-[var(--radix-select-content-available-height)] z-50"
+                className="bg-black border border-white/20 fixed overflow-hidden max-h-[var(--radix-select-content-available-height)] z-50"
               >
                 {lowDates.map((date) => (
                   <SelectItem 

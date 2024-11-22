@@ -4,7 +4,7 @@ import CombinedChartMovingAverageLive from '../components/CombinedChartMovingAve
 
 const CombinedHex = () => {
   return (
-    <div className="p-4">
+    <div className="p-2 sm:p-4">
           <h1 className="text-white text-2xl font-bold mt-20 mb-8 text-center">Combined HEX Price (All-Time Median & Average)</h1>
           <CombinedChartMovingAverageLive/>
           <h1 className="text-white text-2xl font-bold mt-20 mb-8 text-center">Combined HEX Price (Split by Token)</h1>

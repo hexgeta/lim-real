@@ -163,19 +163,8 @@ const VsGainsHEX: React.FC = () => {
       const latestData = data[data.length - 1];
 
       return (
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'center', 
-          width: '100%', 
-          margin: '20px 0px 0px 0px', 
-        }}>
-          <ul style={{ 
-            listStyle: 'none', 
-            padding: 10, 
-            display: 'flex', 
-            flexWrap: 'wrap', 
-            justifyContent: 'center' 
-          }}>
+        <div className="flex justify-center w-full mt-5">
+          <ul className="list-none p-2.5 flex flex-wrap justify-center">
             {payload.map((entry, index) => {
               const symbol = entry.dataKey.replace('X', '').toUpperCase();
               const xValue = latestData[entry.dataKey];
@@ -186,28 +175,11 @@ const VsGainsHEX: React.FC = () => {
               return (
                 <li 
                   key={`item-${index}`}
-                  style={{ 
-                    display: 'inline-flex', 
-                    alignItems: 'center', 
-                    marginRight: 20, 
-                    marginBottom: 5,
-                    cursor: 'pointer' 
-                  }}
+                  className="inline-flex items-center mr-5 mb-1.5 cursor-pointer"
                   onClick={() => handleLegendClick(entry.dataKey)}
                 >
-                  <span style={{ 
-                    color: entry.color, 
-                    marginRight: 5,
-                    fontSize: '28px',
-                    lineHeight: '18px',
-                    display: 'flex',
-                    alignItems: 'center'
-                  }}>●</span>
-                  <span style={{ 
-                    color: visibleLines[entry.dataKey] ? '#fff' : '#888',
-                    fontSize: '12px',
-                    lineHeight: '12px'
-                  }}>
+                  <span className={`mr-1.5 text-[28px] leading-[18px] flex items-center`} style={{ color: entry.color }}>●</span>
+                  <span className={`text-xs leading-3 ${visibleLines[entry.dataKey] ? 'text-white' : 'text-gray-500'}`}>
                     {formattedLabel}
                   </span>
                 </li>
@@ -298,19 +270,14 @@ const VsGainsHEX: React.FC = () => {
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
-        <div style={{ 
-          backgroundColor: 'rgba(0, 0, 0, 0.85)', 
-          border: '1px solid rgba(255, 255, 255, 0.2)', 
-          borderRadius: '10px',
-          padding: '10px'
-        }}>
-          <p style={{ color: 'white', margin: '0 0 5px' }}>{`Date: ${label}`}</p>
+        <div className="bg-black/85 border border-white/20 rounded-lg p-2.5">
+          <p className="text-white m-0 mb-1.5">{`Date: ${label}`}</p>
           {payload.map((entry, index) => {
             const symbol = entry.dataKey.replace('X', '').toUpperCase();
             const formattedPrice = formatPrice(entry.value, symbol);
             return (
-              <p key={index} style={{ color: 'white', margin: '3px 0' }}>
-                <span style={{ color: entry.color }}>●</span>
+              <p key={index} className="text-white m-0 mb-1.5">
+                <span className={`text-${entry.color}`}>●</span>
                 {` ${symbol}: $${formattedPrice}`}
               </p>
             );
@@ -330,31 +297,12 @@ const VsGainsHEX: React.FC = () => {
   }
 
   return (
-    <div style={{ 
-      width: '100%', 
-      height: 450, 
-      margin: '40px 0px 40px 0px', 
-      padding: '20px', 
-      backgroundColor: '#000',
-      border: '1px solid rgba(255, 255, 255, 0.2)', 
-      borderRadius: '15px',
-      color: '#fff', 
-      position: 'relative' 
-    }}>
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '4px',
-        marginLeft: '30px'
-      }}>
-        <h2 style={{ 
-          color: 'white', 
-          fontSize: '24px',
-          margin: 0
-        }}>
+    <div className="w-full  h-[550px] sm:h-[350px] md:h-[400px] lg:h-[450px] my-10 p-4 bg-black border border-white/20 rounded-lg text-white relative">
+      <div className="flex flex-col gap-1.5 mb-2.5 ml-10">
+        <h2 className="text-sm sm:text-2xl font-bold">
           <u>HEX</u> vs the rest
         </h2>
-        <p className="text-sm text-gray-400">
+        <p className="text-xs sm:text-sm text-gray-400">
           From the HEX bear market bottom
         </p>
       </div>
@@ -441,11 +389,7 @@ const VsGainsHEX: React.FC = () => {
               ];
             }}
             labelFormatter={(label) => (
-              <div style={{ 
-                marginBottom: '5px',
-                fontSize: '14px',
-                color: '#fff'
-              }}>
+              <div className="mb-2.5 text-sm text-white">
                 {label.split('T')[0]}
               </div>
             )}

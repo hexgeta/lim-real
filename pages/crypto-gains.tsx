@@ -7,11 +7,16 @@ import VsGainsEverything from '../components/vsgainseverything';
 
 const CryptoGains = () => {
   return (
-    <div className="p-4">
+    <div className='p-2 sm:p-4'>
+      <h1 className="text-2xl font-bold mt-10 mb-4 text-center">Crypto Gains in Xs</h1>
+      <p className="text-white/60 text-center">
+        These charts plot performance of different assets against one another from different dates for comparison.
+      </p> 
+      <div>     
       <VsGainsHEX/>
-      {/* <VsGainsNew/> */}
-      <VsGainsRHTickers/>
-      <VsGainsEverything/>
+    <VsGainsRHTickers/>
+     <VsGainsEverything/>
+      </div>
     </div>
   );
 };
