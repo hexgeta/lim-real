@@ -166,7 +166,7 @@ const VsGainsHEX: React.FC = () => {
           display: 'flex', 
           justifyContent: 'center', 
           width: '100%', 
-          margin: '20px 0px 20px 0px', 
+          margin: '20px 0px 0px 0px', 
         }}>
           <ul style={{ 
             listStyle: 'none', 
@@ -353,12 +353,8 @@ const VsGainsHEX: React.FC = () => {
         }}>
           <u>HEX</u> vs the rest
         </h2>
-        <p style={{
-          color: 'rgba(255, 255, 255, 0.6)',
-          fontSize: '14px',
-          margin: '0 0 10px 0'
-        }}>
-          Xs measurable from the HEX bear market bottom
+        <p className="text-sm text-gray-400">
+          From the HEX bear market bottom
         </p>
       </div>
       

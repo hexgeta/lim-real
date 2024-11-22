@@ -13,6 +13,13 @@ import {
 import { CalendarIcon } from "lucide-react"
 import { format } from "date-fns"
 import { cn } from "@/lib/utils"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 interface TokenData {
   date: string;
@@ -66,6 +73,22 @@ const safeParsePriceUsd = (data: any): number | null => {
     return null;
   }
 };
+
+// Add the LowDates interface and data
+interface LowDates {
+  id: string;
+  name: string;
+  date: string;
+  color: string;
+}
+
+const lowDates: LowDates[] = [
+  { id: 'hex', name: 'pHEX low', date: '2024-09-07T00:00:00.000Z', color: '#ff00ff' },
+  { id: 'ehex', name: 'eHEX low', date: '2024-08-05T00:00:00.000Z', color: '#627EEA' },
+  { id: 'pls', name: 'PLS low', date: '2024-09-04T00:00:00.000Z', color: '#9945FF' },
+  { id: 'plsx', name: 'PLSX low', date: '2023-09-11T00:00:00.000Z', color: '#FFD700' },
+  { id: 'inc', name: 'INC low', date: '2023-12-12T00:00:00.000Z', color: '#00FF00' },
+];
 
 const VsGainsRHTickers: React.FC = () => {
   const [data, setData] = useState<TokenData[]>([]);
@@ -420,65 +443,25 @@ const VsGainsRHTickers: React.FC = () => {
 
   return (
     
-    <div style={{ 
-      width: '100%', 
-      height: '500px',
-      margin: '80px 0px 80px 0px', 
-      padding: '20px', 
-      backgroundColor: '#000',
-      border: '1px solid rgba(255, 255, 255, 0.2)', 
-      borderRadius: '15px',
-      color: '#fff', 
-      position: 'relative' 
-    }}>
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between',
-        alignItems: 'flex-start',
-        marginBottom: '10px',
-        padding: '0 24px'
-      }}>
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '4px'
-        }}>
-          <h2 style={{ 
-            color: 'white', 
-            fontSize: '24px',
-            margin: 0
-          }}>
+    <div className="w-full h-[500px] my-20 p-5 bg-black border border-white/20 rounded-xl text-white relative">
+      <div className="flex justify-between items-start mb-2.5 px-6">
+        <div className="flex flex-col gap-1">
+          <h2 className="text-white text-2xl m-0 pr-2.5">
             <u>RH tickers</u> vs one another
           </h2>
-          <p style={{
-            color: 'rgba(255, 255, 255, 0.6)',
-            fontSize: '14px',
-            margin: '0 0 10px 0'
-          }}>
-            Xs measurable from each token's bear market bottom
-          </p>
+          <p className="text-sm text-gray-400">
+          From any token's market bottom
+        </p>
         </div>
 
-        <div style={{
-          display: 'flex',
-          gap: '10px',
-          alignItems: 'center',
-          flexDirection: 'column'  // Stack the rows vertically
-        }}>
-          {/* Single Row */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            padding: '0',
-            width: '100%',
-            gap: '24px'  // Space between date picker and buttons
-          }}>
+        <div className="flex gap-2.5 items-center flex-col">
+          <div className="w-full flex flex-col lg:flex-row gap-2 lg:gap-4 items-center justify-end">
             <Popover>
               <PopoverTrigger asChild>
                 <Button
                   variant={"outline"}
                   className={cn(
-                    "w-[180px] justify-start text-left font-normal bg-black border-gray-800 text-white",
+                    "w-[140px] sm:w-[180px] justify-start text-left font-normal bg-black border-gray-800 text-white",
                     "hover:bg-gray-900 hover:border-gray-700 hover:text-white",
                     !date && "text-muted-foreground"
                   )}
@@ -497,7 +480,7 @@ const VsGainsRHTickers: React.FC = () => {
                       const isoString = newDate.toISOString();
                       setDate(newDate);
                       setBaselineDate(isoString);
-                      setActiveButton(''); // Clear active button when using date picker
+                      setActiveButton('');
                     }
                   }}
                   initialFocus
@@ -528,92 +511,36 @@ const VsGainsRHTickers: React.FC = () => {
               </PopoverContent>
             </Popover>
 
-            {/* Button Group */}
-            <div style={{
-              display: 'flex',
-              gap: '10px'  // Space between buttons
-            }}>
-              <button
-                onClick={() => handleDateChange('2024-09-07T00:00:00.000Z', 'HEX')}
-                className={`
-                  px-[10px] py-[5px] 
-                  rounded-md 
-                  border 
-                  border-[#ff00ff] 
-                  text-white 
-                  cursor-pointer 
-                  transition-colors
-                  ${activeButton === 'HEX' ? 'bg-[#ff00ff33]' : 'bg-transparent'}
-                  hover:bg-[#ff00ff33]
-                `}
-              >
-                pHEX low
-              </button>
-              <button
-                onClick={() => handleDateChange('2024-08-05T00:00:00.000Z', 'EHEX')}
-                className={`
-                  px-[10px] py-[5px] 
-                  rounded-md 
-                  border 
-                  border-[#627EEA] 
-                  text-white 
-                  cursor-pointer 
-                  transition-colors
-                  ${activeButton === 'EHEX' ? 'bg-[#627EEA33]' : 'bg-transparent'}
-                  hover:bg-[#627EEA33]
-                `}
-              >
-                eHEX low
-              </button>
-              <button
-                onClick={() => handleDateChange('2024-09-04T00:00:00.000Z', 'PLS')}
-                className={`
-                  px-[10px] py-[5px] 
-                  rounded-md 
-                  border 
-                  border-[#9945ff] 
-                  text-white 
-                  cursor-pointer 
-                  transition-colors
-                  ${activeButton === 'PLS' ? 'bg-[#9945ff33]' : 'bg-transparent'}
-                  hover:bg-[#9945ff33]
-                `}
-              >
-                PLS low
-              </button>
-              <button
-                onClick={() => handleDateChange('2023-09-11T00:00:00.000Z', 'PLSX')}
-                className={`
-                  px-[10px] py-[5px] 
-                  rounded-md 
-                  border 
-                  border-[#ffd700] 
-                  text-white 
-                  cursor-pointer 
-                  transition-colors
-                  ${activeButton === 'PLSX' ? 'bg-[#ffd70033]' : 'bg-transparent'}
-                  hover:bg-[#ffd70033]
-                `}
-              >
-                PLSX low
-              </button>
-              <button
-                onClick={() => handleDateChange('2023-12-12T00:00:00.000Z', 'INC')}
-                className={`
-                  px-[10px] py-[5px] 
-                  rounded-md 
-                  border 
-                  border-[#00ff00] 
-                  text-white 
-                  cursor-pointer 
-                  transition-colors
-                  ${activeButton === 'INC' ? 'bg-[#00ff0033]' : 'bg-transparent'}
-                  hover:bg-[#00ff0033]
-                `}
-              >
-                INC low
-              </button>
-            </div>
+            <Select 
+              defaultValue="hex" 
+              onValueChange={(value) => {
+                const selectedDate = lowDates.find(date => date.id === value);
+                if (selectedDate) {
+                  handleDateChange(selectedDate.date, selectedDate.name.split(' ')[0]);
+                }
+              }}
+            >
+              <SelectTrigger className="w-[140px] sm:w-[180px] bg-black border-gray-800 text-white hover:bg-gray-900 hover:border-gray-700">
+                <SelectValue placeholder="Select low" />
+              </SelectTrigger>
+              <SelectContent className="bg-black border border-gray-800">
+                {lowDates.map((date) => (
+                  <SelectItem 
+                    key={date.id} 
+                    value={date.id}
+                    className="text-white hover:bg-gray-900 focus:bg-gray-900 focus:text-white"
+                  >
+                    <div className="flex items-center gap-2">
+                      <div 
+                        className="w-2 h-2 rounded-full" 
+                        style={{ backgroundColor: date.color }}
+                      />
+                      {date.name}
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
       </div>

@@ -1,8 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 
 :root {
   --background-color: #000000;
@@ -12,24 +11,38 @@
 html,
 body {
   width: 100%;
-  overflow-x: hidden;
   padding: 10px;
   margin: 0;
-  font-family: 'Chakra Petch', -apple-system;
+  font-family: "Chakra Petch", -apple-system;
   background-color: var(--background-color);
   color: var(--text-color);
 }
 
 @keyframes wave {
-  0% { transform: rotate(0deg); }
-  25% { transform: rotate(20deg); }
-  50% { transform: rotate(0deg); }
-  75% { transform: rotate(20deg); }
-  100% { transform: rotate(0deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(20deg);
+  }
+  50% {
+    transform: rotate(0deg);
+  }
+  75% {
+    transform: rotate(20deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
 }
 .App {
   max-width: 1200px;
   margin: 0 auto;
+  position: relative;
+}
+
+html {
+  padding-left: calc(100vw - 100%);
 }
 
 /* Framer's standard breakpoints */
@@ -41,13 +54,11 @@ body {
 
 @media (max-width: 991px) {
   .App {
-
   }
 }
 
 @media (max-width: 767px) {
   .App {
-
   }
 }
 
@@ -60,15 +71,14 @@ body {
   box-sizing: border-box;
 }
 
-
-
 a {
   color: inherit;
   text-decoration: none;
 }
 
 /* Adjust text color for inputs and textareas */
-input, textarea {
+input,
+textarea {
   color: var(--background-color);
 }
 
@@ -177,4 +187,3 @@ input, textarea {
 }
 
 /* ... rest of your existing CSS ... */
-

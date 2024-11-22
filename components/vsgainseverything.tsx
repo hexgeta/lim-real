@@ -14,6 +14,13 @@ import {
 import { CalendarIcon } from "lucide-react"
 import { format } from "date-fns"
 import { cn } from "@/lib/utils"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 interface TokenData {
   date: string;
@@ -70,6 +77,29 @@ const safeParsePriceUsd = (data: any): number | null => {
     console.error('Error parsing price:', error);
     return null;
   }
+};
+
+interface LowDates {
+  id: string;
+  name: string;
+  date: string;
+  color: string;
+}
+
+const lowDates: LowDates[] = [
+  { id: 'hex', name: 'pHEX low', date: '2024-09-07T00:00:00.000Z', color: '#ff00ff' },
+  { id: 'ehex', name: 'eHEX low', date: '2024-08-05T00:00:00.000Z', color: '#627EEA' },
+  { id: 'pls', name: 'PLS low', date: '2024-09-04T00:00:00.000Z', color: '#9945FF' },
+  { id: 'plsx', name: 'PLSX low', date: '2023-09-11T00:00:00.000Z', color: '#FFD700' },
+  { id: 'inc', name: 'INC low', date: '2023-12-12T00:00:00.000Z', color: '#00FF00' },
+  { id: 'btc', name: 'BTC low', date: '2022-11-22T00:00:00.000Z', color: '#f7931a' },
+  { id: 'eth', name: 'ETH low', date: '2022-06-19T00:00:00.000Z', color: '#00FFFF' },
+  { id: 'sol', name: 'SOL low', date: '2022-12-30T00:00:00.000Z', color: '#14F195' },
+];
+
+const FALLBACK_PRICES = {
+  pls_price: 0.0001,
+  plsx_price: 0.0001
 };
 
 const VsGainsEverything: React.FC = () => {
@@ -152,43 +182,87 @@ const VsGainsEverything: React.FC = () => {
             console.error('Error fetching eHEX price:', error);
           }
 
-          // Add more price fetching for other tokens...
+          // Add API calls for other tokens
+          try {
+            const plsResponse = await fetch('https://api.dexscreener.com/latest/dex/pairs/pulsechain/0x6753560538eca67617a9ce605178f788be7e524e');
+            const plsData = await plsResponse.json();
+            todayData.pls_price = parseFloat(plsData?.pair?.priceUsd) || lastKnownPrices.pls_price;
+          } catch (error) {
+            console.error('Error fetching PLS price:', error);
+          }
 
-          // Append today's data to the historical prices
+          try {
+            const plsxResponse = await fetch('https://api.dexscreener.com/latest/dex/pairs/pulsechain/0x1b45b9148791d3a104184cd5dfe5ce57193a3ee9');
+            const plsxData = await plsxResponse.json();
+            todayData.plsx_price = parseFloat(plsxData?.pair?.priceUsd) || lastKnownPrices.plsx_price;
+          } catch (error) {
+            console.error('Error fetching PLSX price:', error);
+          }
+
+          try {
+            const incResponse = await fetch('https://api.dexscreener.com/latest/dex/pairs/pulsechain/0xf808Bb6265e9Ca27002c0A04562Bf50d4FE37EAA');
+            const incData = await incResponse.json();
+            todayData.inc_price = parseFloat(incData?.pair?.priceUsd) || lastKnownPrices.inc_price;
+          } catch (error) {
+            console.error('Error fetching INC price:', error);
+          }
+
+          // Add fetch calls for BTC, ETH, SOL
+          try {
+            const btcResponse = await fetch('https://api.dexscreener.com/latest/dex/pairs/ethereum/0xCBCdF9626bC03E24f779434178A73a0B4bad62eD');
+            const btcData = await btcResponse.json();
+            todayData.btc_price = parseFloat(btcData?.pair?.priceUsd) || lastKnownPrices.btc_price;
+          } catch (error) {
+            console.error('Error fetching BTC price:', error);
+          }
+
+          try {
+            const ethResponse = await fetch('https://api.dexscreener.com/latest/dex/pairs/ethereum/0x11b815efB8f581194ae79006d24E0d814B7697F6');
+            const ethData = await ethResponse.json();
+            todayData.eth_price = parseFloat(ethData?.pair?.priceUsd) || lastKnownPrices.eth_price;
+          } catch (error) {
+            console.error('Error fetching ETH price:', error);
+          }
+
+          try {
+            const solResponse = await fetch('https://api.dexscreener.com/latest/dex/pairs/ethereum/0x127452F3f9cDc0389b0Bf59ce6131aA3Bd763598');
+            const solData = await solResponse.json();
+            todayData.sol_price = parseFloat(solData?.pair?.priceUsd) || lastKnownPrices.sol_price;
+          } catch (error) {
+            console.error('Error fetching SOL price:', error);
+          }
+
+          console.log('Today\'s prices:', todayData);
           fetchedHistoricPrices.push(todayData);
         } catch (error) {
           console.error('Error in price fetching process:', error);
         }
       }
 
-      // Continue with the baseline price calculation and data formatting
+      // Simplified data processing
       if (fetchedHistoricPrices && fetchedHistoricPrices.length > 0) {
-        const baselinePrices = {
-          hex_price: fetchedHistoricPrices.find(p => p.hex_price)?.hex_price || 0,
-          btc_price: fetchedHistoricPrices.find(p => p.btc_price)?.btc_price || 0,
-          eth_price: fetchedHistoricPrices.find(p => p.eth_price)?.eth_price || 0,
-          sol_price: fetchedHistoricPrices.find(p => p.sol_price)?.sol_price || 0,
-          pls_price: fetchedHistoricPrices.find(p => p.pls_price)?.pls_price || 0,
-          plsx_price: fetchedHistoricPrices.find(p => p.plsx_price)?.plsx_price || 0,
-          inc_price: fetchedHistoricPrices.find(p => p.inc_price)?.inc_price || 0,
-          ehex_price: fetchedHistoricPrices.find(p => p.ehex_price)?.ehex_price || 0,
-        };
-
+        const baselinePrices = fetchedHistoricPrices[0];
         setHistoricPrices(fetchedHistoricPrices);
+
+        // For INC, get the first available price
+        const firstIncPrice = fetchedHistoricPrices.find(price => price.inc_price)?.inc_price;
 
         const formattedData = fetchedHistoricPrices.map((item) => ({
           date: item.date,
-          hexX: baselinePrices.hex_price ? (item.hex_price / baselinePrices.hex_price) : null,
-          btcX: baselinePrices.btc_price ? (item.btc_price / baselinePrices.btc_price) : null,
-          ethX: baselinePrices.eth_price ? (item.eth_price / baselinePrices.eth_price) : null,
-          solX: baselinePrices.sol_price ? (item.sol_price / baselinePrices.sol_price) : null,
-          plsX: baselinePrices.pls_price ? (item.pls_price / baselinePrices.pls_price) : null,
-          plsxX: baselinePrices.plsx_price ? (item.plsx_price / baselinePrices.plsx_price) : null,
-          incX: baselinePrices.inc_price ? (item.inc_price / baselinePrices.inc_price) : null,
-          ehexX: baselinePrices.ehex_price ? (item.ehex_price / baselinePrices.ehex_price) : null,
+          hexX: (item.hex_price / (baselinePrices.hex_price || 1)),
+          btcX: (item.btc_price / (baselinePrices.btc_price || 1)),
+          ethX: (item.eth_price / (baselinePrices.eth_price || 1)),
+          solX: (item.sol_price / (baselinePrices.sol_price || 1)),
+          // Use fallback prices for tokens that didn't exist
+          plsX: (item.pls_price / (baselinePrices.pls_price || FALLBACK_PRICES.pls_price)),
+          plsxX: (item.plsx_price / (baselinePrices.plsx_price || FALLBACK_PRICES.plsx_price)),
+          incX: (item.inc_price / (baselinePrices.inc_price || firstIncPrice || 1)),
+          ehexX: (item.ehex_price / (baselinePrices.ehex_price || 1))
         }));
-
+        
         setData(formattedData);
+      } else {
+        setError('No data available for the selected date range');
       }
       setIsLoading(false);
     };
@@ -406,67 +480,27 @@ const VsGainsEverything: React.FC = () => {
   }
 
   return (
-    
-    <div style={{ 
-      width: '100%', 
-      height: '500px',
-      margin: '80px 0px 80px 0px', 
-      padding: '20px', 
-      backgroundColor: '#000',
-      border: '1px solid rgba(255, 255, 255, 0.2)', 
-      borderRadius: '15px',
-      color: '#fff', 
-      position: 'relative' 
-    }}>
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between',
-        alignItems: 'flex-start',
-        marginBottom: '10px',
-        padding: '0 24px'
-      }}>
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '4px'
-        }}>
-          <h2 style={{ 
-            color: 'white', 
-            fontSize: '24px',
-            margin: 0
-          }}>
+    <div className="w-full h-[500px] my-20 p-5 bg-black border border-white/20 rounded-xl text-white relative">
+      <div className="flex justify-between items-start mb-2.5 px-6">
+        <div className="flex flex-col gap-1">
+          <h2 className="text-white text-2xl m-0 pr-2.5">
             <u>Everything</u> vs everything
           </h2>
-          <p style={{
-            color: 'rgba(255, 255, 255, 0.6)',
-            fontSize: '14px',
-            margin: '0 0 10px 0'
-          }}>
-            Xs measurable from each token's bear market bottom
-          </p>
+          <p className="text-sm text-gray-400">
+          From any token's market bottom
+        </p>
         </div>
 
-        <div style={{
-          display: 'flex',
-          gap: '10px',
-          alignItems: 'center',
-          flexDirection: 'column'  // Stack the rows vertically
-        }}>
-          {/* First Row */}
-          <div style={{
-            display: 'flex',
-            gap: '10px',
-            alignItems: 'center',
-            padding: '0',
-            width: '100%',  // Add full width
-            justifyContent: 'space-between'  // Spread contents
-          }}>
+        <div className="flex gap-2.5 items-center flex-col">
+          {/* Controls Container */}
+          <div className="w-full flex flex-col lg:flex-row gap-2 lg:gap-4 items-center justify-end">
+            {/* Date Picker */}
             <Popover>
               <PopoverTrigger asChild>
                 <Button
                   variant={"outline"}
                   className={cn(
-                    "w-[180px] justify-start text-left font-normal bg-black border-gray-800 text-white",
+                    "w-[140px] sm:w-[180px] justify-start text-left font-normal bg-black border-gray-800 text-white",
                     "hover:bg-gray-900 hover:border-gray-700 hover:text-white",
                     !date && "text-muted-foreground"
                   )}
@@ -485,7 +519,7 @@ const VsGainsEverything: React.FC = () => {
                       const isoString = newDate.toISOString();
                       setDate(newDate);
                       setBaselineDate(isoString);
-                      setActiveButton(''); // Clear active button when using date picker
+                      setActiveButton('');
                     }
                   }}
                   initialFocus
@@ -506,155 +540,58 @@ const VsGainsEverything: React.FC = () => {
                     cell: "text-center text-sm p-0 relative [&:has([aria-selected])]:bg-transparent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
                     day: "h-9 w-9 p-0 font-normal aria-selected:opacity-100 hover:bg-gray-800 rounded-md text-white",
                     day_selected: "bg-gray-800 text-white hover:bg-gray-700 hover:text-white focus:bg-gray-800 focus:text-white",
-                    day_today: "bg-gray-800 text-white",
+                    day_today: "bg-gray-800/80 text-white",
                     day_outside: "text-gray-700 opacity-50",
                     day_disabled: "text-gray-700 opacity-50",
-                    day_range_middle: "aria-selected:bg-accent aria-selected:text-accent-foreground",
-                    day_hidden: "invisible",
+                    day_range_middle: "aria-selected:bg-transparent",
+                    day_hidden: "hidden",
+                    ...(date && {
+                      day_selected: "bg-gray-800 text-white hover:bg-gray-700 hover:text-white focus:bg-gray-800 focus:text-white",
+                      day_today: "bg-gray-800/80 text-white",
+                      day_outside: "text-gray-700 opacity-50",
+                      day_disabled: "text-gray-700 opacity-50",
+                      day_range_middle: "aria-selected:bg-transparent",
+                      day_hidden: "hidden",
+                    }),
                   }}
                 />
               </PopoverContent>
             </Popover>
-            <div style={{ display: 'flex', gap: '10px' }}>
-              <button
-                onClick={() => handleDateChange('2024-09-07T00:00:00.000Z', 'HEX')}
-                className={`
-                  px-[10px] py-[5px] 
-                  rounded-md 
-                  border 
-                  border-[#ff00ff] 
-                  text-white 
-                  cursor-pointer 
-                  transition-colors
-                  ${activeButton === 'HEX' ? 'bg-[#ff00ff33]' : 'bg-transparent'}
-                  hover:bg-[#ff00ff33]
-                `}
-              >
-                pHEX low
-              </button>
-              <button
-                onClick={() => handleDateChange('2024-08-05T00:00:00.000Z', 'EHEX')}
-                className={`
-                  px-[10px] py-[5px] 
-                  rounded-md 
-                  border 
-                  border-[#627EEA] 
-                  text-white 
-                  cursor-pointer 
-                  transition-colors
-                  ${activeButton === 'EHEX' ? 'bg-[#627EEA33]' : 'bg-transparent'}
-                  hover:bg-[#627EEA33]
-                `}
-              >
-                eHEX low
-              </button>
-              <button
-                onClick={() => handleDateChange('2024-09-04T00:00:00.000Z', 'PLS')}
-                className={`
-                  px-[10px] py-[5px] 
-                  rounded-md 
-                  border 
-                  border-[#9945ff] 
-                  text-white 
-                  cursor-pointer 
-                  transition-colors
-                  ${activeButton === 'PLS' ? 'bg-[#9945ff33]' : 'bg-transparent'}
-                  hover:bg-[#9945ff33]
-                `}
-              >
-                PLS low
-              </button>
-            </div>
-          </div>
 
-          {/* Second Row */}
-          <div style={{
-            display: 'flex',
-            gap: '10px',
-            alignItems: 'center',
-            width: '100%',  // Add full width
-            justifyContent: 'space-between'  // Spread contents
-          }}>
-            <button
-              onClick={() => handleDateChange('2023-09-11T00:00:00.000Z', 'PLSX')}
-              className={`
-                px-[10px] py-[5px] 
-                rounded-md 
-                border 
-                border-[#ffd700] 
-                text-white 
-                cursor-pointer 
-                transition-colors
-                ${activeButton === 'PLSX' ? 'bg-[#ffd70033]' : 'bg-transparent'}
-                hover:bg-[#ffd70033]
-              `}
+            {/* Lows Dropdown */}
+            <Select 
+              defaultValue="hex" 
+              modal={false} 
+              onValueChange={(value) => {
+                const selectedDate = lowDates.find(date => date.id === value);
+                if (selectedDate) {
+                  handleDateChange(selectedDate.date, selectedDate.name.split(' ')[0]);
+                }
+              }}
             >
-              PLSX low
-            </button>
-            <button
-              onClick={() => handleDateChange('2023-12-12T00:00:00.000Z', 'INC')}
-              className={`
-                px-[10px] py-[5px] 
-                rounded-md 
-                border 
-                border-[#00ff00] 
-                text-white 
-                cursor-pointer 
-                transition-colors
-                ${activeButton === 'INC' ? 'bg-[#00ff0033]' : 'bg-transparent'}
-                hover:bg-[#00ff0033]
-              `}
-            >
-              INC low
-            </button>
-            <button
-              onClick={() => handleDateChange('2022-11-22T00:00:00.000Z', 'BTC')}
-              className={`
-                px-[10px] py-[5px] 
-                rounded-md 
-                border 
-                border-[#f7931a] 
-                text-white 
-                cursor-pointer 
-                transition-colors
-                ${activeButton === 'BTC' ? 'bg-[#f7931a33]' : 'bg-transparent'}
-                hover:bg-[#f7931a33]
-              `}
-            >
-              BTC low
-            </button>
-            <button
-              onClick={() => handleDateChange('2022-06-19T00:00:00.000Z', 'ETH')}
-              className={`
-                px-[10px] py-[5px] 
-                rounded-md 
-                border 
-                border-[#00FFFF] 
-                text-white 
-                cursor-pointer 
-                transition-colors
-                ${activeButton === 'ETH' ? 'bg-[#00FFFF33]' : 'bg-transparent'}
-                hover:bg-[#00FFFF33]
-              `}
-            >
-              ETH low
-            </button>
-            <button
-              onClick={() => handleDateChange('2022-12-30T00:00:00.000Z', 'SOL')}
-              className={`
-                px-[10px] py-[5px] 
-                rounded-md 
-                border 
-                border-[#14F195] 
-                text-white 
-                cursor-pointer 
-                transition-colors
-                ${activeButton === 'SOL' ? 'bg-[#14F19533]' : 'bg-transparent'}
-                hover:bg-[#14F19533]
-              `}
-            >
-              SOL low
-            </button>
+              <SelectTrigger className="w-[140px] sm:w-[180px] bg-black border-gray-800 text-white hover:bg-gray-900 hover:border-gray-700">
+                <SelectValue placeholder="Select low" />
+              </SelectTrigger>
+              <SelectContent 
+                className="bg-black border border-gray-800 fixed overflow-hidden w-[180px] max-h-[var(--radix-select-content-available-height)] z-50"
+              >
+                {lowDates.map((date) => (
+                  <SelectItem 
+                    key={date.id} 
+                    value={date.id}
+                    className="text-white hover:bg-gray-900 focus:bg-gray-900 focus:text-white whitespace-nowrap truncate w-full"
+                  >
+                    <div className="flex items-center gap-2 truncate w-full">
+                      <div 
+                        className="w-2 h-2 rounded-full flex-shrink-0"
+                        style={{ backgroundColor: date.color }}
+                      />
+                      <span className="truncate">{date.name}</span>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
       </div>
