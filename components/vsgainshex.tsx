@@ -63,8 +63,9 @@ const VsGainsHEX: React.FC = () => {
       });
 
       const { data: fetchedHistoricPrices, error } = await supabase
-        .from('historic_prices')
+        .from('historic_prices_test3')
         .select('*')
+        .gte('date', baselineData.date)
         .order('date', { ascending: true });
 
       if (error) {
