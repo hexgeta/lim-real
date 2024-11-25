@@ -48,9 +48,9 @@ const NavigationBar = () => {
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           aria-label="Toggle menu"
         >
-          <span className="hamburger-line"></span>
-          <span className="hamburger-line"></span>
-          <span className="hamburger-line"></span>
+          <span className="w-5 h-[2px] bg-white my-[3px]"></span>
+          <span className="w-5 h-[2px] bg-white my-[3px]"></span>
+          <span className="w-5 h-[2px] bg-white my-[3px]"></span>
         </button>
       </div>
       <AnimatePresence>
