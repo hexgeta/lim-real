@@ -1,6 +1,7 @@
 import React from 'react';
 import HEXPriceChart2 from '../components/CombinedChart2';
 import CombinedChartMovingAverageLive from '../components/CombinedChartMovingAverageLive';
+import HEXPriceChart3 from '../components/CombinedChartNewPriceFeed';
 
 const CombinedHex = () => {
   return (
@@ -9,6 +10,7 @@ const CombinedHex = () => {
           <CombinedChartMovingAverageLive/>
           <h1 className="text-white text-2xl font-bold mt-20 mb-8 text-center">Combined HEX Price (Split by Token)</h1>
       <HEXPriceChart2/>
+      {/* <HEXPriceChart3/> */}
     </div>
   );
 };

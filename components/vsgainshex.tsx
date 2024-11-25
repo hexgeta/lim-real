@@ -41,38 +41,32 @@ const VsGainsHEX: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data: baselineData, error: baselineError } = await supabase
-        .from('historic_prices_test3')
+      const baselineDate = '2024-09-07T00:00:00.000Z';
+      
+      // Single query to get all data including the baseline
+      const { data: fetchedHistoricPrices, error } = await supabase
+        .from('historic_prices')
         .select('*')
-        .eq('date', '2024-09-07T00:00:00.000Z')
-        .single();
+        .gte('date', baselineDate)
+        .order('date', { ascending: true });
 
-      if (baselineError) {
-        console.error('Error fetching baseline data:', baselineError);
-        setError(baselineError.message);
+      if (error) {
+        console.error('Error fetching data:', error);
+        setError(error.message);
         setIsLoading(false);
         return;
       }
 
-      // Add logging for baseline prices
+      // Get baseline data from first record
+      const baselineData = fetchedHistoricPrices[0];
+      
+      // Log baseline prices
       console.log('Baseline Prices:', {
         HEX: baselineData.hex_price,
         BTC: baselineData.btc_price,
         ETH: baselineData.eth_price,
         SOL: baselineData.sol_price
       });
-
-      const { data: fetchedHistoricPrices, error } = await supabase
-        .from('historic_prices_test3')
-        .select('*')
-        .gte('date', baselineData.date)
-        .order('date', { ascending: true });
-
-      if (error) {
-        console.error('Error fetching data:', error);
-        setError(error.message);
-        return;
-      }
 
       setHistoricPrices(fetchedHistoricPrices);
 

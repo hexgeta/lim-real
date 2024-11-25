@@ -128,7 +128,7 @@ const VsGainsEverything: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       const { data: fetchedHistoricPrices, error } = await supabase
-        .from('historic_prices_test3')
+        .from('historic_prices')
         .select('*')
         .gte('date', baselineDate)
         .order('date', { ascending: true });
@@ -483,7 +483,7 @@ const VsGainsEverything: React.FC = () => {
     <div className="w-full h-[650px] sm:h-[550px] md:h-[400px] lg:h-[450px] my-10 p-5 bg-black border border-white/20 rounded-xl text-white relative">
       <div className="flex justify-between items-start mb-2.5 px-6">
         <div className="flex flex-col gap-1">
-          <h2 className="text-white text-sm lg:text-2xl m-0 pr-2.5">
+          <h2 className="text-white text-sm lg:text-2xl m-0 pr-2.5 font-bold">
             <u>Everything</u> vs everything
           </h2>
           <p className="text-xs sm:text-sm text-gray-400">

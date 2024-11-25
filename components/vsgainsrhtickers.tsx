@@ -116,7 +116,7 @@ const VsGainsRHTickers: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       const { data: fetchedHistoricPrices, error } = await supabase
-        .from('historic_prices_test3')
+        .from('historic_prices')
         .select('*')
         .gte('date', baselineDate)
         .order('date', { ascending: true });
@@ -446,7 +446,7 @@ const VsGainsRHTickers: React.FC = () => {
     <div className="w-full h-[650px] sm:h-[450px] md:h-[400px] lg:h-[450px] my-10 p-5 bg-black border border-white/20 rounded-xl text-white relative">
       <div className="flex justify-between items-start mb-2.5 px-6">
         <div className="flex flex-col gap-1 pr-2.5" >
-          <h2 className="text-white text-sm sm:text-2xl m-0">
+          <h2 className="text-white text-sm sm:text-2xl m-0 font-bold">
             <u>RH tickers</u> vs one another
           </h2>
           <p className="text-xs sm:text-sm text-gray-400">
@@ -470,7 +470,7 @@ const VsGainsRHTickers: React.FC = () => {
                   {date ? format(date, "yyyy/MM/dd") : <span>Pick a date</span>}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-[180px] p-0 bg-black border border-white/20">
+              <PopoverContent className="w-auto p-0 bg-black border border-white/20">
                 <Calendar
                   mode="single"
                   selected={date}
@@ -504,8 +504,16 @@ const VsGainsRHTickers: React.FC = () => {
                     day_today: "bg-gray-800/80 text-white",
                     day_outside: "text-gray-700 opacity-50",
                     day_disabled: "text-gray-700 opacity-50",
-                    day_range_middle: "aria-selected:bg-accent aria-selected:text-accent-foreground",
-                    day_hidden: "invisible",
+                    day_range_middle: "aria-selected:bg-transparent",
+                    day_hidden: "hidden",
+                    ...(date && {
+                      day_selected: "bg-gray-800 text-white hover:bg-gray-700 hover:text-white focus:bg-gray-800 focus:text-white",
+                      day_today: "bg-gray-800/80 text-white",
+                      day_outside: "text-gray-700 opacity-50",
+                      day_disabled: "text-gray-700 opacity-50",
+                      day_range_middle: "aria-selected:bg-transparent",
+                      day_hidden: "hidden",
+                    }),
                   }}
                 />
               </PopoverContent>
