@@ -3,6 +3,7 @@ import PriceComparison from '../components/BtcEthHex';
 import BtcEthPls from '@/components/BtcEthPls';
 import BtcEthPlsx from '@/components/BtcEthPlsx';
 import BtcEthInc from '@/components/BtcEthInc';
+import PDAIPerformanceVisual from '@/components/Pdai';
 
 const BtcEthHex2 = () => {
   return (
@@ -11,6 +12,7 @@ const BtcEthHex2 = () => {
       <BtcEthPls/>
       <BtcEthPlsx/>
       <BtcEthInc/>
+      <PDAIPerformanceVisual/>
     </div>
   );
 };
