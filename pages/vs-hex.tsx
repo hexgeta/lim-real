@@ -3,8 +3,8 @@ import PriceComparison from '../components/BtcEthHex';
 import BtcEthPls from '@/components/BtcEthPls';
 import BtcEthPlsx from '@/components/BtcEthPlsx';
 import BtcEthInc from '@/components/BtcEthInc';
-import PDAIPerformanceVisual from '@/components/Pdai';
-
+import PDAIPerformanceVisual from '@/components/PegPdai';
+import PBTCPerformanceVisual from '@/components/PegPBTC';
 const BtcEthHex2 = () => {
   return (
     <div className="p-2 sm:p-4">
@@ -13,6 +13,7 @@ const BtcEthHex2 = () => {
       <BtcEthPlsx/>
       <BtcEthInc/>
       <PDAIPerformanceVisual/>
+      <PBTCPerformanceVisual/>
     </div>
   );
 };
