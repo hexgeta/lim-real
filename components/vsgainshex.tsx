@@ -310,7 +310,7 @@ const VsGainsHEX: React.FC = () => {
             dataKey="date" 
             stroke="#888"
             axisLine={{ stroke: '#888', strokeWidth: 0 }}
-            tickLine={{ stroke: '#333' }}
+            tickLine={false}
             tick={{ fill: '#888', fontSize: 14, dy: 10 }}
             tickFormatter={(date) => new Date(date).toLocaleDateString('en-UK', { 
               day: 'numeric', 

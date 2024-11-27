@@ -105,24 +105,23 @@ const CombinedHexChartMovingAvg = () => {
             stroke="rgba(136, 136, 136, 0.2)" 
             vertical={false} 
           />          <XAxis
-            dataKey="date"
-            type="category"
-            axisLine={false}
-            tickLine={false}
-            tick={{ fill: '#888', fontSize: 12, dy: 4 }}
-            interval="preserveStartEnd"
-            minTickGap={30}
-            tickFormatter={(dateStr) => {
-              const date = new Date(dateStr);
-              return date.toLocaleDateString('en-US', {
-                month: 'short',
-                year: '2-digit'
-              });
-            }}
-          />
+          dataKey="date"
+          type="category"
+          axisLine={false}
+          tickLine={false}
+          tick={{ fill: '#888', fontSize: 12, dy: 4 }}
+          ticks={[data[0]?.date, data[data.length - 1]?.date]}
+          tickFormatter={(dateStr) => {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', {
+              month: 'short',
+              year: 'numeric'
+            });
+          }}
+        />
           <YAxis
             scale="log"
-            domain={['auto', 'auto']}
+            domain={[0.0001, 1]}
             axisLine={false}
             tickLine={false}
             tick={{ fill: '#888', fontSize: 12 }}
@@ -143,19 +142,9 @@ const CombinedHexChartMovingAvg = () => {
           />
           <Line
             type="monotone"
-            dataKey="combined_price"
-            name="Combined Price"
-            stroke="#FFFFFF"
-            dot={false}
-            strokeWidth={2}
-            connectNulls={true}
-            isAnimationActive={false}
-          />
-          <Line
-            type="monotone"
             dataKey="average_price"
             name="Average Price"
-            stroke="#FF00FF"
+            stroke="#8B6B23"
             dot={false}
             strokeWidth={2}
             connectNulls={true}
@@ -165,7 +154,17 @@ const CombinedHexChartMovingAvg = () => {
             type="monotone"
             dataKey="median_price"
             name="Median Price"
-            stroke="#00FFFF"
+            stroke="#4A6F8F"
+            dot={false}
+            strokeWidth={2}
+            connectNulls={true}
+            isAnimationActive={false}
+          />
+          <Line
+            type="monotone"
+            dataKey="combined_price"
+            name="Combined Price"
+            stroke="#FFFFFF"
             dot={false}
             strokeWidth={2}
             connectNulls={true}

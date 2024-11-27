@@ -90,19 +90,18 @@ const CombinedHexChartSplit = () => {
             axisLine={false}
             tickLine={false}
             tick={{ fill: '#888', fontSize: 12, dy: 4 }}
-            interval="preserveStartEnd"
-            minTickGap={30}
+            ticks={[data[0]?.date, data[data.length - 1]?.date]}
             tickFormatter={(dateStr) => {
               const date = new Date(dateStr);
               return date.toLocaleDateString('en-US', {
                 month: 'short',
-                year: '2-digit'
+                year: 'numeric'
               });
             }}
           />
           <YAxis
             scale="log"
-            domain={['auto', 'auto']}
+            domain={[0.0001, 1]}
             axisLine={false}
             tickLine={false}
             tick={{ fill: '#888', fontSize: 12 }}
