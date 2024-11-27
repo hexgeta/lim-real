@@ -1,16 +1,17 @@
 import React from 'react';
-import HEXPriceChart2 from '../components/CombinedChart2';
-import CombinedChartMovingAverageLive from '../components/CombinedChartMovingAverageLive';
-import HEXPriceChart3 from '../components/CombinedChartNewPriceFeed';
+import CombinedHexChartSplit from '../components/CombinedHexChartSplit';
+import CombinedHexChartMovingAvg from '../components/CombinedHexChartMovingAvg';
+
 
 const CombinedHex = () => {
   return (
     <div className="p-2 sm:p-4">
-          <h1 className="text-white text-2xl font-bold mt-20 mb-8 text-center">Combined HEX Price (All-Time Median & Average)</h1>
-          <CombinedChartMovingAverageLive/>
-          <h1 className="text-white text-2xl font-bold mt-20 mb-8 text-center">Combined HEX Price (Split by Token)</h1>
-      <HEXPriceChart2/>
-      {/* <HEXPriceChart3/> */}
+      <h1 className="text-2xl font-bold mt-10 mb-4 text-center">Combined HEX Price Charts</h1>
+      <p className="text-white/60 text-center">
+      These charts plot the combined price of HEX (pHEX and eHEX), which is useful if you held HEX prior to the PulseChain launch.
+      </p>
+      <CombinedHexChartMovingAvg/>
+      <CombinedHexChartSplit/>
     </div>
   );
 };

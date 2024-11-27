@@ -1,6 +1,5 @@
 import React from 'react';
 import VsGainsHEX from '../components/vsgainshex';
-import VsGainsNew from '../components/vsgainsnew-archive';
 import VsGainsRHTickers from '../components/vsgainsrhtickers';
 import VsGainsEverything from '../components/vsgainseverything';
 
