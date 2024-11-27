@@ -5,6 +5,7 @@ import BtcEthPlsx from '@/components/BtcEthPlsx';
 import BtcEthInc from '@/components/BtcEthInc';
 import PDAIPerformanceVisual from '@/components/PegPdai';
 import PBTCPerformanceVisual from '@/components/PegPBTC';
+import PstETHPerformanceVisual from '@/components/PegPstETH';
 const BtcEthHex2 = () => {
   return (
     <div className="p-2 sm:p-4">
@@ -14,6 +15,7 @@ const BtcEthHex2 = () => {
       <BtcEthInc/>
       <PDAIPerformanceVisual/>
       <PBTCPerformanceVisual/>
+      <PstETHPerformanceVisual/>
     </div>
   );
 };
