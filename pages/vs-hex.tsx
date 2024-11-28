@@ -6,6 +6,7 @@ import BtcEthInc from '@/components/BtcEthInc';
 import PDAIPerformanceVisual from '@/components/PegPdai';
 import PBTCPerformanceVisual from '@/components/PegPBTC';
 import PstETHPerformanceVisual from '@/components/PegPstETH';
+
 const BtcEthHex2 = () => {
   return (
     <div className="p-2 sm:p-4">

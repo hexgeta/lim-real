@@ -29,7 +29,9 @@ const NavigationBar = () => {
           <div className="flex space-x-6">
             <Link href="/delta-discounts" className="text-[rgb(153,153,153)] hover:text-gray-300">Δ Discounts</Link>
             <Link href="/projections" className="text-[rgb(153,153,153)] hover:text-gray-300">〰 Projections</Link>
-            <Link href="/prices" className="text-[rgb(153,153,153)] hover:text-gray-300">$ Prices</Link>
+            <Link href="/prices" className="text-[rgb(153,153,153)] hover:text-gray-300">Prices</Link>
+            <Link href="https://app.piteas.io/#/swap?inputCurrency=PLS&outputCurrency=0x0d86EB9f43C57f6FF3BC9E23D8F9d82503f0e84b" className="text-[rgb(153,153,153)] hover:text-gray-300">$ Buy</Link>
+
 
 
           </div>
@@ -72,6 +74,8 @@ const NavigationBar = () => {
             >
               <Link href="/delta-discounts" className="block text-white/80 hover:text-white py-2" onClick={() => setIsMenuOpen(false)}>Δ Discounts</Link>
               <Link href="/projections" className="block text-white/80 hover:text-white py-2" onClick={() => setIsMenuOpen(false)}>〰 Projections</Link>
+              <Link href="/prices" className="block text-white/80 hover:text-white py-2" onClick={() => setIsMenuOpen(false)}>Prices</Link>
+              <Link href="https://app.piteas.io/#/swap?inputCurrency=PLS&outputCurrency=0x0d86EB9f43C57f6FF3BC9E23D8F9d82503f0e84b" className="block text-white/80 hover:text-white py-2" onClick={() => setIsMenuOpen(false)}>$ Buy</Link>
             </motion.div>
           </motion.div>
         )}
