@@ -67,7 +67,7 @@ export function CryptoCard({ data, variant = 'default' }: CryptoCardProps) {
 
   return (
     <Card className="bg-black text-white p-4 rounded-xl border-2 border-white/10">
-      <div className="flex items-center justify-between m-2">
+      <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
           {TOKEN_LOGOS[baseSymbol] && (
             <Image
