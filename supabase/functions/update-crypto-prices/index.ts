@@ -108,7 +108,7 @@ Deno.serve(async (req) => {
       
       const [testTableResult] = await Promise.all([
         supabaseClient
-          .from('historic_prices_test3')
+          .from('historic_prices')
           .insert([data])
           .select()
       ])
@@ -120,7 +120,7 @@ Deno.serve(async (req) => {
         JSON.stringify({ 
           success: true, 
           data: {
-            historic_prices_test3: testTableResult.data
+            historic_prices: testTableResult.data
           }
         }),
         { 

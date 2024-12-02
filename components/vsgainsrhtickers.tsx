@@ -48,6 +48,9 @@ const formatPrice = (price: number, symbol: string) => {
   if (symbol === 'BTC' || symbol === 'ETH' || symbol === 'SOL') {
     return price.toLocaleString('en-US', { maximumFractionDigits: 0 });
   }
+  if (symbol === 'pHEX') {
+    return price.toFixed(3);
+  }
   if (symbol === 'PLS') {
     return price.toFixed(6);  // Example: 5 decimal places for PLS
   }
@@ -206,16 +209,23 @@ const VsGainsRHTickers: React.FC = () => {
         const baselinePrices = fetchedHistoricPrices[0];
         setHistoricPrices(fetchedHistoricPrices);
 
+        // Get the first available price for each token
+        const firstIncPrice = fetchedHistoricPrices.find(price => price.inc_price)?.inc_price;
+        const firstPlsPrice = fetchedHistoricPrices.find(price => price.pls_price)?.pls_price;
+        const firstPlsxPrice = fetchedHistoricPrices.find(price => price.plsx_price)?.plsx_price;
+        // Add other tokens as needed
+
         const formattedData = fetchedHistoricPrices.map((item) => ({
           date: item.date,
-          hexX: (item.hex_price / baselinePrices.hex_price),
-          btcX: (item.btc_price / baselinePrices.btc_price),
-          ethX: (item.eth_price / baselinePrices.eth_price),
-          solX: (item.sol_price / baselinePrices.sol_price),
-          plsX: (item.pls_price / baselinePrices.pls_price),
-          plsxX: (item.plsx_price / baselinePrices.plsx_price),
-          incX: (item.inc_price / baselinePrices.inc_price),
-          ehexX: (item.ehex_price / baselinePrices.ehex_price)
+          hexX: (item.hex_price / (baselinePrices.hex_price || 1)),
+          btcX: (item.btc_price / (baselinePrices.btc_price || 1)),
+          ethX: (item.eth_price / (baselinePrices.eth_price || 1)),
+          solX: (item.sol_price / (baselinePrices.sol_price || 1)),
+          // Use first available price instead of fallback constants
+          plsX: (item.pls_price / (baselinePrices.pls_price || firstPlsPrice || 1)),
+          plsxX: (item.plsx_price / (baselinePrices.plsx_price || firstPlsxPrice || 1)),
+          incX: (item.inc_price / (baselinePrices.inc_price || firstIncPrice || 1)),
+          ehexX: (item.ehex_price / (baselinePrices.ehex_price || 1))
         }));
         
         setData(formattedData);
@@ -264,9 +274,7 @@ const VsGainsRHTickers: React.FC = () => {
             {filteredPayload.map((entry, index) => {
               const symbol = entry.value;
               const xValue = latestData[entry.dataKey];
-              const priceField = symbol.toLowerCase() === 'pls' ? 'pls_price' :
-                                 symbol.toLowerCase() === 'plsx' ? 'plsx_price' :
-                                 symbol.toLowerCase() === 'inc' ? 'inc_price' :
+              const priceField = symbol.toLowerCase() === 'phex' ? 'hex_price' : 
                                  `${symbol.toLowerCase()}_price`;
               const currentPrice = lastPrices[priceField];
               const formattedPrice = formatPrice(currentPrice, symbol);

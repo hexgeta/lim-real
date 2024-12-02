@@ -35,7 +35,7 @@ export function CryptoCard({ data, variant = 'default' }: CryptoCardProps) {
 
   if (variant === 'wide') {
     return (
-      <Card className="bg-black text-white p-4 rounded-xl h-[144px] md:h-auto border-2 border-white/10">
+      <Card className="bg-black text-white p-4 rounded-xl h-[100px] md:h-auto border-2 border-white/10">
         <div className="flex items-center">
           <div>
             <div className="flex items-center gap-2 mb-2">

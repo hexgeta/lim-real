@@ -40,7 +40,7 @@ export function useCryptoPrice(symbol: string) {
       }
     },
     {
-      refreshInterval: 10000,
+      refreshInterval: 30000,
       revalidateOnFocus: true,
       dedupingInterval: 5000,
     }

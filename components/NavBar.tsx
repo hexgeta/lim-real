@@ -72,10 +72,12 @@ const NavigationBar = () => {
               transition={{ type: "spring", duration: 0.3 }}
               className="absolute right-2 top-2 h-auto w-64 bg-black bg-opacity-85 p-4 shadow-lg z-50 border border-white/20 rounded-[10px]"
             >
-              <Link href="/delta-discounts" className="block text-white/80 hover:text-white py-2" onClick={() => setIsMenuOpen(false)}>Δ Discounts</Link>
-              <Link href="/projections" className="block text-white/80 hover:text-white py-2" onClick={() => setIsMenuOpen(false)}>〰 Projections</Link>
+              <Link href="/delta-discounts" className="block text-white/80 hover:text-white py-2" onClick={() => setIsMenuOpen(false)}>Discounts</Link>
+              <Link href="/projections" className="block text-white/80 hover:text-white py-2" onClick={() => setIsMenuOpen(false)}>Projections</Link>
               <Link href="/prices" className="block text-white/80 hover:text-white py-2" onClick={() => setIsMenuOpen(false)}>Prices</Link>
               <Link href="https://app.piteas.io/#/swap?inputCurrency=PLS&outputCurrency=0x0d86EB9f43C57f6FF3BC9E23D8F9d82503f0e84b" className="block text-white/80 hover:text-white py-2" onClick={() => setIsMenuOpen(false)}>$ Buy</Link>
+              <Link href="https://app.piteas.io/#/swap?inputCurrency=PLS&outputCurrency=0x0d86EB9f43C57f6FF3BC9E23D8F9d82503f0e84b" className="block text-white/80 hover:text-white py-2">Buy</Link>
+
             </motion.div>
           </motion.div>
         )}

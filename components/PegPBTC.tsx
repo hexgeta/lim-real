@@ -91,7 +91,7 @@ const PBTCPerformanceVisual: React.FC = () => {
           The journey to
         </h2>
         <div className="text-6xl font-bold text-center mb-8">
-          pWBTC ${tokenData.targetPrice.toLocaleString(undefined, { maximumFractionDigits: 0 })}tre
+          pWBTC ${tokenData.targetPrice.toLocaleString(undefined, { maximumFractionDigits: 0 })}
         </div>
         <div className="text-center">
           <div className="bg-black rounded-full w-24 h-24 mx-auto mb-4 flex items-center justify-center">

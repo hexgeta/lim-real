@@ -2,8 +2,8 @@ import { CryptoCard } from './crypto-card'
 
 export default function CryptoDashboard() {
   return (
-    <div className="bg-black p-2">
-      <div className="max-w-7xl mx-auto space-y-4 mb-10">
+    <div className="bg-black p-0">
+      <div className="max-w-7xl mx-auto space-y-4 mb-0">
         {/* HEX card - full width with wide variant */}
         <div className="w-full">
           <CryptoCard 
