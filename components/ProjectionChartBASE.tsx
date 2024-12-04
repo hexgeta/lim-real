@@ -364,10 +364,6 @@ function ProjectionChartBASE({
 
   const currentYAxisDomain = !isZoomed ? [0, 25] : [0, 2];
 
-  if (isLoading) {
-    return <div style={{ color: 'white' }}>Loading...</div>;
-  }
-
   return (
     <div className="w-full h-[450px] my-10 relative">
       {!isChartReady ? (
