@@ -1,6 +1,7 @@
 import React from 'react';
 import DiscountChart from '../components/DiscountChart';
 import DiscountChart2 from '../components/DiscountChart2';
+
 const DeltaDiscounts = () => {
   const chartConfigs = [
     { tableName: 'pMAXI - DiscountChart', title: 'pMaxi Ⓜ️' },
@@ -16,16 +17,16 @@ const DeltaDiscounts = () => {
       <p className="text-white/60 text-center">The Δ Discounts page offers a visual representation of the discount or premium of various stake pool tokens over time. This allows users to track how each token's market price fluctuates relative to its intrinsic backing value (principle + yield). Tracking this behaviour can help users spot potential buying opportunities when tokens are at a discount or selling oppertunities when they are at a premium.</p>
       <div>
         {chartConfigs.map((config, index) => (
-          <DiscountChart 
-            key={index}
-            tableName={config.tableName}
-            title={config.title}
-          />
-          <DiscountChart2 
-          key={index}
-          tableName={config.tableName}
-          title={config.title}
-        />
+          <div key={index}>
+            <DiscountChart 
+              tableName={config.tableName}
+              title={config.title}
+            />
+            <DiscountChart2 
+              tableName={config.tableName}
+              title={config.title}
+            />
+          </div>
         ))}
       </div>
     </div>
