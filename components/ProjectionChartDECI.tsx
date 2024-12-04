@@ -3,7 +3,7 @@ import { supabase } from '../supabaseClient';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
-import { Skeleton } from "@/components/ui/Skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 
 // Constants for regression calculations
 const LINEAR_SLOPE_MULTIPLIER = 1;    // Adjust as needed for DECI

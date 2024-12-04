@@ -21,6 +21,10 @@ function convertSymbol(symbol: string): string {
   return `${prefix}${base}`
 }
 
+function getPriceChangeColor(change: number): string {
+  return change >= 0 ? 'text-[#01FF55]' : 'text-red-500'
+}
+
 export function CryptoCard({ data, variant = 'default' }: CryptoCardProps) {
   const { priceData, isLoading: priceLoading } = useCryptoPrice(data.symbol)
   const { ratioData, isLoading: ratioLoading } = useCryptoRatio(data.symbol)
@@ -55,8 +59,13 @@ export function CryptoCard({ data, variant = 'default' }: CryptoCardProps) {
               {!hasPriceData ? (
                 <div className="skeleton h-8 w-24 rounded" />
               ) : (
-                <div className="text-2xl font-bold">
-                  {formatPrice(priceData.price)}
+                <div className="flex items-baseline gap-2">
+                  <div className="text-2xl font-bold">
+                    {formatPrice(priceData.price)}
+                  </div>
+                  <div className={`text-sm font-bold ${getPriceChangeColor(priceData.priceChange24h)}`}>
+                    {formatNumber(priceData.priceChange24h, { decimals: 1, percentage: true })}
+                  </div>
                 </div>
               )}
             </div>
@@ -88,8 +97,13 @@ export function CryptoCard({ data, variant = 'default' }: CryptoCardProps) {
           {!hasPriceData ? (
             <Skeleton className="text-2xl font-bold">$0.0271</Skeleton>
           ) : (
-            <div className="text-2xl font-bold">
-              {formatPrice(priceData.price)}
+            <div className="flex items-baseline gap-2">
+              <div className="text-2xl font-bold">
+                {formatPrice(priceData.price)}
+              </div>
+              <div className={`text-sm font-bold ${getPriceChangeColor(priceData.priceChange24h)}`}>
+                {formatNumber(priceData.priceChange24h, { decimals: 1, percentage: true })}
+              </div>
             </div>
           )}
         </div>

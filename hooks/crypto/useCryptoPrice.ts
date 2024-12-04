@@ -30,11 +30,18 @@ export function useCryptoPrice(symbol: string) {
 
       const pair = data.pairs[0]
       const price = pair.priceUsd ? parseFloat(pair.priceUsd) : 0
-      console.log(`Price for ${symbol}:`, price)
+      
+      const priceChange24h = pair.priceChange?.h24 ? parseFloat(pair.priceChange.h24) / 100 : 0
+      
+      console.log(`Debug data for ${symbol}:`, {
+        rawPriceChange: pair.priceChange?.h24,
+        adjustedPriceChange: priceChange24h,
+        fullPairData: pair
+      })
       
       return {
         price,
-        priceChange24h: pair.priceChange24h ? parseFloat(pair.priceChange24h) : 0,
+        priceChange24h,
         lastUpdated: new Date(),
         chain
       }
