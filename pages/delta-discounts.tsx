@@ -1,6 +1,6 @@
 import React from 'react';
 import DiscountChart from '../components/DiscountChart';
-
+import DiscountChart2 from '../components/DiscountChart2';
 const DeltaDiscounts = () => {
   const chartConfigs = [
     { tableName: 'pMAXI - DiscountChart', title: 'pMaxi Ⓜ️' },
@@ -21,6 +21,11 @@ const DeltaDiscounts = () => {
             tableName={config.tableName}
             title={config.title}
           />
+          <DiscountChart2 
+          key={index}
+          tableName={config.tableName}
+          title={config.title}
+        />
         ))}
       </div>
     </div>
