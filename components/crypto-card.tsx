@@ -6,6 +6,7 @@ import { useCryptoPrice } from '@/hooks/crypto/useCryptoPrice'
 import { useCryptoRatio } from '@/hooks/crypto/useCryptoRatio'
 import { useBackingValue } from '@/hooks/crypto/useBackingValue'
 import { formatNumber, formatPrice, formatHexRatio, formatBacking } from '@/utils/format'
+import { Skeleton } from '@/components/ui/skeleton'
 
 interface CryptoCardProps {
   data: TokenData
@@ -85,38 +86,38 @@ export function CryptoCard({ data, variant = 'default' }: CryptoCardProps) {
       <div>
         <div className="flex items-baseline gap-2">
           {!hasPriceData ? (
-            <div className="skeleton h-8 w-24 rounded" />
+            <Skeleton className="text-2xl font-bold">$0.0271</Skeleton>
           ) : (
             <div className="text-2xl font-bold">
               {formatPrice(priceData.price)}
             </div>
           )}
         </div>
-        {!hasRatioData ? (
-          <div className="skeleton h-4 w-20 rounded mt-1" />
-        ) : (
-          <div className="text-sm text-zinc-500">
-            {formatHexRatio(ratioData.hexRatio)} HEX
-          </div>
-        )}
-        {showBacking && hasBackingData && (
+        <div className="text-sm text-zinc-500">
+          {!hasRatioData ? (
+            <Skeleton>1.18 HEX</Skeleton>
+          ) : (
+            formatHexRatio(ratioData.hexRatio) + " HEX"
+          )}
+        </div>
+        {showBacking && (
           <>
             <hr className="border-zinc-800 my-2" />
-            <div className="text-sm text-zinc-500">
-              Stake backing: {formatNumber(backingData.backingStakeRatioInverse, { decimals: 2 })}
-            </div>
-            <div className="text-sm text-zinc-500">
-              Backing discount: {formatNumber(backingData.backingDiscount, { decimals: 2, percentage: true })}
-            </div>
-          </>
-        )}
-        {showBacking && !hasBackingData && (
-          <>
-            <hr className="border-zinc-800 my-2" />
-            <div className="space-y-2">
-              <div className="skeleton h-4 w-32 rounded" />
-              <div className="skeleton h-4 w-28 rounded" />
-            </div>
+            {!hasBackingData ? (
+              <div className="space-y-2 text-sm text-zinc-500">
+                <Skeleton>Stake backing: 1.92</Skeleton>
+                <Skeleton>Backing discount: -38.46%</Skeleton>
+              </div>
+            ) : (
+              <>
+                <div className="text-sm text-zinc-500">
+                  Stake backing: {formatNumber(backingData.backingStakeRatioInverse, { decimals: 2 })}
+                </div>
+                <div className="text-sm text-zinc-500">
+                  Backing discount: {formatNumber(backingData.backingDiscount, { decimals: 2, percentage: true })}
+                </div>
+              </>
+            )}
           </>
         )}
       </div>

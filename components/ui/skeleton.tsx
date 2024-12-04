@@ -1,15 +1,34 @@
 import { cn } from "@/lib/utils"
 
-function Skeleton({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
-  return (
-    <div
-      className={cn("animate-pulse rounded-md bg-primary/10", className)}
-      {...props}
-    />
-  )
+interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
+  className?: string;
+  variant?: 'text' | 'chart';
+  children?: React.ReactNode;
 }
 
-export { Skeleton }
+export function Skeleton({ className, variant = 'text', children, ...props }: SkeletonProps) {
+  if (variant === 'chart') {
+    return (
+      <div
+        className={cn(
+          "skeleton absolute inset-0 rounded-[15px]",
+          className
+        )}
+        {...props}
+      />
+    )
+  }
+
+  return (
+    <div className="relative inline-block">
+      <span className="invisible">{children}</span>
+      <div
+        className={cn(
+          "skeleton absolute inset-0 rounded-sm",
+          className
+        )}
+        {...props}
+      />
+    </div>
+  )
+}

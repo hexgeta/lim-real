@@ -3,6 +3,7 @@ import { supabase } from '../supabaseClient';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
+import { Skeleton } from "@/components/ui/Skeleton";
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
@@ -34,6 +35,7 @@ function PriceChart({
 }) {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isChartReady, setIsChartReady] = useState(false);
   const [visibleLines, setVisibleLines] = useState({
     pHEX: true,
     pMAXI: true,
@@ -147,107 +149,118 @@ function PriceChart({
     fetchData();
   }, [tableName]);
 
-  if (isLoading) {
-    return <div style={{ color: 'white' }}>Loading...</div>;
-  }
+  useEffect(() => {
+    if (!isLoading && data.length > 0) {
+      const timer = setTimeout(() => {
+        setIsChartReady(true);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [isLoading, data]);
 
   return (
-    <div style={{ width: '100%', height: 450, margin: '40px 0px', padding: '20px', border: '1px solid rgba(255, 255, 255, 0.2)', borderRadius: '15px' }}>
-      <ResponsiveContainer width="100%" height="100%" debounce={1}>
-        <LineChart data={data} margin={{ top: 30, right: 20, left: 20, bottom: 60 }}>
-          <CartesianGrid 
-            strokeDasharray="3 3" 
-            stroke="rgba(136, 136, 136, 0.2)" 
-            vertical={false} 
-          />
-          <XAxis 
-            dataKey="date" 
-            axisLine={{ stroke: '#888', strokeWidth: 0 }}
-            tickLine={false}
-            tick={{ fill: '#888', fontSize: 14, dy: 5 }}
-            ticks={[data[0]?.date, data[data.length - 1]?.date]}
-            tickFormatter={(value) => {
-              const date = new Date(value);
-              return date.toLocaleDateString('en-US', { 
-                month: 'short',
-                year: 'numeric'
-              });
-            }}
-          />
-          <YAxis 
-            scale="log"
-            domain={['auto', 'auto']}
-            axisLine={false}
-            tickLine={false}
-            tick={{ fill: '#888', fontSize: 14, dx: -5}}
-            tickFormatter={(value) => `$${value.toFixed(2)}`}
-            ticks={[0.001, 0.010, 0.020, 0.050, 0.100, 0.200, 0.500]}
-          />
-          <Tooltip content={<CustomTooltip />} />
-          <Legend content={customLegend} />
-          
-          <Line 
-            type="monotone" 
-            dataKey="pBASE" 
-            name="pBASE" 
-            dot={false} 
-            strokeWidth={1} 
-            stroke="#F09B1A"
-            connectNulls={false}
-            hide={!visibleLines.pBASE}
-          />
-          <Line 
-            type="monotone" 
-            dataKey="pTRIO" 
-            name="pTRIO" 
-            dot={false} 
-            strokeWidth={1} 
-            stroke="white"
-            connectNulls={false}
-            hide={!visibleLines.pTRIO}
-          />
-          <Line 
-            type="monotone" 
-            dataKey="pLUCKY" 
-            name="pLUCKY" 
-            dot={false} 
-            strokeWidth={1} 
-            stroke="#416F22"
-            connectNulls={false}
-            hide={!visibleLines.pLUCKY}
-          />
-          <Line 
-            type="monotone" 
-            dataKey="pDECI" 
-            name="pDECI" 
-            dot={false} 
-            strokeWidth={1} 
-            stroke="#C24C35"
-            connectNulls={false}
-            hide={!visibleLines.pDECI}
-          />
-          <Line 
-            type="monotone" 
-            dataKey="pMAXI" 
-            name="pMAXI" 
-            dot={false} 
-            strokeWidth={1} 
-            stroke="#3991ED"
-            connectNulls={false}
-            hide={!visibleLines.pMAXI}
-          />
-          <Line 
-            type="monotone" 
-            dataKey="pHEX" 
-            name="pHEX" 
-            dot={false} 
-            strokeWidth={1} 
-            stroke="#FF00FF"
-            connectNulls={false}
-            hide={!visibleLines.pHEX}
-          />
-        </LineChart>
-      </ResponsiveContainer>
+    <div className="w-full h-[450px] my-10 relative">
+      {!isChartReady ? (
+        <Skeleton variant="chart" />
+      ) : (
+        <div style={{ width: '100%', height: '100%', padding: '20px', border: '1px solid rgba(255, 255, 255, 0.2)', borderRadius: '15px' }}>
+          <ResponsiveContainer width="100%" height="100%" debounce={1}>
+            <LineChart data={data} margin={{ top: 30, right: 20, left: 20, bottom: 60 }}>
+              <CartesianGrid 
+                strokeDasharray="3 3" 
+                stroke="rgba(136, 136, 136, 0.2)" 
+                vertical={false} 
+              />
+              <XAxis 
+                dataKey="date" 
+                axisLine={{ stroke: '#888', strokeWidth: 0 }}
+                tickLine={false}
+                tick={{ fill: '#888', fontSize: 14, dy: 5 }}
+                ticks={[data[0]?.date, data[data.length - 1]?.date]}
+                tickFormatter={(value) => {
+                  const date = new Date(value);
+                  return date.toLocaleDateString('en-US', { 
+                    month: 'short',
+                    year: 'numeric'
+                  });
+                }}
+              />
+              <YAxis 
+                scale="log"
+                domain={['auto', 'auto']}
+                axisLine={false}
+                tickLine={false}
+                tick={{ fill: '#888', fontSize: 14, dx: -5}}
+                tickFormatter={(value) => `$${value.toFixed(2)}`}
+                ticks={[0.001, 0.010, 0.020, 0.050, 0.100, 0.200, 0.500]}
+              />
+              <Tooltip content={<CustomTooltip />} />
+              <Legend content={customLegend} />
+              
+              <Line 
+                type="monotone" 
+                dataKey="pBASE" 
+                name="pBASE" 
+                dot={false} 
+                strokeWidth={1} 
+                stroke="#F09B1A"
+                connectNulls={false}
+                hide={!visibleLines.pBASE}
+              />
+              <Line 
+                type="monotone" 
+                dataKey="pTRIO" 
+                name="pTRIO" 
+                dot={false} 
+                strokeWidth={1} 
+                stroke="white"
+                connectNulls={false}
+                hide={!visibleLines.pTRIO}
+              />
+              <Line 
+                type="monotone" 
+                dataKey="pLUCKY" 
+                name="pLUCKY" 
+                dot={false} 
+                strokeWidth={1} 
+                stroke="#416F22"
+                connectNulls={false}
+                hide={!visibleLines.pLUCKY}
+              />
+              <Line 
+                type="monotone" 
+                dataKey="pDECI" 
+                name="pDECI" 
+                dot={false} 
+                strokeWidth={1} 
+                stroke="#C24C35"
+                connectNulls={false}
+                hide={!visibleLines.pDECI}
+              />
+              <Line 
+                type="monotone" 
+                dataKey="pMAXI" 
+                name="pMAXI" 
+                dot={false} 
+                strokeWidth={1} 
+                stroke="#3991ED"
+                connectNulls={false}
+                hide={!visibleLines.pMAXI}
+              />
+              <Line 
+                type="monotone" 
+                dataKey="pHEX" 
+                name="pHEX" 
+                dot={false} 
+                strokeWidth={1} 
+                stroke="#FF00FF"
+                connectNulls={false}
+                hide={!visibleLines.pHEX}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      )}
     </div>
   );
 }

@@ -12,6 +12,11 @@ interface PriceData {
 const CombinedHexChartSplit = () => {
   const [data, setData] = useState<PriceData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [visibleLines, setVisibleLines] = useState({
+    hex_price: true,
+    ehex_price: true,
+    combined_price: true
+  });
 
   useEffect(() => {
     fetchPriceData();
@@ -62,6 +67,57 @@ const CombinedHexChartSplit = () => {
       combined_price: (item.hex_price || 0) + (item.ehex_price || 0)
     }));
   }, [data]);
+
+  const handleLegendClick = (dataKey: string) => {
+    setVisibleLines(prev => ({
+      ...prev,
+      [dataKey]: !prev[dataKey]
+    }));
+  };
+
+  const customLegend = (props: any) => {
+    const { payload } = props;
+    
+    return (
+      <ul style={{ 
+        listStyle: 'none', 
+        padding: 0, 
+        display: 'flex', 
+        flexWrap: 'wrap', 
+        justifyContent: 'center' 
+      }}>
+        {payload.map((entry: any, index: number) => (
+          <li 
+            key={`item-${index}`}
+            style={{ 
+              display: 'inline-flex', 
+              alignItems: 'center', 
+              marginRight: 20, 
+              marginBottom: 5,
+              cursor: 'pointer' 
+            }}
+            onClick={() => handleLegendClick(entry.dataKey)}
+          >
+            <span style={{ 
+              color: entry.color, 
+              marginRight: 5,
+              fontSize: '28px',
+              lineHeight: '18px',
+              display: 'flex',
+              alignItems: 'center'
+            }}>●</span>
+            <span style={{ 
+              color: visibleLines[entry.dataKey] ? '#fff' : '#888',
+              fontSize: '12px',
+              lineHeight: '12px'
+            }}>
+              {entry.value}
+            </span>
+          </li>
+        ))}
+      </ul>
+    );
+  };
 
   if (isLoading || data.length === 0) {
     return <div>Loading chart data...</div>;
@@ -120,13 +176,7 @@ const CombinedHexChartSplit = () => {
             ]}
             labelFormatter={(date) => new Date(date).toLocaleDateString()}
           />
-          <Legend 
-            verticalAlign="bottom"
-            height={36}
-            wrapperStyle={{
-              color: '#fff'
-            }}
-          />
+          <Legend content={customLegend} />
           <Line
             type="monotone"
             dataKey="hex_price"
@@ -136,6 +186,7 @@ const CombinedHexChartSplit = () => {
             strokeWidth={2}
             connectNulls={true}
             isAnimationActive={false}
+            hide={!visibleLines.hex_price}
           />
           <Line
             type="monotone"
@@ -146,6 +197,7 @@ const CombinedHexChartSplit = () => {
             strokeWidth={2}
             connectNulls={true}
             isAnimationActive={false}
+            hide={!visibleLines.ehex_price}
           />
           <Line
             type="monotone"
@@ -156,6 +208,7 @@ const CombinedHexChartSplit = () => {
             strokeWidth={2}
             connectNulls={true}
             isAnimationActive={false}
+            hide={!visibleLines.combined_price}
           />
         </LineChart>
       </ResponsiveContainer>

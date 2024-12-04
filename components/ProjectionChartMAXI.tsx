@@ -3,6 +3,7 @@ import { supabase } from '../supabaseClient';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
+import { Skeleton } from "@/components/ui/Skeleton";
 
 // Constants for regression calculations
 const LINEAR_SLOPE_MULTIPLIER = 1;    // Range: 0.1 to 10 - Higher values create steeper linear trends
@@ -169,6 +170,7 @@ function ProjectionChartMAXI({
     linearTrend: false,
     sineTrend: true
   });
+  const [isChartReady, setIsChartReady] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -245,6 +247,15 @@ function ProjectionChartMAXI({
 
     fetchData();
   }, [tableName, xAxisKey, yAxis1Key, yAxis2Key]);
+
+  useEffect(() => {
+    if (!isLoading && data.length > 0) {
+      const timer = setTimeout(() => {
+        setIsChartReady(true);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [isLoading, data]);
 
   const xAxisTicks = useMemo(() => {
     const ticks = [];
@@ -336,126 +347,128 @@ function ProjectionChartMAXI({
     );
   };
 
-  if (isLoading) {
-    return <div style={{ color: 'white' }}>Loading...</div>;
-  }
-
   return (
-    <div style={{ width: '100%', height: 450, margin: '40px 0px 40px 00px', padding: '20px', border: '1px solid rgba(255, 255, 255, 0.2)', borderRadius: '15px' }}>
-      <h2 style={{ textAlign: 'left', color: 'white', fontSize: '24px', marginBottom: '0px', marginLeft: '40px'}}>
-        {title}</h2>
-      <ResponsiveContainer width="100%" height="100%" debounce={1}>
-        <LineChart data={data} margin={{ top: 30, right: 20, left: 20, bottom: 60 }}>
-          <CartesianGrid 
-            strokeDasharray="3 3" 
-            stroke="rgba(136, 136, 136, 0.2)" 
-            vertical={false} 
-          />
-          <XAxis 
-            dataKey="day" 
-            axisLine={{ stroke: '#888', strokeWidth: 0 }}
-            tickLine={{ stroke: '#888', strokeWidth: 0}}
-            tick={{ fill: '#888', fontSize: 14, dy: 5 }}
-            ticks={xAxisTicks}
-            domain={[881, 5555]}
-            type="number"
-            allowDataOverflow={true}
-            scale="linear"
-            label={{ 
-              value: 'DAY', 
-              position: 'bottom',
-              offset: 10,
-              style: { 
-                fill: '#888',
-                fontSize: 12,
-                marginTop: '0px',
-              }
-            }}
-          />
-          <YAxis 
-            domain={[0, 25]}  // Adjust this range as needed
-            ticks={[0, 1, 5, 10,15,20,25]}  // Removed 10
-            axisLine={false}
-            tickLine={{ stroke: '#888', strokeWidth: 0 }}
-            tick={{ fill: '#888', fontSize: 14, dx: -5}}
-            tickFormatter={(value) => `${value.toFixed(0)}`}
-            label={{ 
-              value: 'HEX', 
-              position: 'left',
-              angle: -90,
-              offset: 0,
-              style: { 
-                fill: '#888',
-                fontSize: 12,
-                marginTop: '0px',
-              }
-            }}
-          />
-          <Tooltip content={<CustomTooltip />} />
-          <Legend content={customLegend} />
-          <Line 
-            type="linear"
-            dataKey="linearTrend"
-            name="Projected Backing Value (Linear)"
-            dot={false}
-            strokeWidth={2}
-            stroke="#474747"
-            activeDot={{ r: 4, fill: '#474747', stroke: 'white' }}
-            hide={!visibleLines.linearTrend}
-            connectNulls={false}
-            isAnimationActive={true}
-          />
-          <Line 
-            type="monotone"
-            dataKey="trendValue"
-            name="Projected Backing Value (Exp.)"
-            dot={false}
-            strokeWidth={2}
-            stroke="#23411F"
-            activeDot={{ r: 4, fill: '#23411F', stroke: 'white' }}
-            connectNulls={false}
-            isAnimationActive={true}
-            hide={!visibleLines.trendValue}
-          />
+    <div className="w-full h-[450px] my-10 relative">
+      {!isChartReady ? (
+        <Skeleton variant="chart" />
+      ) : (
+        <div style={{ width: '100%', height: '100%', padding: '20px', border: '1px solid rgba(255, 255, 255, 0.2)', borderRadius: '15px' }}>
+          <h2 style={{ textAlign: 'left', color: 'white', fontSize: '24px', marginBottom: '0px', marginLeft: '40px'}}>
+            {title}</h2>
+          <ResponsiveContainer width="100%" height="100%" debounce={1}>
+            <LineChart data={data} margin={{ top: 30, right: 20, left: 20, bottom: 60 }}>
+              <CartesianGrid 
+                strokeDasharray="3 3" 
+                stroke="rgba(136, 136, 136, 0.2)" 
+                vertical={false} 
+              />
+              <XAxis 
+                dataKey="day" 
+                axisLine={{ stroke: '#888', strokeWidth: 0 }}
+                tickLine={{ stroke: '#888', strokeWidth: 0}}
+                tick={{ fill: '#888', fontSize: 14, dy: 5 }}
+                ticks={xAxisTicks}
+                domain={[881, 5555]}
+                type="number"
+                allowDataOverflow={true}
+                scale="linear"
+                label={{ 
+                  value: 'DAY', 
+                  position: 'bottom',
+                  offset: 10,
+                  style: { 
+                    fill: '#888',
+                    fontSize: 12,
+                    marginTop: '0px',
+                  }
+                }}
+              />
+              <YAxis 
+                domain={[0, 25]}  // Adjust this range as needed
+                ticks={[0, 1, 5, 10,15,20,25]}  // Removed 10
+                axisLine={false}
+                tickLine={{ stroke: '#888', strokeWidth: 0 }}
+                tick={{ fill: '#888', fontSize: 14, dx: -5}}
+                tickFormatter={(value) => `${value.toFixed(0)}`}
+                label={{ 
+                  value: 'HEX', 
+                  position: 'left',
+                  angle: -90,
+                  offset: 0,
+                  style: { 
+                    fill: '#888',
+                    fontSize: 12,
+                    marginTop: '0px',
+                  }
+                }}
+              />
+              <Tooltip content={<CustomTooltip />} />
+              <Legend content={customLegend} />
+              <Line 
+                type="linear"
+                dataKey="linearTrend"
+                name="Projected Backing Value (Linear)"
+                dot={false}
+                strokeWidth={2}
+                stroke="#474747"
+                activeDot={{ r: 4, fill: '#474747', stroke: 'white' }}
+                hide={!visibleLines.linearTrend}
+                connectNulls={false}
+                isAnimationActive={true}
+              />
+              <Line 
+                type="monotone"
+                dataKey="trendValue"
+                name="Projected Backing Value (Exp.)"
+                dot={false}
+                strokeWidth={2}
+                stroke="#23411F"
+                activeDot={{ r: 4, fill: '#23411F', stroke: 'white' }}
+                connectNulls={false}
+                isAnimationActive={true}
+                hide={!visibleLines.trendValue}
+              />
 
-                    <Line 
-            type="monotone"
-            dataKey="sineTrend"
-            name="Projected Market Value (Exp.)"
-            dot={false}
-            strokeWidth={2}
-            stroke="#132B47"
-            activeDot={{ r: 4, fill: '#132B47', stroke: 'white' }}
-            connectNulls={false}
-            isAnimationActive={true}
-            hide={!visibleLines.sineTrend}
-          />
-          <Line 
-            type="monotone" 
-            dataKey="backingValue" 
-            name="Backing Value" 
-            dot={false} 
-            strokeWidth={2} 
-            stroke='rgba(112, 214, 104)'
-            activeDot={{ r: 4, fill: 'rgba(112, 214, 104)', stroke: 'white' }}
-            connectNulls={false}
-            isAnimationActive={true}
-            hide={!visibleLines.backingValue}
-          />
-          <Line 
-            type="monotone" 
-            dataKey="discount" 
-            name="Market Value" 
-            dot={false} 
-            strokeWidth={2} 
-            stroke='#3991ED'
-            activeDot={{ r: 4, fill: '#3991ED', stroke: 'white' }}
-            hide={!visibleLines.discount}
-            connectNulls={false}
-            isAnimationActive={true}
-          />
-        </LineChart>
-      </ResponsiveContainer>
+                        <Line 
+                type="monotone"
+                dataKey="sineTrend"
+                name="Projected Market Value (Exp.)"
+                dot={false}
+                strokeWidth={2}
+                stroke="#132B47"
+                activeDot={{ r: 4, fill: '#132B47', stroke: 'white' }}
+                connectNulls={false}
+                isAnimationActive={true}
+                hide={!visibleLines.sineTrend}
+              />
+              <Line 
+                type="monotone" 
+                dataKey="backingValue" 
+                name="Backing Value" 
+                dot={false} 
+                strokeWidth={2} 
+                stroke='rgba(112, 214, 104)'
+                activeDot={{ r: 4, fill: 'rgba(112, 214, 104)', stroke: 'white' }}
+                connectNulls={false}
+                isAnimationActive={true}
+                hide={!visibleLines.backingValue}
+              />
+              <Line 
+                type="monotone" 
+                dataKey="discount" 
+                name="Market Value" 
+                dot={false} 
+                strokeWidth={2} 
+                stroke='#3991ED'
+                activeDot={{ r: 4, fill: '#3991ED', stroke: 'white' }}
+                hide={!visibleLines.discount}
+                connectNulls={false}
+                isAnimationActive={true}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      )}
     </div>
   );
 }
