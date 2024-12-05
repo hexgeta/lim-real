@@ -1,0 +1,34 @@
+import { cn } from "@/lib/utils"
+
+interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
+  className?: string;
+  variant?: 'text' | 'chart';
+  children?: React.ReactNode;
+}
+
+export function Skeleton({ className, variant = 'text', children, ...props }: SkeletonProps) {
+  if (variant === 'chart') {
+    return (
+      <div
+        className={cn(
+          "skeleton absolute inset-0 rounded-[15px]",
+          className
+        )}
+        {...props}
+      />
+    )
+  }
+
+  return (
+    <div className="relative inline-block">
+      <span className="invisible">{children}</span>
+      <div
+        className={cn(
+          "skeleton absolute inset-0 rounded-sm",
+          className
+        )}
+        {...props}
+      />
+    </div>
+  )
+}
