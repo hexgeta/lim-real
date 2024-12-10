@@ -6,7 +6,7 @@ import { useCryptoPrice } from '@/hooks/crypto/useCryptoPrice'
 import { useCryptoRatio } from '@/hooks/crypto/useCryptoRatio'
 import { useBackingValue } from '@/hooks/crypto/useBackingValue'
 import { formatNumber, formatPrice, formatHexRatio, formatBacking } from '@/utils/format'
-import { Skeleton } from '@/components/ui/skeleton'
+import { Skeleton } from '@/components/ui/skeleton2'
 
 interface CryptoCardProps {
   data: TokenData

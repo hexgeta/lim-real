@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo} from 'react';
 import {
   LineChart, Area, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ReferenceLine, ResponsiveContainer
 } from 'recharts';
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton2";
 import { CumBackingValueDECI } from '@/hooks/CumBackingValueDECI';
 
 interface Props {
