@@ -353,7 +353,7 @@ const VsGainsHEX: React.FC = () => {
             }}
             domain={visibleLines.hexX ? [1, 4] : [0.9, 1.5]}
             ticks={visibleLines.hexX ? 
-              [1, 2, 3, 4, 5, 6, 7] : 
+              [1, 2, 3, 4, 5, 6, 7,8,9,10] : 
               [0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0]
             }
           />

@@ -59,7 +59,7 @@ export function CryptoCard({ data, variant = 'default' }: CryptoCardProps) {
               {!hasPriceData ? (
                 <div className="skeleton h-8 w-24 rounded" />
               ) : (
-                <div className="flex items-baseline gap-2">
+                <div className="flex items-center gap-2">
                   <div className="text-2xl font-bold">
                     {formatPrice(priceData.price)}
                   </div>
@@ -97,7 +97,7 @@ export function CryptoCard({ data, variant = 'default' }: CryptoCardProps) {
           {!hasPriceData ? (
             <Skeleton className="text-2xl font-bold">$0.0271</Skeleton>
           ) : (
-            <div className="flex items-baseline gap-2">
+            <div className="flex items-center gap-2">
               <div className="text-2xl font-bold">
                 {formatPrice(priceData.price)}
               </div>
