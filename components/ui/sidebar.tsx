@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import { Sheet, SheetContent } from "@/components/ui/sheet"
-import { Skeleton } from "@/components/ui/skeleton"
+import { Skeleton } from "@/components/ui/skeleton2"
 import {
   Tooltip,
   TooltipContent,
@@ -655,7 +655,7 @@ const SidebarMenuSkeleton = React.forwardRef<
   return (
     <div
       ref={ref}
-      data-sidebar="menu-skeleton"
+      data-sidebar="menu-skeleton2"
       className={cn("rounded-md h-8 flex gap-2 px-2 items-center", className)}
       {...props}
     >
@@ -677,7 +677,7 @@ const SidebarMenuSkeleton = React.forwardRef<
     </div>
   )
 })
-SidebarMenuSkeleton.displayName = "SidebarMenuSkeleton"
+SidebarMenuSkeleton.displayName = "SidebarMenuskeleton2"
 
 const SidebarMenuSub = React.forwardRef<
   HTMLUListElement,

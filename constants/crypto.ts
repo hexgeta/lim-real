@@ -49,6 +49,7 @@ export const TOKEN_CONSTANTS = {
     }
   },
   pDECI: {
+    LAUNCH_DATE: new Date('2022-09-27'),
     STAKE_PRINCIPLE: 565991988,
     TOKEN_SUPPLY: 565991988,
     TSHARES: 71337.83,
@@ -67,6 +68,7 @@ export const TOKEN_CONSTANTS = {
     }
   },
   pLUCKY: {
+    LAUNCH_DATE: new Date('2022-09-27'),
     STAKE_PRINCIPLE: 74985502,
     TOKEN_SUPPLY: 74985502,
     TSHARES: 7524.68,

@@ -3,7 +3,7 @@ import { supabase } from '../supabaseClient';
 import {
   LineChart, Area, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ReferenceLine, ResponsiveContainer
 } from 'recharts';
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton2";
 
 function DiscountChart({ 
   tableName, 

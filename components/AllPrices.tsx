@@ -3,7 +3,7 @@ import { supabase } from '../supabaseClient';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
-import { Skeleton } from "./components/ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton2";
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
