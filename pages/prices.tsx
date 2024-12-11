@@ -11,7 +11,7 @@ const PricesPage = () => {
       <div>
         {/* <PriceChart/> */}
         <PriceChartPLS/>
-        {/* <PriceChartETH/> */}
+        <PriceChartETH/>
       </div>
     </div>
   );

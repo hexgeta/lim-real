@@ -189,7 +189,6 @@ function DiscountChartDECI({ title }: Props) {
                 strokeWidth={2} 
                 stroke="rgba(112, 214, 104)"
                 hide={!visibleLines.backingRatio}
-                connectNulls
               />
               <Line 
                 type="monotone" 
@@ -200,8 +199,6 @@ function DiscountChartDECI({ title }: Props) {
                 stroke="#3991ED" 
                 activeDot={{ r: 4, fill: '#3991ED', stroke: 'white' }}
                 hide={!visibleLines.discount}
-                connectNulls
-                isAnimationActive={false}
               />
             </LineChart>
           </ResponsiveContainer>

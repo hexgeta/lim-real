@@ -200,8 +200,7 @@ function DiscountChartTRIO({ title }: Props) {
                 stroke="#3991ED" 
                 activeDot={{ r: 4, fill: '#3991ED', stroke: 'white' }}
                 hide={!visibleLines.discount}
-                connectNulls
-                isAnimationActive={false}
+     
               />
             </LineChart>
           </ResponsiveContainer>

@@ -37,12 +37,12 @@ function AllPricesETH({
   const [isLoading, setIsLoading] = useState(true);
   const [isChartReady, setIsChartReady] = useState(false);
   const [visibleLines, setVisibleLines] = useState({
-    pHEX: true,
-    pMAXI: true,
-    pDECI: true,
-    pLUCKY: true,
-    pTRIO: true,
-    pBASE: true
+    eHEX: true,
+    eMAXI: true,
+    eDECI: true,
+    eLUCKY: true,
+    eTRIO: true,
+    eBASE: true
   });
   const [page, setPage] = useState(1);
   const itemsPerPage = 100;
@@ -167,6 +167,11 @@ function AllPricesETH({
         <Skeleton variant="chart" />
       ) : (
         <div style={{ width: '100%', height: '100%', padding: '20px', border: '1px solid rgba(255, 255, 255, 0.2)', borderRadius: '15px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', marginLeft: '20px', marginBottom: '0px' }}>
+            <h2 style={{ color: 'white', fontSize: '24px', margin: '0' }}>
+              {title}
+            </h2>
+          </div>
           <ResponsiveContainer width="100%" height="100%" debounce={1}>
             <LineChart data={data} margin={{ top: 30, right: 20, left: 20, bottom: 60 }}>
               <CartesianGrid 
