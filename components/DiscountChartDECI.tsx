@@ -196,8 +196,8 @@ function DiscountChartDECI({ title }: Props) {
                 name="Market Price Ratio"
                 dot={false} 
                 strokeWidth={2} 
-                stroke="#3991ED" 
-                activeDot={{ r: 4, fill: '#3991ED', stroke: 'white' }}
+                stroke="#C24C35" 
+                activeDot={{ r: 4, fill: '#C24C35', stroke: 'white' }}
                 hide={!visibleLines.discount}
               />
             </LineChart>

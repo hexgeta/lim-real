@@ -31,7 +31,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 
 function AllPricesETH({ 
   tableName = 'historic_prices',
-  title = 'Ethereum Price Chart',
+  title = 'Ethereum Prices',
 }) {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);

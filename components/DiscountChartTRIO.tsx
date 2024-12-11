@@ -189,7 +189,6 @@ function DiscountChartTRIO({ title }: Props) {
                 strokeWidth={2} 
                 stroke="rgba(112, 214, 104)"
                 hide={!visibleLines.backingRatio}
-                connectNulls
               />
               <Line 
                 type="monotone" 
@@ -197,8 +196,8 @@ function DiscountChartTRIO({ title }: Props) {
                 name="Market Price Ratio"
                 dot={false} 
                 strokeWidth={2} 
-                stroke="#3991ED" 
-                activeDot={{ r: 4, fill: '#3991ED', stroke: 'white' }}
+                stroke="white" 
+                activeDot={{ r: 4, fill: 'black', stroke: 'white' }}
                 hide={!visibleLines.discount}
      
               />
