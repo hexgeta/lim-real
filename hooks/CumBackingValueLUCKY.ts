@@ -14,7 +14,7 @@ export const CumBackingValueLUCKY = () => {
 
   // Fetch price data from Supabase
   const { data: priceData, error: priceError } = useSWR(
-    'price_data',
+    'price_data_lucky',
     async () => {
       console.log('Fetching LUCKY price data...');
       const { data, error } = await supabase

@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import axios from 'axios';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
+import { supabase } from '../supabaseClient';
+import { Skeleton } from "@/components/ui/skeleton2";
 
 interface PriceData {
   date: string;
@@ -36,6 +38,8 @@ const calculateXs = (currentPrice: number, highestPrice: number, lowestPrice: nu
 const CombinedChartXs: React.FC = () => {
   const [data, setData] = useState<PriceData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isChartReady, setIsChartReady] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -78,6 +82,7 @@ const CombinedChartXs: React.FC = () => {
         setData(formattedData);
       } catch (error) {
         console.error('Error fetching data:', error);
+        setError('Error fetching data. Please try again.');
       } finally {
         setIsLoading(false);
       }
@@ -85,6 +90,15 @@ const CombinedChartXs: React.FC = () => {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (!isLoading && data.length > 0) {
+      const timer = setTimeout(() => {
+        setIsChartReady(true);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [isLoading, data]);
 
   const highestPrice = useMemo(() => {
     if (data.length === 0) return 0;
@@ -126,64 +140,62 @@ const CombinedChartXs: React.FC = () => {
     return null;
   };
 
-  if (isLoading) {
-    return <div>Loading...</div>;
+  if (error) {
+    return <div className="text-center text-red-500">Error: {error}</div>;
   }
 
   return (
-    <div style={{ width: '100%', height: '450px', backgroundColor: '#000', padding: '20px', color: '#fff', position: 'relative' }}>
-      {/* Labels container */}
-      <div style={{ position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 1 }}>
-        <div style={{ position: 'absolute', top: '62%', right: '5%', transform: 'translateY(-50%)', fontSize: '22px', fontWeight: 'bold', color: '#fff'}}>
-          <div>
-            <span style={{ textDecoration: 'underline' }}>
-              {xCalculations.fromATL === 1 ? "At ATL" : `${xCalculations.fromATL.toFixed(0)}X`}
-            </span>
-            {xCalculations.fromATL !== 1 && " up from ATL"}
+    <div className="w-full h-[550px] sm:h-[450px] md:h-[400px] lg:h-[450px] my-10 relative">
+      {!isChartReady ? (
+        <Skeleton variant="chart" />
+      ) : (
+        <div className="w-full h-full p-5 bg-black border border-white/20 rounded-xl text-white">
+          {/* Labels container */}
+          <div className="absolute top-0 right-0 bottom-0 left-0 z-1">
+            <div className="absolute top-[72%] right-[5%] transform translate-y-[-50%] text-2xl font-bold text-white">
+              <div>
+                <span className="text-decoration-underline">
+                  {xCalculations.fromATL === 1 ? "At ATL" : `${xCalculations.fromATL.toFixed(0)}X`}
+                </span>
+                {xCalculations.fromATL !== 1 && " up from ATL"}
+              </div>
+            </div>
+            <div className="absolute top-[62%] right-[5%] transform translate-y-[-50%] text-2xl font-bold text-white">
+              <span className="text-decoration-underline">
+                {xCalculations.fromLocalLow === 1 ? "At Local Low" : `${xCalculations.fromLocalLow.toFixed(1)}X`}
+              </span>
+              {xCalculations.fromLocalLow !== 1 && " up from local low"}
+            </div>
+            <div className="absolute top-4 right-[25%] text-2xl font-bold text-white">
+              <span className="text-decoration-underline font-bold">
+                {xCalculations.toATH === 1 ? "At ATH" : `${xCalculations.toATH.toFixed(1)}X`}
+              </span>
+              {xCalculations.toATH !== 1 && " until ATH"}
+            </div>
+          </div>
+
+          {/* Chart container */}
+          <div className="relative z-2 h-full">
+            <ResponsiveContainer width="100%" height="90%">
+              <LineChart
+                data={data}
+                margin={{ top: 30, right: 10, left: 10, bottom: 5 }}
+              >
+                <XAxis dataKey="date" hide={true} />
+                <YAxis hide={true} scale="log" domain={['auto', 'auto']} />
+                <Tooltip content={customTooltip} />
+                <Line
+                  type="monotone"
+                  dataKey="price"
+                  stroke="#ff00ff"
+                  dot={false}
+                  strokeWidth={2}
+                />
+              </LineChart>
+            </ResponsiveContainer>
           </div>
         </div>
-        <div style={{ 
-          position: 'absolute', 
-          top: '52%', 
-          right: '5%', 
-          transform: 'translateY(-50%)', 
-          fontSize: '22px', 
-          fontWeight: 'bold', 
-          color: '#fff',
-        }}>
-          <span style={{ textDecoration: 'underline' }}>
-            {xCalculations.fromLocalLow === 1 ? "At Local Low" : `${xCalculations.fromLocalLow.toFixed(1)}X`}
-          </span>
-          {xCalculations.fromLocalLow !== 1 && " up from local low"}
-        </div>
-        <div style={{ position: 'absolute', top: '2%', right: '40%', fontSize: '22px', fontWeight: '600', color: '#fff'}}>
-          <span style={{ textDecoration: 'underline' }}>
-            {xCalculations.toATH === 1 ? "At ATH" : `${xCalculations.toATH.toFixed(1)}X`}
-          </span>
-          {xCalculations.toATH !== 1 && " until ATH"}
-        </div>
-      </div>
-
-      {/* Chart container */}
-      <div style={{ position: 'relative', zIndex: 2, height: '100%' }}>
-        <ResponsiveContainer width="100%" height="90%">
-          <LineChart
-            data={data}
-            margin={{ top: 5, right: 10, left: 10, bottom: 5 }}
-          >
-            <XAxis dataKey="date" hide={true} />
-            <YAxis hide={true} scale="log" domain={['auto', 'auto']} />
-            <Tooltip content={customTooltip} />
-            <Line
-              type="monotone"
-              dataKey="price"
-              stroke="#ff00ff"
-              dot={false}
-              strokeWidth={2}
-            />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
+      )}
     </div>
   );
 };

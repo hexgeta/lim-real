@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, ReferenceLine, CartesianGrid } from 'recharts';
+import { Skeleton } from "@/components/ui/skeleton2";
 
 interface RatioData {
   date: string;
@@ -10,6 +11,7 @@ interface RatioData {
 const PlsPlsxRatioChart: React.FC = () => {
   const [data, setData] = useState<RatioData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isChartReady, setIsChartReady] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -73,63 +75,80 @@ const PlsPlsxRatioChart: React.FC = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    if (!isLoading && data.length > 0) {
+      const timer = setTimeout(() => {
+        setIsChartReady(true);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [isLoading, data]);
+
   const formatDate = (dateStr: string) => {
     const [year, month, day] = dateStr.split('-');
     return `${year}-${month}-${day}`;
   };
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
   return (
-    <div style={{ width: '100%', height: '450px', backgroundColor: '#000', padding: '0px'}}>
-      <ResponsiveContainer width="100%" height="100%">
-        <LineChart
-          data={data}
-          margin={{ top: 10, right: 0, left: 0, bottom: 60 }}
-        >
-          <CartesianGrid 
-            strokeDasharray="3 3" 
-            stroke="rgba(136, 136, 136, 0.2)" 
-            vertical={false} 
-          />
-          <XAxis 
-            dataKey="date" 
-            axisLine={{ stroke: '#888', strokeWidth: 0 }}
-            tickLine={{ stroke: '#424242', strokeWidth: 1}}
-            tick={{ fill: '#888', fontSize: 14, dy: 10 }}
-            interval={100}
-          />
-          <YAxis 
-            stroke="#888" 
-            domain={[0, 1]}
-            allowDataOverflow={true}
-            axisLine={false}
-            tickLine={false}
-            tick={{ fill: '#888', fontSize: 14, dx: -5}}
-            ticks={[0, 0.2,0.4, 0.6, 0.8, 1]}
-          />
-          <Tooltip 
-            contentStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.85)', border: 'solid 1px rgba(255, 255, 255, 0.2)', borderRadius: '5px'}}
-            labelStyle={{ color: 'white' }}
-            formatter={(value, name, props) => {
-              const formattedValue = Number(value).toFixed(2);
-              return [formattedValue, 'PLSX:PLS Ratio'];
-            }}
-            labelFormatter={(label) => formatDate(label)}
-          />
-          <Line 
-            type="monotone" 
-            dataKey="ratio" 
-            name="PLSX:PLS Price Ratio"
-            stroke="#fff"
-            dot={false} 
-            strokeWidth={2}
-            connectNulls={true}
-          />
-        </LineChart>
-      </ResponsiveContainer>
+    <div className="w-full h-[450px] my-10 relative">
+      <div className="w-full h-full p-5 bg-black border border-white/20 rounded-xl text-white">
+        <div style={{ display: 'flex', alignItems: 'center', marginLeft: '40px', marginBottom: '0px' }}>
+          <h2 style={{ color: 'white', fontSize: '24px', margin: '0' }}>
+            PLSX:PLS Price Ratio
+          </h2>
+        </div>
+        
+        {!isChartReady ? (
+          <Skeleton variant="chart" />
+        ) : (
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart
+              data={data}
+              margin={{ top: 60, right: 0, left: 0, bottom: 60 }}
+            >
+              <CartesianGrid 
+                strokeDasharray="3 3" 
+                stroke="rgba(136, 136, 136, 0.2)" 
+                vertical={false} 
+              />
+              <XAxis 
+                dataKey="date" 
+                axisLine={{ stroke: '#888', strokeWidth: 0 }}
+                tickLine={{ stroke: '#424242', strokeWidth: 1}}
+                tick={{ fill: '#888', fontSize: 14, dy: 10 }}
+                interval={100}
+              />
+              <YAxis 
+                stroke="#888" 
+                domain={[0, 1]}
+                allowDataOverflow={true}
+                axisLine={false}
+                tickLine={false}
+                tick={{ fill: '#888', fontSize: 14, dx: -5}}
+                ticks={[0, 0.2, 0.4, 0.6, 0.8, 1]}
+              />
+              <Tooltip 
+                contentStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.85)', border: 'solid 1px rgba(255, 255, 255, 0.2)', borderRadius: '5px'}}
+                labelStyle={{ color: 'white' }}
+                formatter={(value, name, props) => {
+                  const formattedValue = Number(value).toFixed(2);
+                  return [formattedValue, 'PLSX:PLS Ratio'];
+                }}
+                labelFormatter={(label) => formatDate(label)}
+              />
+              <Line 
+                type="monotone" 
+                dataKey="ratio" 
+                name="PLSX:PLS Price Ratio"
+                stroke="#fff"
+                dot={false} 
+                strokeWidth={2}
+                connectNulls={true}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        )}
+      </div>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, LegendProps } from 'recharts';
+import { Skeleton } from "@/components/ui/skeleton2";
 
 interface ChartData {
   date: string;
@@ -19,6 +20,7 @@ const HEXLiquidityChart: React.FC = () => {
     pricePulseX: true,
     dollarLiquidity: false
   });
+  const [isChartReady, setIsChartReady] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -78,6 +80,15 @@ const HEXLiquidityChart: React.FC = () => {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (!isLoading && data.length > 0) {
+      const timer = setTimeout(() => {
+        setIsChartReady(true);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [isLoading, data]);
 
   const formatDate = (dateStr: string) => {
     const [year, month, day] = dateStr.split('-');
@@ -176,121 +187,129 @@ const HEXLiquidityChart: React.FC = () => {
     );
   };
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
   return (
-    <div style={{ width: '100%', height: '450px', backgroundColor: '#000', padding: '0px', display: 'flex', flexDirection: 'column'}}>
-      <ResponsiveContainer width="100%" height="100%">
-        <LineChart
-          data={data}
-          margin={{ top: 30, right: 0, left: 0, bottom: 80 }}
-        >
-          <XAxis 
-            dataKey="date" 
-            axisLine={false}
-            tickLine={false}
-            tick={false}
-          />
-          <YAxis 
-            yAxisId="left"
-            stroke="#888" 
-            domain={['auto', 'auto']}
-            allowDataOverflow={true}
-            axisLine={false}
-            tickLine={false}
-            tick={false}
-          />
-          <YAxis 
-            yAxisId="right"
-            orientation="right"
-            stroke="#888" 
-            domain={['auto', 'auto']}
-            allowDataOverflow={true}
-            axisLine={false}
-            tickLine={false}
-            tick={false}
-          />
-          <YAxis 
-            yAxisId="dollarLiquidity"
-            orientation="right"
-            stroke="#888" 
-            domain={['auto', 'auto']}
-            allowDataOverflow={true}
-            axisLine={false}
-            tickLine={false}
-            tick={false}
-            scale="log"
-          />
-          <Tooltip 
-            contentStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.85)', border: 'solid 1px rgba(255, 255, 255, 0.2)', borderRadius: '5px'}}
-            labelStyle={{ color: 'white' }}
-            formatter={(value: any, name: string) => {
-              if (name.includes('Price')) {
-                return [`$${Number(value).toFixed(4)}`, name];
-              } else if (name.includes('Liquidity')) {
-                const billions = Number(value) / 1000000000;
-                const millions = Number(value) / 1000000;
-                
-                if (name.includes('$ Liquidity')) {
-                  // Format dollar liquidity with $ symbol
-                  if (billions >= 1) {
-                    return [`$${billions.toFixed(2)}B`, name];
-                  } else {
-                    return [`$${millions.toFixed(2)}M`, name];
+    <div className="w-full h-[450px] my-10 relative">
+      <div className="w-full h-full p-5 bg-black border border-white/20 rounded-xl text-white">
+        <div style={{ display: 'flex', alignItems: 'center', marginLeft: '40px', marginBottom: '0px' }}>
+          <h2 style={{ color: 'white', fontSize: '24px', margin: '0' }}>
+            pHEX Liquidity Chart
+          </h2>
+        </div>
+        
+        {!isChartReady ? (
+          <Skeleton variant="chart" />
+        ) : (
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart
+              data={data}
+              margin={{ top: 30, right: 0, left: 0, bottom: 20 }}
+            >
+              <XAxis 
+                dataKey="date" 
+                axisLine={false}
+                tickLine={false}
+                tick={false}
+              />
+              <YAxis 
+                yAxisId="left"
+                stroke="#888" 
+                domain={['auto', 'auto']}
+                allowDataOverflow={true}
+                axisLine={false}
+                tickLine={false}
+                tick={false}
+              />
+              <YAxis 
+                yAxisId="right"
+                orientation="right"
+                stroke="#888" 
+                domain={['auto', 'auto']}
+                allowDataOverflow={true}
+                axisLine={false}
+                tickLine={false}
+                tick={false}
+              />
+              <YAxis 
+                yAxisId="dollarLiquidity"
+                orientation="right"
+                stroke="#888" 
+                domain={['auto', 'auto']}
+                allowDataOverflow={true}
+                axisLine={false}
+                tickLine={false}
+                tick={false}
+                scale="log"
+              />
+              <Tooltip 
+                contentStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.85)', border: 'solid 1px rgba(255, 255, 255, 0.2)', borderRadius: '5px'}}
+                labelStyle={{ color: 'white' }}
+                formatter={(value: any, name: string) => {
+                  if (name.includes('Price')) {
+                    return [`$${Number(value).toFixed(4)}`, name];
+                  } else if (name.includes('Liquidity')) {
+                    const billions = Number(value) / 1000000000;
+                    const millions = Number(value) / 1000000;
+                    
+                    if (name.includes('$ Liquidity')) {
+                      // Format dollar liquidity with $ symbol
+                      if (billions >= 1) {
+                        return [`$${billions.toFixed(2)}B`, name];
+                      } else {
+                        return [`$${millions.toFixed(2)}M`, name];
+                      }
+                    } else {
+                      // Format HEX liquidity
+                      if (billions >= 1) {
+                        return [`${billions.toFixed(2)}B`, name];
+                      } else {
+                        return [`${millions.toFixed(0)}M`, name];
+                      }
+                    }
                   }
-                } else {
-                  // Format HEX liquidity
-                  if (billions >= 1) {
-                    return [`${billions.toFixed(2)}B`, name];
-                  } else {
-                    return [`${millions.toFixed(0)}M`, name];
-                  }
-                }
-              }
-              return [value, name];
-            }}
-            labelFormatter={(label) => formatDate(label)}
-          />
-          <Legend content={customLegend} />
-          <Line 
-            yAxisId="left"
-            type="monotone" 
-            dataKey="liquidityPulseX_HEX" 
-            name={`Total pHEX Liquidity (${formatToMillions(currentLiquidity)} HEX)`}
-            stroke="#fff"
-            dot={false} 
-            strokeWidth={2}
-            connectNulls={true}
-          />
-          <Line 
-            yAxisId="right"
-            type="monotone" 
-            dataKey="pricePulseX" 
-            name={`pHEX Price (${formatPrice(currentPrice)})`}
-            stroke="#ff00ff"
-            dot={false} 
-            strokeWidth={2}
-            connectNulls={true}
-          />
-          <Line 
-            yAxisId="dollarLiquidity"
-            type="monotone" 
-            dataKey="dollarLiquidity" 
-            name={`Total $ Liquidity (${currentLiquidity && currentPrice ? 
-              (currentLiquidity * currentPrice) >= 1000000000 
-                ? `$${((currentLiquidity * currentPrice) / 1000000000).toFixed(2)}B` 
-                : `$${((currentLiquidity * currentPrice) / 1000000).toFixed(2)}M`
-              : '$0M'})`}
-            stroke="#00ff00"
-            dot={false} 
-            strokeWidth={2}
-            connectNulls={true}
-            hide={!visibleLines.dollarLiquidity}
-          />
-        </LineChart>
-      </ResponsiveContainer>
+                  return [value, name];
+                }}
+                labelFormatter={(label) => formatDate(label)}
+              />
+              <Legend content={customLegend} />
+              <Line 
+                yAxisId="left"
+                type="monotone" 
+                dataKey="liquidityPulseX_HEX" 
+                name={`Total pHEX Liquidity (${formatToMillions(currentLiquidity)} HEX)`}
+                stroke="#fff"
+                dot={false} 
+                strokeWidth={2}
+                connectNulls={true}
+              />
+              <Line 
+                yAxisId="right"
+                type="monotone" 
+                dataKey="pricePulseX" 
+                name={`pHEX Price (${formatPrice(currentPrice)})`}
+                stroke="#ff00ff"
+                dot={false} 
+                strokeWidth={2}
+                connectNulls={true}
+              />
+              <Line 
+                yAxisId="dollarLiquidity"
+                type="monotone" 
+                dataKey="dollarLiquidity" 
+                name={`Total $ Liquidity (${currentLiquidity && currentPrice ? 
+                  (currentLiquidity * currentPrice) >= 1000000000 
+                    ? `$${((currentLiquidity * currentPrice) / 1000000000).toFixed(2)}B` 
+                    : `$${((currentLiquidity * currentPrice) / 1000000).toFixed(2)}M`
+                  : '$0M'})`}
+                stroke="#00ff00"
+                dot={false} 
+                strokeWidth={2}
+                connectNulls={true}
+                hide={!visibleLines.dollarLiquidity}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        )}
+      </div>
     </div>
   );
 };

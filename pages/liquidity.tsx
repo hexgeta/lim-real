@@ -5,9 +5,9 @@ import EHEXLiquidityChart from '@/components/EHEXLiquidityChart';
 const LiquidityChartPage: React.FC = () => {
   return (
     <div>
-      <h1 className="text-white text-2xl font-bold mt-20 mb-4 text-center">pHEX Liquidity</h1>
+      <h1 className="text-2xl font-bold mt-10 mb-4 text-center">HEX Liquidity</h1>
+      <p className="text-white/60 text-center">Charts showing HEX liquidity and price change over time.</p>
       <HEXLiquidityChart/>
-      <h1 className="text-white text-2xl font-bold mt-20 mb-4 text-center">eHEX Liquidity</h1>
       <EHEXLiquidityChart/>
 
     </div>

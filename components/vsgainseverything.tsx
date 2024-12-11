@@ -21,6 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Skeleton } from "@/components/ui/skeleton2";
 
 interface TokenData {
   date: string;
@@ -120,6 +121,7 @@ const VsGainsEverything: React.FC = () => {
   const [baselineDate, setBaselineDate] = useState('2024-09-07T00:00:00.000Z');
   const [activeButton, setActiveButton] = useState<string>('HEX');
   const [date, setDate] = useState<Date | undefined>(new Date('2024-09-07'));
+  const [isChartReady, setIsChartReady] = useState(false);
 
   useEffect(() => {
     handleDateChange('2024-09-07T00:00:00.000Z', 'HEX');
@@ -269,6 +271,15 @@ const VsGainsEverything: React.FC = () => {
 
     fetchData();
   }, [baselineDate]);
+
+  useEffect(() => {
+    if (!isLoading && data.length > 0) {
+      const timer = setTimeout(() => {
+        setIsChartReady(true);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [isLoading, data]);
 
   const handleLegendClick = (dataKey: string) => {
     setVisibleLines(prev => ({
@@ -471,306 +482,310 @@ const VsGainsEverything: React.FC = () => {
     setDate(dateObj);
   };
 
-  if (isLoading) {
-    return <div className="text-center text-white">Loading...</div>;
-  }
-
   if (error) {
     return <div className="text-center text-red-500">Error: {error}</div>;
   }
 
   return (
-    <div className="w-full h-[650px] sm:h-[550px] md:h-[400px] lg:h-[450px] my-10 p-5 bg-black border border-white/20 rounded-xl text-white relative">
-      <div className="flex justify-between items-start mb-2.5 px-6">
-        <div className="flex flex-col gap-1">
-          <h2 className="text-white text-sm lg:text-2xl m-0 pr-2.5 font-bold">
-            <u>Everything</u> vs everything
-          </h2>
-          <p className="text-xs sm:text-sm text-gray-400">
-          From any token's market bottom
-        </p>
-        </div>
+    <div className="w-full h-[650px] sm:h-[550px] md:h-[400px] lg:h-[450px] my-10 relative">
+      {!isChartReady ? (
+        <Skeleton variant="chart" />
+      ) : (
+        <div className="w-full h-full p-5 bg-black border border-white/20 rounded-xl text-white">
+          <div className="flex justify-between items-start mb-2.5 px-6">
+            <div className="flex flex-col gap-1">
+              <h2 className="text-white text-sm lg:text-2xl m-0 pr-2.5 font-bold">
+                <u>Everything</u> vs everything
+              </h2>
+              <p className="text-xs sm:text-sm text-gray-400">
+                From any token's market bottom
+              </p>
+            </div>
 
-        <div className="flex gap-2.5 items-center flex-col">
-          {/* Controls Container */}
-          <div className="w-full flex flex-col lg:flex-row gap-2 lg:gap-4 items-center justify-end">
-            {/* Date Picker */}
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant={"outline"}
-                  className={cn(
-                    "w-[140px] sm:w-[180px] justify-start text-left font-normal bg-black border-white/20 text-white",
-                    "hover:bg-black hover:border-white/20 hover:text-white",
-                    !date && "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {date ? format(date, "yyyy/MM/dd") : <span>Pick a date</span>}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0 bg-black border border-white/20">
-                <Calendar
-                  mode="single"
-                  selected={date}
-                  defaultMonth={date}
-                  onSelect={(newDate) => {
-                    if (newDate) {
-                      const isoString = newDate.toISOString();
-                      setDate(newDate);
-                      setBaselineDate(isoString);
-                      setActiveButton('');
+            <div className="flex gap-2.5 items-center flex-col">
+              {/* Controls Container */}
+              <div className="w-full flex flex-col lg:flex-row gap-2 lg:gap-4 items-center justify-end">
+                {/* Date Picker */}
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-[140px] sm:w-[180px] justify-start text-left font-normal bg-black border-white/20 text-white",
+                        "hover:bg-black hover:border-white/20 hover:text-white",
+                        !date && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {date ? format(date, "yyyy/MM/dd") : <span>Pick a date</span>}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0 bg-black border border-white/20">
+                    <Calendar
+                      mode="single"
+                      selected={date}
+                      defaultMonth={date}
+                      onSelect={(newDate) => {
+                        if (newDate) {
+                          const isoString = newDate.toISOString();
+                          setDate(newDate);
+                          setBaselineDate(isoString);
+                          setActiveButton('');
+                        }
+                      }}
+                      initialFocus
+                      className="bg-black text-white"
+                      classNames={{
+                        months: "text-white",
+                        month: "text-white",
+                        caption: "flex justify-center pt-1 relative items-center text-white",
+                        caption_label: "text-sm font-medium text-white",
+                        nav: "space-x-1 flex items-center",
+                        nav_button: "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 text-white",
+                        nav_button_previous: "absolute left-1",
+                        nav_button_next: "absolute right-1",
+                        table: "w-full border-collapse space-y-1",
+                        head_row: "flex",
+                        head_cell: "text-gray-500 rounded-md w-9 font-normal text-[0.8rem]",
+                        row: "flex w-full mt-2",
+                        cell: "text-center text-sm p-0 relative [&:has([aria-selected])]:bg-transparent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+                        day: "h-9 w-9 p-0 font-normal aria-selected:opacity-100 hover:bg-gray-800 rounded-md text-white",
+                        day_selected: "bg-gray-800 text-white hover:bg-gray-700 hover:text-white focus:bg-gray-800 focus:text-white",
+                        day_today: "bg-gray-800/80 text-white",
+                        day_outside: "text-gray-700 opacity-50",
+                        day_disabled: "text-gray-700 opacity-50",
+                        day_range_middle: "aria-selected:bg-transparent",
+                        day_hidden: "hidden",
+                        ...(date && {
+                          day_selected: "bg-gray-800 text-white hover:bg-gray-700 hover:text-white focus:bg-gray-800 focus:text-white",
+                          day_today: "bg-gray-800/80 text-white",
+                          day_outside: "text-gray-700 opacity-50",
+                          day_disabled: "text-gray-700 opacity-50",
+                          day_range_middle: "aria-selected:bg-transparent",
+                          day_hidden: "hidden",
+                        }),
+                      }}
+                    />
+                  </PopoverContent>
+                </Popover>
+
+                {/* Lows Dropdown */}
+                <Select 
+                  defaultValue="hex" 
+                  modal={false} 
+                  onValueChange={(value) => {
+                    const selectedDate = lowDates.find(date => date.id === value);
+                    if (selectedDate) {
+                      handleDateChange(selectedDate.date, selectedDate.name.split(' ')[0]);
                     }
                   }}
-                  initialFocus
-                  className="bg-black text-white"
-                  classNames={{
-                    months: "text-white",
-                    month: "text-white",
-                    caption: "flex justify-center pt-1 relative items-center text-white",
-                    caption_label: "text-sm font-medium text-white",
-                    nav: "space-x-1 flex items-center",
-                    nav_button: "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 text-white",
-                    nav_button_previous: "absolute left-1",
-                    nav_button_next: "absolute right-1",
-                    table: "w-full border-collapse space-y-1",
-                    head_row: "flex",
-                    head_cell: "text-gray-500 rounded-md w-9 font-normal text-[0.8rem]",
-                    row: "flex w-full mt-2",
-                    cell: "text-center text-sm p-0 relative [&:has([aria-selected])]:bg-transparent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
-                    day: "h-9 w-9 p-0 font-normal aria-selected:opacity-100 hover:bg-gray-800 rounded-md text-white",
-                    day_selected: "bg-gray-800 text-white hover:bg-gray-700 hover:text-white focus:bg-gray-800 focus:text-white",
-                    day_today: "bg-gray-800/80 text-white",
-                    day_outside: "text-gray-700 opacity-50",
-                    day_disabled: "text-gray-700 opacity-50",
-                    day_range_middle: "aria-selected:bg-transparent",
-                    day_hidden: "hidden",
-                    ...(date && {
-                      day_selected: "bg-gray-800 text-white hover:bg-gray-700 hover:text-white focus:bg-gray-800 focus:text-white",
-                      day_today: "bg-gray-800/80 text-white",
-                      day_outside: "text-gray-700 opacity-50",
-                      day_disabled: "text-gray-700 opacity-50",
-                      day_range_middle: "aria-selected:bg-transparent",
-                      day_hidden: "hidden",
-                    }),
-                  }}
-                />
-              </PopoverContent>
-            </Popover>
-
-            {/* Lows Dropdown */}
-            <Select 
-              defaultValue="hex" 
-              modal={false} 
-              onValueChange={(value) => {
-                const selectedDate = lowDates.find(date => date.id === value);
-                if (selectedDate) {
-                  handleDateChange(selectedDate.date, selectedDate.name.split(' ')[0]);
-                }
-              }}
-            >
-              <SelectTrigger className="w-[140px] sm:w-[180px] bg-black border-white/20 text-white hover:bg-gray-900 hover:border-white/20">
-                <SelectValue placeholder="Select low" />
-              </SelectTrigger>
-              <SelectContent 
-                className="bg-black border border-white/20 fixed overflow-hidden max-h-[var(--radix-select-content-available-height)] z-50"
-              >
-                {lowDates.map((date) => (
-                  <SelectItem 
-                    key={date.id} 
-                    value={date.id}
-                    className="text-white hover:bg-gray-900 focus:bg-gray-900 focus:text-white whitespace-nowrap truncate w-full"
+                >
+                  <SelectTrigger className="w-[140px] sm:w-[180px] bg-black border-white/20 text-white hover:bg-gray-900 hover:border-white/20">
+                    <SelectValue placeholder="Select low" />
+                  </SelectTrigger>
+                  <SelectContent 
+                    className="bg-black border border-white/20 fixed overflow-hidden max-h-[var(--radix-select-content-available-height)] z-50"
                   >
-                    <div className="flex items-center gap-2 truncate w-full">
-                      <div 
-                        className="w-2 h-2 rounded-full flex-shrink-0"
-                        style={{ backgroundColor: date.color }}
-                      />
-                      <span className="truncate">{date.name}</span>
+                    {lowDates.map((date) => (
+                      <SelectItem 
+                        key={date.id} 
+                        value={date.id}
+                        className="text-white hover:bg-gray-900 focus:bg-gray-900 focus:text-white whitespace-nowrap truncate w-full"
+                      >
+                        <div className="flex items-center gap-2 truncate w-full">
+                          <div 
+                            className="w-2 h-2 rounded-full flex-shrink-0"
+                            style={{ backgroundColor: date.color }}
+                          />
+                          <span className="truncate">{date.name}</span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
+          
+          <div className="w-full h-[calc(100%-60px)]">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart
+                data={data}
+                margin={{ top: 15, right: 0, left: 0, bottom: 20 }}
+              >
+                <XAxis 
+                  dataKey="date" 
+                  stroke="#888"
+                  axisLine={{ stroke: '#888', strokeWidth: 0 }}
+                  tickLine={false}
+                  tick={{ fill: '#888', fontSize: 14, dy: 10 }}
+                  tickFormatter={(date) => new Date(date).toLocaleDateString('en-UK', { 
+                    day: 'numeric', 
+                    month: 'short',
+                    year: '2-digit'
+                  })}
+                  domain={['dataMin', 'dataMax']}
+                  ticks={data.reduce((acc, item, index) => {
+                    if (index === 0 || index === data.length - 1) {
+                      acc.push(item.date);
+                    }
+                    return acc;
+                  }, [] as string[])}
+                />
+                <YAxis 
+                  tickFormatter={(value) => `${Number.isInteger(value) ? value.toFixed(0) : value.toFixed(1)}X`}
+                  stroke="#888"
+                  axisLine={{ stroke: '#888', strokeWidth: 0 }}
+                  tickLine={false}
+                  tick={(props) => {
+                    return (
+                      <text
+                        x={props.x}
+                        y={props.y}
+                        dy={4}
+                        textAnchor="end"
+                        fill="#888"
+                        fontSize={14}
+                      >
+                        {`${Number.isInteger(props.payload.value) ? 
+                          props.payload.value.toFixed(0) : 
+                          props.payload.value.toFixed(1)}X`}
+                      </text>
+                    );
+                  }}
+                  domain={[0, 'auto']}
+                  allowDataOverflow={false}
+                  interval="preserveStartEnd"
+                />
+                <CartesianGrid 
+                  strokeDasharray="3 3" 
+                  stroke="rgba(136, 136, 136, 0.2)" 
+                  vertical={false} 
+                />
+                <Tooltip 
+                  contentStyle={{ 
+                    backgroundColor: 'rgba(0, 0, 0, 0.85)', 
+                    border: '1px solid rgba(255, 255, 255, 0.2)', 
+                    borderRadius: '10px', 
+                    padding: '10px',
+                    color: '#fff',
+                    boxShadow: '0 0 10px rgba(0,0,0,0.5)'
+                  }}
+                  formatter={(value: number, name: string) => {
+                    const color = name === 'pHEX' ? '#ff00ff' : 
+                                 name === 'BTC' ? '#f7931a' : 
+                                 name === 'ETH' ? '#00FFFF' : 
+                                 name === 'SOL' ? '#14F195' :
+                                 name === 'PLS' ? '#9945FF' :
+                                 name === 'PLSX' ? '#FFD700' :
+                                 name === 'INC' ? '#00FF00' :
+                                 name === 'eHEX' ? '#627EEA' :
+                                 '#fff';
+                    return [
+                      <span style={{ color }}>
+                        {name} : {value.toFixed(1)}X
+                      </span>
+                    ];
+                  }}
+                  labelFormatter={(label) => (
+                    <div style={{ 
+                      marginBottom: '5px',
+                      fontSize: '14px',
+                      color: '#fff'
+                    }}>
+                      {label.split('T')[0]}
                     </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+                  )}
+                />
+                <Legend content={customLegend} />
+                
+                <Line 
+                  type="monotone" 
+                  dataKey="hexX" 
+                  stroke="#ff00ff" 
+                  strokeWidth={2}
+                  dot={false}
+                  name="pHEX"
+                  label={renderCustomizedLabel}
+                  hide={!visibleLines.hexX}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="ehexX" 
+                  stroke="#627EEA" 
+                  strokeWidth={2}
+                  dot={false}
+                  name="eHEX"
+                  hide={!visibleLines.ehexX}
+                  label={renderCustomizedLabel}
+                />
+                          <Line 
+                  type="monotone" 
+                  dataKey="plsX" 
+                  stroke="#9945FF" 
+                  strokeWidth={2}
+                  dot={false}
+                  name="PLS"
+                  label={renderCustomizedLabel}
+                  hide={!visibleLines.plsX}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="plsxX" 
+                  stroke="#FFD700" 
+                  strokeWidth={2}
+                  dot={false}
+                  name="PLSX"
+                  label={renderCustomizedLabel}
+                  hide={!visibleLines.plsxX}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="incX" 
+                  stroke="#00FF00" 
+                  strokeWidth={2}
+                  dot={false}
+                  name="INC"
+                  hide={!visibleLines.incX}
+                  label={renderCustomizedLabel}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="btcX" 
+                  stroke="#f7931a" 
+                  strokeWidth={2}
+                  dot={false}
+                  name="BTC"
+                  label={renderCustomizedLabel}
+                  hide={!visibleLines.btcX}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="ethX" 
+                  stroke="#00FFFF" 
+                  strokeWidth={2}
+                  dot={false}
+                  name="ETH"
+                  label={renderCustomizedLabel}
+                  hide={!visibleLines.ethX}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="solX" 
+                  stroke="#14F195" 
+                  strokeWidth={2}
+                  dot={false}
+                  name="SOL"
+                  label={renderCustomizedLabel}
+                  hide={!visibleLines.solX}
+                />
+
+
+              </LineChart>
+            </ResponsiveContainer>
           </div>
         </div>
-      </div>
-      
-      <ResponsiveContainer width="100%" height="90%">
-        <LineChart
-          data={data}
-          margin={{ top: 15, right: 0, left: 0, bottom: 20 }}
-        >
-          <XAxis 
-            dataKey="date" 
-            stroke="#888"
-            axisLine={{ stroke: '#888', strokeWidth: 0 }}
-            tickLine={false}
-            tick={{ fill: '#888', fontSize: 14, dy: 10 }}
-            tickFormatter={(date) => new Date(date).toLocaleDateString('en-UK', { 
-              day: 'numeric', 
-              month: 'short',
-              year: '2-digit'
-            })}
-            domain={['dataMin', 'dataMax']}
-            ticks={data.reduce((acc, item, index) => {
-              if (index === 0 || index === data.length - 1) {
-                acc.push(item.date);
-              }
-              return acc;
-            }, [] as string[])}
-          />
-          <YAxis 
-            tickFormatter={(value) => `${Number.isInteger(value) ? value.toFixed(0) : value.toFixed(1)}X`}
-            stroke="#888"
-            axisLine={{ stroke: '#888', strokeWidth: 0 }}
-            tickLine={false}
-            tick={(props) => {
-              return (
-                <text
-                  x={props.x}
-                  y={props.y}
-                  dy={4}
-                  textAnchor="end"
-                  fill="#888"
-                  fontSize={14}
-                >
-                  {`${Number.isInteger(props.payload.value) ? 
-                    props.payload.value.toFixed(0) : 
-                    props.payload.value.toFixed(1)}X`}
-                </text>
-              );
-            }}
-            domain={[0, 'auto']}
-            allowDataOverflow={false}
-            interval="preserveStartEnd"
-          />
-          <CartesianGrid 
-            strokeDasharray="3 3" 
-            stroke="rgba(136, 136, 136, 0.2)" 
-            vertical={false} 
-          />
-          <Tooltip 
-            contentStyle={{ 
-              backgroundColor: 'rgba(0, 0, 0, 0.85)', 
-              border: '1px solid rgba(255, 255, 255, 0.2)', 
-              borderRadius: '10px', 
-              padding: '10px',
-              color: '#fff',
-              boxShadow: '0 0 10px rgba(0,0,0,0.5)'
-            }}
-            formatter={(value: number, name: string) => {
-              const color = name === 'pHEX' ? '#ff00ff' : 
-                           name === 'BTC' ? '#f7931a' : 
-                           name === 'ETH' ? '#00FFFF' : 
-                           name === 'SOL' ? '#14F195' :
-                           name === 'PLS' ? '#9945FF' :
-                           name === 'PLSX' ? '#FFD700' :
-                           name === 'INC' ? '#00FF00' :
-                           name === 'eHEX' ? '#627EEA' :
-                           '#fff';
-              return [
-                <span style={{ color }}>
-                  {name} : {value.toFixed(1)}X
-                </span>
-              ];
-            }}
-            labelFormatter={(label) => (
-              <div style={{ 
-                marginBottom: '5px',
-                fontSize: '14px',
-                color: '#fff'
-              }}>
-                {label.split('T')[0]}
-              </div>
-            )}
-          />
-          <Legend content={customLegend} />
-          
-          <Line 
-            type="monotone" 
-            dataKey="hexX" 
-            stroke="#ff00ff" 
-            strokeWidth={2}
-            dot={false}
-            name="pHEX"
-            label={renderCustomizedLabel}
-            hide={!visibleLines.hexX}
-          />
-          <Line 
-            type="monotone" 
-            dataKey="ehexX" 
-            stroke="#627EEA" 
-            strokeWidth={2}
-            dot={false}
-            name="eHEX"
-            hide={!visibleLines.ehexX}
-            label={renderCustomizedLabel}
-          />
-                    <Line 
-            type="monotone" 
-            dataKey="plsX" 
-            stroke="#9945FF" 
-            strokeWidth={2}
-            dot={false}
-            name="PLS"
-            label={renderCustomizedLabel}
-            hide={!visibleLines.plsX}
-          />
-          <Line 
-            type="monotone" 
-            dataKey="plsxX" 
-            stroke="#FFD700" 
-            strokeWidth={2}
-            dot={false}
-            name="PLSX"
-            label={renderCustomizedLabel}
-            hide={!visibleLines.plsxX}
-          />
-          <Line 
-            type="monotone" 
-            dataKey="incX" 
-            stroke="#00FF00" 
-            strokeWidth={2}
-            dot={false}
-            name="INC"
-            hide={!visibleLines.incX}
-            label={renderCustomizedLabel}
-          />
-          <Line 
-            type="monotone" 
-            dataKey="btcX" 
-            stroke="#f7931a" 
-            strokeWidth={2}
-            dot={false}
-            name="BTC"
-            label={renderCustomizedLabel}
-            hide={!visibleLines.btcX}
-          />
-          <Line 
-            type="monotone" 
-            dataKey="ethX" 
-            stroke="#00FFFF" 
-            strokeWidth={2}
-            dot={false}
-            name="ETH"
-            label={renderCustomizedLabel}
-            hide={!visibleLines.ethX}
-          />
-          <Line 
-            type="monotone" 
-            dataKey="solX" 
-            stroke="#14F195" 
-            strokeWidth={2}
-            dot={false}
-            name="SOL"
-            label={renderCustomizedLabel}
-            hide={!visibleLines.solX}
-          />
-
-
-        </LineChart>
-      </ResponsiveContainer>
+      )}
     </div>
   );
 };

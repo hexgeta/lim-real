@@ -87,6 +87,7 @@ export const TOKEN_CONSTANTS = {
     }
   },
   pTRIO: {
+    LAUNCH_DATE: new Date('2022-09-27'),
     STAKE_PRINCIPLE: 69617911,
     TOKEN_SUPPLY: 69617911,
     TSHARES: 4698.32,
@@ -105,6 +106,7 @@ export const TOKEN_CONSTANTS = {
     }
   },
   pBASE2: {
+    LAUNCH_DATE: new Date('2022-09-27'),
     STAKE_PRINCIPLE: 109163369,
     TOKEN_SUPPLY: 97197332,
     TSHARES: 4532.11,

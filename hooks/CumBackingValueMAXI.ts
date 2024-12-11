@@ -14,7 +14,7 @@ export const CumBackingValueMAXI = () => {
 
   // Fetch price data from Supabase
   const { data: priceData, error: priceError } = useSWR(
-    'price_data',
+    'price_data_maxi',
     async () => {
       const { data, error } = await supabase
         .from('historic_prices')

@@ -2,6 +2,8 @@ import React from 'react';
 import DiscountChartMAXI from '../components/DiscountChartMAXI';
 import DiscountChartLUCKY from '../components/DiscountChartLUCKY';
 import DiscountChartDECI from '../components/DiscountChartDECI';
+import DiscountChartTRIO from '@/components/DiscountChartTRIO';
+import DiscountChartBASE from '@/components/DiscountChartBASE';
 
 const DeltaDiscounts = () => {
   return (
@@ -12,11 +14,17 @@ const DeltaDiscounts = () => {
         <div>
           <DiscountChartMAXI title="pMaxi Ⓜ️" />
         </div>
-        {/* <div>
+        <div>
           <DiscountChartDECI title="pDeci 🛡️" />
         </div>
         <div>
           <DiscountChartLUCKY title="pLucky 🍀" />
+        </div>
+        <div>
+          <DiscountChartTRIO title="pTrio 🎲" />
+        </div>
+        {/* <div>
+          <DiscountChartBASE title="pBase 🟠" />
         </div> */}
       </div>
     </div>

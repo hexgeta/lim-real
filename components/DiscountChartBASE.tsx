@@ -3,21 +3,32 @@ import {
   LineChart, Area, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ReferenceLine, ResponsiveContainer
 } from 'recharts';
 import { Skeleton } from "@/components/ui/skeleton2";
-import { CumBackingValueLUCKY } from '@/hooks/CumBackingValueLUCKY';
+import { CumBackingValueBASE } from '@/hooks/CumBackingValueBASE';
 
 interface Props {
   title: string;
 }
 
-function DiscountChartLUCKY({ title }: Props) {
-  const { data, error, isLoading } = CumBackingValueLUCKY();
+function DiscountChartBASE({ title }: Props) {
+  const { data, error, isLoading } = CumBackingValueBASE();
   
   console.log('Chart Data:', {
     isLoading,
     error,
     dataLength: data?.length,
-    firstFewItems: data?.slice(0, 5)
+    firstFewItems: data?.slice(0, 5),
+    lastFewItems: data?.slice(-5)
   });
+
+  useEffect(() => {
+    if (data && data.length > 0) {
+      console.log('Data received in chart:', {
+        firstPoint: data[0],
+        lastPoint: data[data.length - 1],
+        sampleDiscount: data.map(d => d.discount).filter(d => d !== null).slice(0, 5)
+      });
+    }
+  }, [data]);
 
   const [visibleLines, setVisibleLines] = useState({
     backingRatio: true,
@@ -43,7 +54,7 @@ function DiscountChartLUCKY({ title }: Props) {
           display: 'flex', 
           justifyContent: 'center', 
           width: '100%', 
-          marginTop: '35px' 
+          marginTop: '25px' 
         }}>
           <ul style={{ 
             listStyle: 'none', 
@@ -93,19 +104,6 @@ function DiscountChartLUCKY({ title }: Props) {
     return <div>Error loading data</div>;
   }
 
-  // Format data for the chart
-  const chartData = useMemo(() => {
-    if (!data) return [];
-    return data.map(item => ({
-      ...item,
-      date: new Date(item.date),
-      discount: item.discount || null,  // Ensure we handle null values
-      backingRatio: item.backingRatio || null
-    }));
-  }, [data]);
-
-  console.log('Formatted Chart Data:', chartData?.slice(0, 5));
-
   return (
     <div className="w-full h-[450px] my-10 relative">
       {isLoading ? (
@@ -116,7 +114,7 @@ function DiscountChartLUCKY({ title }: Props) {
             {title}
           </h2>
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={chartData} margin={{ top: 30, right: 20, left: 20, bottom: 30 }}>
+            <LineChart data={data} margin={{ top: 30, right: 20, left: 20, bottom: 60 }}>
               <CartesianGrid 
                 strokeDasharray="3 3" 
                 stroke="rgba(136, 136, 136, 0.2)" 
@@ -127,7 +125,7 @@ function DiscountChartLUCKY({ title }: Props) {
                 axisLine={{ stroke: '#888', strokeWidth: 0 }}
                 tickLine={false}
                 tick={{ fill: '#888', fontSize: 14, dy: 5 }}
-                ticks={[chartData[0]?.date, chartData[chartData.length - 1]?.date]}
+                ticks={[data[0]?.date, data[data.length - 1]?.date]}
                 tickFormatter={(value) => {
                   const date = new Date(value);
                   return date.toLocaleDateString('en-US', { 
@@ -203,6 +201,7 @@ function DiscountChartLUCKY({ title }: Props) {
                 activeDot={{ r: 4, fill: '#3991ED', stroke: 'white' }}
                 hide={!visibleLines.discount}
                 connectNulls
+                isAnimationActive={false}
               />
             </LineChart>
           </ResponsiveContainer>
@@ -212,4 +211,4 @@ function DiscountChartLUCKY({ title }: Props) {
   );
 }
 
-export default DiscountChartLUCKY;
+export default DiscountChartBASE; 

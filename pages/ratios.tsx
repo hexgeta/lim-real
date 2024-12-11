@@ -5,12 +5,12 @@ import HEXtoPLSRatioChart from '@/components/HexPlsRatio';
 
 const PriceRatioChartPage: React.FC = () => {
   return (
-    <div>
+    <div className="p-2 sm:p-4">
+            <h1 className="text-2xl font-bold mt-10 mb-4 text-center">Ratios</h1>
+            <p className="text-white/60 text-center">Chart showing key price ratios between different assets.</p>
       {/* <h1 className="text-white text-2xl font-bold mt-20 mb-4 text-center">eHEX:pHEX Price Ratio</h1>
       <HEXPriceRatioChart /> */}
-      <h1 className="text-white text-2xl font-bold mt-20 mb-4 text-center">PLSX:PLS Price Ratio</h1>
       <PlsPlsxRatioChart/>
-      <h1 className="text-white text-2xl font-bold mt-20 mb-4 text-center">pHEX:PLS Price Ratio</h1>
       <HEXtoPLSRatioChart/>
     </div>
   );

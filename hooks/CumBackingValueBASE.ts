@@ -5,7 +5,7 @@ import { supabase } from '@/supabaseClient';
 
 const fetcher = (url: string) => fetch(url).then(res => res.json());
 
-export const CumBackingValueDECI = () => {
+export const CumBackingValueBASE = () => {
   // Fetch HEX daily stats for yield calculations
   const { data: hexData, error: hexError } = useSWR(
     'https://hexdailystats.com/fulldatapulsechain',
@@ -14,20 +14,20 @@ export const CumBackingValueDECI = () => {
 
   // Fetch price data from Supabase
   const { data: priceData, error: priceError } = useSWR(
-    'price_data_deci',
+    'price_data_base',
     async () => {
-      console.log('Fetching DECI price data...');
+      console.log('Fetching BASE price data...');
       const { data, error } = await supabase
         .from('historic_prices')
-        .select('date, hex_price, ehex_price, lucky_price')
+        .select('date, hex_price, ehex_price, base_price')
         .gte('date', '2022-09-27')
-        .not('lucky_price', 'is', null)
+        .not('base_price', 'is', null)
         .order('date', { ascending: true });
       
       if (error) throw error;
 
       if (data && data.length > 0) {
-        console.log('DECI Data:', {
+        console.log('BASE Data:', {
           total: data.length,
           first: data[0],
           last: data[data.length - 1]
@@ -47,16 +47,16 @@ export const CumBackingValueDECI = () => {
         new Date(day.date).toISOString().split('T')[0],
         {
           // If hex_price is null, use ehex_price instead
-          priceRatio: parseFloat(day.lucky_price) / (day.hex_price ? parseFloat(day.hex_price) : parseFloat(day.ehex_price))
+          priceRatio: parseFloat(day.base_price) / (day.hex_price ? parseFloat(day.hex_price) : parseFloat(day.ehex_price))
         }
       ])
     );
 
-    const TSHARES = TOKEN_CONSTANTS.pDECI.TSHARES;
-    const STAKE_PRINCIPLE = TOKEN_CONSTANTS.pDECI.STAKE_PRINCIPLE;
-    const START_DATE = TOKEN_CONSTANTS.pDECI.LAUNCH_DATE;
+    const TSHARES = TOKEN_CONSTANTS.pBASE2.TSHARES;
+    const STAKE_PRINCIPLE = TOKEN_CONSTANTS.pBASE2.STAKE_PRINCIPLE;
+    const START_DATE = TOKEN_CONSTANTS.pBASE2.LAUNCH_DATE;
 
-    console.log('DECI Constants:', {
+    console.log('BASE Constants:', {
       TSHARES,
       STAKE_PRINCIPLE,
       START_DATE: START_DATE.toISOString()

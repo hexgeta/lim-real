@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, LegendProps } from 'recharts';
+import { Skeleton } from "@/components/ui/skeleton2";
 
 interface ChartData {
   date: string;
@@ -23,6 +24,7 @@ const EHEXLiquidityChart: React.FC = () => {
   });
   const [currentTotalLiquidity, setCurrentTotalLiquidity] = useState<number | null>(null);
   const [currentPrice, setCurrentPrice] = useState<number | null>(null);
+  const [isChartReady, setIsChartReady] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -104,6 +106,15 @@ const EHEXLiquidityChart: React.FC = () => {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (!isLoading && data.length > 0) {
+      const timer = setTimeout(() => {
+        setIsChartReady(true);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [isLoading, data]);
 
   const formatDate = (dateStr: string) => {
     const [year, month, day] = dateStr.split('-');
@@ -215,154 +226,162 @@ const EHEXLiquidityChart: React.FC = () => {
     return `$${value.toFixed(4)}`;
   };
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
   return (
-    <div style={{ width: '100%', height: '450px', backgroundColor: '#000', padding: '0px', display: 'flex', flexDirection: 'column'}}>
-      <ResponsiveContainer width="100%" height="100%">
-        <LineChart
-          data={data}
-          margin={{ top: 30, right: 0, left: 0, bottom: 80 }}
-        >
-          <XAxis 
-            dataKey="date" 
-            axisLine={false}
-            tickLine={false}
-            tick={false}
-          />
-          <YAxis 
-            yAxisId="liquidity"
-            stroke="#888" 
-            domain={[(dataMin) => dataMin * 0.9, (dataMax) => dataMax * 1.3]}
-            allowDataOverflow={true}
-            axisLine={false}
-            tickLine={false}
-            tick={false}
-            scale="log"
-          />
-          <YAxis 
-            yAxisId="price"
-            orientation="right"
-            stroke="#888" 
-            domain={['auto', 'auto']}
-            allowDataOverflow={true}
-            axisLine={false}
-            tickLine={false}
-            tick={false}
-            scale="log"
-          />
-          <YAxis 
-            yAxisId="dollarLiquidity"
-            orientation="right"
-            stroke="#888" 
-            domain={['auto', 'auto']}
-            allowDataOverflow={true}
-            axisLine={false}
-            tickLine={false}
-            tick={false}
-            scale="log"          
-            />
-          <Tooltip 
-            contentStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.85)', border: 'solid 1px rgba(255, 255, 255, 0.2)', borderRadius: '5px'}}
-            labelStyle={{ color: 'white' }}
-            formatter={(value: any, name: string) => {
-              if (name.includes('Price')) {
-                return [`$${Number(value).toFixed(4)}`, name];
-              } else if (name.includes('Liquidity')) {
-                const billions = Number(value) / 1000000000;
-                const millions = Number(value) / 1000000;
-                
-                if (name.includes('$ Liquidity')) {
-                  // Format dollar liquidity with $ symbol
-                  if (billions >= 1) {
-                    return [`$${billions.toFixed(2)}B`, name];
-                  } else {
-                    return [`$${millions.toFixed(2)}M`, name];
+    <div className="w-full h-[450px] my-10 relative">
+      <div className="w-full h-full p-5 bg-black border border-white/20 rounded-xl text-white">
+        <div style={{ display: 'flex', alignItems: 'center', marginLeft: '40px', marginBottom: '0px' }}>
+          <h2 style={{ color: 'white', fontSize: '24px', margin: '0' }}>
+            eHEX Liquidity Chart
+          </h2>
+        </div>
+        
+        {!isChartReady ? (
+          <Skeleton variant="chart" />
+        ) : (
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart
+              data={data}
+              margin={{ top: 30, right: 0, left: 0, bottom: 80 }}
+            >
+              <XAxis 
+                dataKey="date" 
+                axisLine={false}
+                tickLine={false}
+                tick={false}
+              />
+              <YAxis 
+                yAxisId="liquidity"
+                stroke="#888" 
+                domain={[(dataMin) => dataMin * 0.9, (dataMax) => dataMax * 1.3]}
+                allowDataOverflow={true}
+                axisLine={false}
+                tickLine={false}
+                tick={false}
+                scale="log"
+              />
+              <YAxis 
+                yAxisId="price"
+                orientation="right"
+                stroke="#888" 
+                domain={['auto', 'auto']}
+                allowDataOverflow={true}
+                axisLine={false}
+                tickLine={false}
+                tick={false}
+                scale="log"
+              />
+              <YAxis 
+                yAxisId="dollarLiquidity"
+                orientation="right"
+                stroke="#888" 
+                domain={['auto', 'auto']}
+                allowDataOverflow={true}
+                axisLine={false}
+                tickLine={false}
+                tick={false}
+                scale="log"          
+                />
+              <Tooltip 
+                contentStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.85)', border: 'solid 1px rgba(255, 255, 255, 0.2)', borderRadius: '5px'}}
+                labelStyle={{ color: 'white' }}
+                formatter={(value: any, name: string) => {
+                  if (name.includes('Price')) {
+                    return [`$${Number(value).toFixed(4)}`, name];
+                  } else if (name.includes('Liquidity')) {
+                    const billions = Number(value) / 1000000000;
+                    const millions = Number(value) / 1000000;
+                    
+                    if (name.includes('$ Liquidity')) {
+                      // Format dollar liquidity with $ symbol
+                      if (billions >= 1) {
+                        return [`$${billions.toFixed(2)}B`, name];
+                      } else {
+                        return [`$${millions.toFixed(2)}M`, name];
+                      }
+                    } else {
+                      // Format HEX liquidity
+                      if (billions >= 1) {
+                        return [`${billions.toFixed(2)}B`, name];
+                      } else {
+                        return [`${millions.toFixed(0)}M`, name];
+                      }
+                    }
                   }
-                } else {
-                  // Format HEX liquidity
-                  if (billions >= 1) {
-                    return [`${billions.toFixed(2)}B`, name];
-                  } else {
-                    return [`${millions.toFixed(0)}M`, name];
-                  }
-                }
-              }
-              return [value, name];
-            }}
-            labelFormatter={(label) => formatDate(label)}
-          />
-          <Legend content={customLegend} />
-          <Line 
-            yAxisId="dollarLiquidity"
-            type="monotone" 
-            dataKey="dollarLiquidity" 
-            name={`Total $ Liquidity (${currentTotalLiquidity && currentPrice ? 
-              (currentTotalLiquidity * currentPrice) >= 1000000000 
-                ? `$${((currentTotalLiquidity * currentPrice) / 1000000000).toFixed(2)}B` 
-                : `$${((currentTotalLiquidity * currentPrice) / 1000000).toFixed(2)}M`
-              : '$0M'})`}
-            stroke="#00ff00"
-            dot={false} 
-            strokeWidth={2}
-            connectNulls={true}
-            hide={!visibleLines.dollarLiquidity}
-          />
+                  return [value, name];
+                }}
+                labelFormatter={(label) => formatDate(label)}
+              />
+              <Legend content={customLegend} />
+              <Line 
+                yAxisId="dollarLiquidity"
+                type="monotone" 
+                dataKey="dollarLiquidity" 
+                name={`Total $ Liquidity (${currentTotalLiquidity && currentPrice ? 
+                  (currentTotalLiquidity * currentPrice) >= 1000000000 
+                    ? `$${((currentTotalLiquidity * currentPrice) / 1000000000).toFixed(2)}B` 
+                    : `$${((currentTotalLiquidity * currentPrice) / 1000000).toFixed(2)}M`
+                  : '$0M'})`}
+                stroke="#00ff00"
+                dot={false} 
+                strokeWidth={2}
+                connectNulls={true}
+                hide={!visibleLines.dollarLiquidity}
+              />
 
-          <Line 
-            yAxisId="liquidity"
-            type="monotone" 
-            dataKey="totalLiquidity" 
-            name={`Total eHEX Liquidity (${currentTotalLiquidity ? 
-              currentTotalLiquidity >= 1000000000 
-                ? `${(currentTotalLiquidity / 1000000000).toFixed(2)}B` 
-                : `${(currentTotalLiquidity / 1000000).toFixed(0)}M`
-              : '0M'} HEX)`}
-            stroke="#fff"
-            dot={false} 
-            strokeWidth={2}
-            connectNulls={true}
-            hide={!visibleLines.totalLiquidity}
-          />
-          <Line 
-            yAxisId="liquidity"
-            type="monotone" 
-            dataKey="liquidityUV2UV3_HEX" 
-            name="eHEX Liquidity on ETH"
-            stroke="#00FFFF"
-            dot={false} 
-            strokeWidth={2}
-            connectNulls={true}
-            hide={!visibleLines.liquidityUV2UV3_HEX}
-          />
-                              <Line 
-            yAxisId="price"
-            type="monotone" 
-            dataKey="priceUV2UV3" 
-            name={`eHEX Price (${currentPrice ? `$${currentPrice.toFixed(3)}` : '$0.000'})`}
-            stroke="#627EEA"
-            dot={false} 
-            strokeWidth={2}
-            connectNulls={true}
-            hide={!visibleLines.priceUV2UV3}
-          />
-          <Line 
-            yAxisId="liquidity"
-            type="monotone" 
-            dataKey="liquidityPulseX_EHEX" 
-            name="eHEX Liquidity on PLS"
-            stroke="#ffc658"
-            dot={false} 
-            strokeWidth={2}
-            connectNulls={true}
-            hide={!visibleLines.liquidityPulseX_EHEX}
-          />
+              <Line 
+                yAxisId="liquidity"
+                type="monotone" 
+                dataKey="totalLiquidity" 
+                name={`Total eHEX Liquidity (${currentTotalLiquidity ? 
+                  currentTotalLiquidity >= 1000000000 
+                    ? `${(currentTotalLiquidity / 1000000000).toFixed(2)}B` 
+                    : `${(currentTotalLiquidity / 1000000).toFixed(0)}M`
+                  : '0M'} HEX)`}
+                stroke="#fff"
+                dot={false} 
+                strokeWidth={2}
+                connectNulls={true}
+                hide={!visibleLines.totalLiquidity}
+              />
+              <Line 
+                yAxisId="liquidity"
+                type="monotone" 
+                dataKey="liquidityUV2UV3_HEX" 
+                name="eHEX Liquidity on ETH"
+                stroke="#00FFFF"
+                dot={false} 
+                strokeWidth={2}
+                connectNulls={true}
+                hide={!visibleLines.liquidityUV2UV3_HEX}
+              />
+                                <Line 
+                yAxisId="price"
+                type="monotone" 
+                dataKey="priceUV2UV3" 
+                name={`eHEX Price (${currentPrice ? `$${currentPrice.toFixed(3)}` : '$0.000'})`}
+                stroke="#627EEA"
+                dot={false} 
+                strokeWidth={2}
+                connectNulls={true}
+                hide={!visibleLines.priceUV2UV3}
+              />
+              <Line 
+                yAxisId="liquidity"
+                type="monotone" 
+                dataKey="liquidityPulseX_EHEX" 
+                name="eHEX Liquidity on PLS"
+                stroke="#ffc658"
+                dot={false} 
+                strokeWidth={2}
+                connectNulls={true}
+                hide={!visibleLines.liquidityPulseX_EHEX}
+              />
 
-          
-        </LineChart>
-      </ResponsiveContainer>
+              
+            </LineChart>
+          </ResponsiveContainer>
+        )}
+      </div>
     </div>
   );
 };

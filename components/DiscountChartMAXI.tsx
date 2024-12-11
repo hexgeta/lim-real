@@ -35,7 +35,7 @@ function DiscountChartMAXI({ title }: Props) {
           display: 'flex', 
           justifyContent: 'center', 
           width: '100%', 
-          marginTop: '10px' 
+          marginTop: '35px' 
         }}>
           <ul style={{ 
             listStyle: 'none', 
@@ -94,7 +94,7 @@ function DiscountChartMAXI({ title }: Props) {
             {title}
           </h2>
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={data} margin={{ top: 30, right: 20, left: 20, bottom: 60 }}>
+            <LineChart data={data} margin={{ top: 30, right: 20, left: 20, bottom: 30 }}>
               <CartesianGrid 
                 strokeDasharray="3 3" 
                 stroke="rgba(136, 136, 136, 0.2)" 
@@ -113,6 +113,16 @@ function DiscountChartMAXI({ title }: Props) {
                     year: 'numeric'
                   });
                 }}
+                label={{ 
+                  value: 'DATE', 
+                  position: 'bottom',
+                  offset: 5,
+                  style: { 
+                    fill: '#888',
+                    fontSize: 12,
+                    marginTop: '0px',
+                  }
+                }}
               />
               <YAxis 
                 domain={[0, 2.5]}
@@ -121,6 +131,17 @@ function DiscountChartMAXI({ title }: Props) {
                 tickLine={false}
                 tick={{ fill: '#888', fontSize: 14, dx: -5}}
                 tickFormatter={(value) => value.toFixed(1)}
+                label={{ 
+                  value: 'HEX', 
+                  position: 'left',
+                  angle: -90,
+                  offset: 0,
+                  style: { 
+                    fill: '#888',
+                    fontSize: 12,
+                    marginTop: '0px',
+                  }
+                }}
               />
               <Tooltip 
                 contentStyle={{ 
@@ -152,7 +173,7 @@ function DiscountChartMAXI({ title }: Props) {
               <Line 
                 type="monotone" 
                 dataKey="discount" 
-                name="MAXI/HEX Price Ratio"
+                name="Market Price Ratio"
                 dot={false} 
                 strokeWidth={2} 
                 stroke="#3991ED" 

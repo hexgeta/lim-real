@@ -16,8 +16,19 @@ function DiscountChartDECI({ title }: Props) {
     isLoading,
     error,
     dataLength: data?.length,
-    firstFewItems: data?.slice(0, 5)
+    firstFewItems: data?.slice(0, 5),
+    lastFewItems: data?.slice(-5)
   });
+
+  useEffect(() => {
+    if (data && data.length > 0) {
+      console.log('Data received in chart:', {
+        firstPoint: data[0],
+        lastPoint: data[data.length - 1],
+        sampleDiscount: data.map(d => d.discount).filter(d => d !== null).slice(0, 5)
+      });
+    }
+  }, [data]);
 
   const [visibleLines, setVisibleLines] = useState({
     backingRatio: true,
@@ -43,7 +54,7 @@ function DiscountChartDECI({ title }: Props) {
           display: 'flex', 
           justifyContent: 'center', 
           width: '100%', 
-          marginTop: '10px' 
+          marginTop: '35px' 
         }}>
           <ul style={{ 
             listStyle: 'none', 
@@ -103,7 +114,7 @@ function DiscountChartDECI({ title }: Props) {
             {title}
           </h2>
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={data} margin={{ top: 30, right: 20, left: 20, bottom: 60 }}>
+            <LineChart data={data} margin={{ top: 30, right: 20, left: 20, bottom: 30 }}>
               <CartesianGrid 
                 strokeDasharray="3 3" 
                 stroke="rgba(136, 136, 136, 0.2)" 
@@ -122,6 +133,16 @@ function DiscountChartDECI({ title }: Props) {
                     year: 'numeric'
                   });
                 }}
+                label={{ 
+                  value: 'DATE', 
+                  position: 'bottom',
+                  offset: 5,
+                  style: { 
+                    fill: '#888',
+                    fontSize: 12,
+                    marginTop: '0px',
+                  }
+                }}
               />
               <YAxis 
                 domain={[0, 2.5]}
@@ -130,6 +151,17 @@ function DiscountChartDECI({ title }: Props) {
                 tickLine={false}
                 tick={{ fill: '#888', fontSize: 14, dx: -5}}
                 tickFormatter={(value) => value.toFixed(1)}
+                label={{ 
+                  value: 'HEX', 
+                  position: 'left',
+                  angle: -90,
+                  offset: 0,
+                  style: { 
+                    fill: '#888',
+                    fontSize: 12,
+                    marginTop: '0px',
+                  }
+                }}
               />
               <Tooltip 
                 contentStyle={{ 
@@ -162,13 +194,14 @@ function DiscountChartDECI({ title }: Props) {
               <Line 
                 type="monotone" 
                 dataKey="discount" 
-                name="DECI/HEX Price Ratio"
+                name="Market Price Ratio"
                 dot={false} 
                 strokeWidth={2} 
                 stroke="#3991ED" 
                 activeDot={{ r: 4, fill: '#3991ED', stroke: 'white' }}
                 hide={!visibleLines.discount}
                 connectNulls
+                isAnimationActive={false}
               />
             </LineChart>
           </ResponsiveContainer>
