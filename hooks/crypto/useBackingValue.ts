@@ -8,9 +8,9 @@ type Percentage = number & { __brand: 'percentage' }
 interface BackingData {
   backingStakeYield: number
   backingStakeValue: number
-  marketStakeValue: number | null  // Can be null if price data unavailable
+  marketStakeValue: number | null
   backingStakeRatio: number
-  backingDiscount: Percentage | null  // Can be null if price data unavailable
+  backingDiscount: Percentage | null
   lastUpdated: Date
 }
 
@@ -28,36 +28,17 @@ export function useBackingValue(token: string) {
   const isEthereumToken = token.startsWith('e')
   const endpoint = isEthereumToken ? API_ENDPOINTS.historic_ethereum : API_ENDPOINTS.historic_pulsechain
   
-  console.log('Using endpoint:', endpoint, 'for token:', token)
-  
   const { data, error, isLoading: swrLoading } = useSWR(
-    token ? `crypto/backing/${token}` : null, // Only depend on token, not prices
+    token ? `crypto/backing/${token}` : null,
     async () => {
       try {
-        console.log('Fetching data from:', endpoint)
         const response = await fetch(endpoint)
 
         if (!response.ok) {
-          const errorText = await response.text()
-          console.error('Fetch error:', {
-            status: response.status,
-            statusText: response.statusText,
-            response: errorText
-          })
           throw new Error(`HTTP error! status: ${response.status}`)
         }
 
-        const text = await response.text()
-        console.log('Received response:', text.substring(0, 100) + '...')
-        
-        let data
-        try {
-          data = JSON.parse(text)
-        } catch (parseError) {
-          console.error('JSON Parse error:', parseError)
-          console.error('Raw response:', text.substring(0, 200))
-          throw parseError
-        }
+        const data = await response.json()
 
         const tokenConfig = TOKEN_CONSTANTS[token]
         if (!tokenConfig) {
@@ -66,13 +47,11 @@ export function useBackingValue(token: string) {
 
         const startDate = tokenConfig.STAKE_START_DATE
         if (!startDate) {
-          console.log('No stake start date for token:', token)
           return null
         }
 
         const relevantData = data?.filter(entry => new Date(entry.date) >= startDate)
         if (!relevantData?.length) {
-          console.log('No relevant data found for token:', token)
           return null
         }
 
@@ -80,13 +59,11 @@ export function useBackingValue(token: string) {
         let payoutSum
         if (token === 'pMAXI' || token === 'eMAXI') {
           payoutSum = relevantData.reduce((acc, entry) => acc + (entry.payoutPerTshareHEX || 0), 0)
-          console.log(`${token} payout sum:`, payoutSum)
         } else {
           // Use the same sum for all other tokens
           const otherTokensStartDate = new Date('2022-09-27')
           const otherTokensData = data?.filter(entry => new Date(entry.date) >= otherTokensStartDate)
           payoutSum = otherTokensData.reduce((acc, entry) => acc + (entry.payoutPerTshareHEX || 0), 0)
-          console.log('Other tokens payout sum:', payoutSum)
         }
 
         // Calculate price-independent values
@@ -98,30 +75,40 @@ export function useBackingValue(token: string) {
         // Use eHEX price for Ethereum tokens, pHEX price for Pulsechain tokens
         const hexPrice = isEthereumToken ? eHexPrice : pHexPrice
 
-        // Calculate price-dependent values only if prices are available
+        // Calculate price-dependent values if prices are available
         let marketStakeValue = null
         let backingDiscount = null
 
-        if (priceData?.price && hexPrice?.price) {
-          marketStakeValue = (priceData.price * (tokenConfig.TOKEN_SUPPLY || 0)) / hexPrice.price
-          const hexRatio = priceData.price / hexPrice.price
-          backingDiscount = asPercentage((hexRatio - backingStakeRatio) / backingStakeRatio)
-          
-          return {
-            backingStakeYield,
-            backingStakeValue,
-            marketStakeValue,
-            backingStakeRatio,
-            backingDiscount,
-            lastUpdated: new Date()
+        // Only calculate if we have valid token price
+        if (priceData?.price && priceData.price > 0) {
+          // If we have HEX price, calculate the values
+          if (hexPrice?.price && hexPrice.price > 0) {
+            marketStakeValue = (priceData.price * (tokenConfig.TOKEN_SUPPLY || 0)) / hexPrice.price
+            const hexRatio = priceData.price / hexPrice.price
+            backingDiscount = asPercentage((hexRatio - backingStakeRatio) / backingStakeRatio)
+          }
+          // If HEX price is still loading, return null to maintain loading state
+          else if (isEthereumToken ? eHexLoading : pHexLoading) {
+            return null
           }
         }
 
-        // If prices aren't available, return null to maintain loading state
-        return null
+        // If we have a token price but couldn't calculate backing discount, keep loading
+        if (priceData?.price && priceData.price > 0 && backingDiscount === null) {
+          return null
+        }
+
+        return {
+          backingStakeYield,
+          backingStakeValue,
+          marketStakeValue,
+          backingStakeRatio,
+          backingDiscount,
+          lastUpdated: new Date()
+        }
       } catch (error) {
         console.error(`Error calculating ${token} backing values:`, error)
-        return null  // Return null instead of partial data
+        return null
       }
     },
     {
@@ -131,20 +118,13 @@ export function useBackingValue(token: string) {
     }
   )
 
-  const isLoading = swrLoading || priceLoading || pHexLoading || eHexLoading
-
-  // Return loading state if any data is still loading
-  if (isLoading) {
-    return {
-      backingData: null,
-      isLoading: true,
-      error: null
-    }
-  }
+  // Keep loading if we're still fetching data or if we have a token price but no backing discount
+  const isLoading = swrLoading || 
+    (priceData?.price && priceData.price > 0 && (!data || data.backingDiscount === null))
 
   return {
     backingData: data,
-    isLoading: false,
+    isLoading,
     error
   }
 }
