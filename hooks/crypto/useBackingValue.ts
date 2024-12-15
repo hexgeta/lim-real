@@ -57,12 +57,27 @@ export function useBackingValue(token: string) {
 
         // Calculate payout sum based on token
         let payoutSum
+        const today = new Date()
         if (token === 'pMAXI' || token === 'eMAXI') {
-          payoutSum = relevantData.reduce((acc, entry) => acc + (entry.payoutPerTshareHEX || 0), 0)
+          const endDate = tokenConfig.STAKE_END_DATE && new Date(tokenConfig.STAKE_END_DATE) < today 
+            ? new Date(tokenConfig.STAKE_END_DATE) 
+            : today
+          payoutSum = relevantData
+            .filter(entry => {
+              const entryDate = new Date(entry.date)
+              return entryDate <= endDate
+            })
+            .reduce((acc, entry) => acc + (entry.payoutPerTshareHEX || 0), 0)
         } else {
           // Use the same sum for all other tokens
           const otherTokensStartDate = new Date('2022-09-27')
-          const otherTokensData = data?.filter(entry => new Date(entry.date) >= otherTokensStartDate)
+          const endDate = tokenConfig.STAKE_END_DATE && new Date(tokenConfig.STAKE_END_DATE) < today 
+            ? new Date(tokenConfig.STAKE_END_DATE) 
+            : today
+          const otherTokensData = data?.filter(entry => {
+            const entryDate = new Date(entry.date)
+            return entryDate >= otherTokensStartDate && entryDate <= endDate
+          })
           payoutSum = otherTokensData.reduce((acc, entry) => acc + (entry.payoutPerTshareHEX || 0), 0)
         }
 

@@ -135,6 +135,32 @@ export const TOKEN_CONSTANTS = {
   },
   pBASE: {
     LAUNCH_DATE: new Date('2022-09-27'),
+    STAKE_PRINCIPLE: 100033101,
+    TOKEN_SUPPLY: 100033101,
+    TSHARES: 5107.53,
+    STAKE_START_DATE: new Date('2022-09-27'),
+    STAKE_END_DATE: new Date('2023-10-01'),
+    TOTAL_STAKED_DAYS: 369,
+    PAIR: {
+      pairAddress: '0xb39490b46d02146f59e80c6061bb3e56b824d672',
+      chain: 'pulsechain'
+    }
+  },
+  eBASE: {
+    LAUNCH_DATE: new Date('2022-09-27'),
+    STAKE_PRINCIPLE: 100033101,
+    TOKEN_SUPPLY: 100033101,
+    TSHARES: 5107.53,
+    STAKE_START_DATE: new Date('2022-09-27'),
+    STAKE_END_DATE: new Date('2023-10-01'),
+    TOTAL_STAKED_DAYS: 369,
+    PAIR: {
+      pairAddress: '0x7b33fe2C4f48da97dc2BAa1f32f869c50Dc1dF85',
+      chain: 'pulsechain'
+    }
+  },
+  pBASE2: {
+    LAUNCH_DATE: new Date('2023-10-10'),
     STAKE_PRINCIPLE: 109163369,
     TOKEN_SUPPLY: 97197332,
     TSHARES: 4532.11,
@@ -146,11 +172,11 @@ export const TOKEN_CONSTANTS = {
       chain: 'pulsechain'
     }
   },
-  eBASE: {
-    LAUNCH_DATE: new Date('2022-09-27'),
-    STAKE_PRINCIPLE: 109163369,
-    TOKEN_SUPPLY: 97197332,
-    TSHARES: 4532.11,
+  eBASE2: {
+    LAUNCH_DATE: new Date('2023-10-10'),
+    STAKE_PRINCIPLE: 94725486,
+    TOKEN_SUPPLY: 84316269,
+    TSHARES: 3917.41,
     STAKE_START_DATE: new Date('2023-10-10'),
     STAKE_END_DATE: new Date('2024-10-13'),
     TOTAL_STAKED_DAYS: 369,
@@ -159,6 +185,32 @@ export const TOKEN_CONSTANTS = {
       chain: 'pulsechain'
     }
   },
+  // pBASE3: {
+  //   LAUNCH_DATE: new Date('2022-09-27'),
+  //   STAKE_PRINCIPLE: 109163369,
+  //   TOKEN_SUPPLY: 97197332,
+  //   TSHARES: 4532.11,
+  //   STAKE_START_DATE: new Date('2023-10-10'),
+  //   STAKE_END_DATE: new Date('2024-10-13'),
+  //   TOTAL_STAKED_DAYS: 369,
+  //   PAIR: {
+  //     pairAddress: '0xb39490b46d02146f59e80c6061bb3e56b824d672',
+  //     chain: 'pulsechain'
+  //   }
+  // },
+  // eBASE3: {
+  //   LAUNCH_DATE: new Date('2022-09-27'),
+  //   STAKE_PRINCIPLE: 109163369,
+  //   TOKEN_SUPPLY: 97197332,
+  //   TSHARES: 4532.11,
+  //   STAKE_START_DATE: new Date('2023-10-10'),
+  //   STAKE_END_DATE: new Date('2024-10-13'),
+  //   TOTAL_STAKED_DAYS: 369,
+  //   PAIR: {
+  //     pairAddress: '0x7b33fe2C4f48da97dc2BAa1f32f869c50Dc1dF85',
+  //     chain: 'pulsechain'
+  //   }
+  // },
   PLS: {
     PAIR: {
       pairAddress: '0xe56043671df55de5cdf8459710433c10324de0ae',
