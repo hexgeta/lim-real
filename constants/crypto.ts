@@ -6,7 +6,7 @@ export const TOKEN_LOGOS: { [key: string]: string } = {
   'DECI': '/coin-logos/maxi/DECI.svg',
   'LUCKY': '/coin-logos/maxi/LUCKY.svg',
   'TRIO': '/coin-logos/maxi/TRIO.svg',
-  'BASE2': '/coin-logos/maxi/BASE.svg',
+  'BASE': '/coin-logos/maxi/BASE.svg',
   'PLS': '/coin-logos/PLS.svg',
   'PLSX': '/coin-logos/PLSX.svg',
   'WETH': '/coin-logos/WETH.svg',
@@ -43,6 +43,13 @@ export const TOKEN_CONSTANTS = {
     }
   },
   eMAXI: {
+    LAUNCH_DATE: new Date('2022-05-01'),
+    TSHARES: 42104.44,
+    STAKE_PRINCIPLE: 294323603.77,
+    TOKEN_SUPPLY: 274546065,
+    STAKE_START_DATE: new Date('2022-05-01'),
+    STAKE_END_DATE: new Date('2037-07-16'),
+    TOTAL_STAKED_DAYS: 5555,
     PAIR: {
       pairAddress: '0x2ae4517B2806b84A576C10F698d6567CE80A6490',
       chain: 'ethereum'
@@ -62,9 +69,16 @@ export const TOKEN_CONSTANTS = {
     }
   },
   eDECI: {
+    LAUNCH_DATE: new Date('2022-09-27'),
+    STAKE_PRINCIPLE: 565991988,
+    TOKEN_SUPPLY: 565991988,
+    TSHARES: 71337.83,
+    STAKE_START_DATE: new Date('2022-09-27'),
+    STAKE_END_DATE: new Date('2032-11-09'),
+    TOTAL_STAKED_DAYS: 3696,
     PAIR: {
       pairAddress: '0x39e87e2baa67f3c7f1dd58f58014f23f97e3265e',
-      chain: 'ethereum'
+      chain: 'pulsechain'
     }
   },
   pLUCKY: {
@@ -81,6 +95,13 @@ export const TOKEN_CONSTANTS = {
     }
   },
   eLUCKY: {
+    LAUNCH_DATE: new Date('2022-09-27'),
+    STAKE_PRINCIPLE: 74985502,
+    TOKEN_SUPPLY: 74985502,
+    TSHARES: 7524.68,
+    STAKE_START_DATE: new Date('2022-09-27'),
+    STAKE_END_DATE: new Date('2029-09-25'),
+    TOTAL_STAKED_DAYS: 2555,
     PAIR: {
       pairAddress: '0x7327325e5F41d4c1922a9DFc87d8a3b3F1ae5C1F',
       chain: 'ethereum'
@@ -100,12 +121,19 @@ export const TOKEN_CONSTANTS = {
     }
   },
   eTRIO: {
+    LAUNCH_DATE: new Date('2022-09-27'),
+    STAKE_PRINCIPLE: 69617911,
+    TOKEN_SUPPLY: 69617911,
+    TSHARES: 4698.32,
+    STAKE_START_DATE: new Date('2022-09-27'),
+    STAKE_END_DATE: new Date('2025-10-12'),
+    TOTAL_STAKED_DAYS: 1111,
     PAIR: {
       pairAddress: '0xda72b9e219d87ea31b4a1929640d9e960362470d',
-      chain: 'ethereum'
+      chain: 'pulsechain'
     }
   },
-  pBASE2: {
+  pBASE: {
     LAUNCH_DATE: new Date('2022-09-27'),
     STAKE_PRINCIPLE: 109163369,
     TOKEN_SUPPLY: 97197332,
@@ -118,10 +146,17 @@ export const TOKEN_CONSTANTS = {
       chain: 'pulsechain'
     }
   },
-  eBASE2: {
+  eBASE: {
+    LAUNCH_DATE: new Date('2022-09-27'),
+    STAKE_PRINCIPLE: 109163369,
+    TOKEN_SUPPLY: 97197332,
+    TSHARES: 4532.11,
+    STAKE_START_DATE: new Date('2023-10-10'),
+    STAKE_END_DATE: new Date('2024-10-13'),
+    TOTAL_STAKED_DAYS: 369,
     PAIR: {
       pairAddress: '0x7b33fe2C4f48da97dc2BAa1f32f869c50Dc1dF85',
-      chain: 'ethereum'
+      chain: 'pulsechain'
     }
   },
   PLS: {
@@ -169,5 +204,7 @@ export const TOKEN_CONSTANTS = {
 }
 
 export const API_ENDPOINTS = {
-  HEX_STATS: 'https://hexdailystats.com/fulldatapulsechain'
+  historic_pulsechain: 'https://hexdailystats.com/fulldatapulsechain',
+  historic_ethereum: 'https://hexdailystats.com/fulldata',
+  livedata: 'https://hexdailystats.com/livedata'
 }

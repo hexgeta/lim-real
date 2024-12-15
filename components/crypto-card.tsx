@@ -22,6 +22,7 @@ function convertSymbol(symbol: string): string {
 }
 
 function getPriceChangeColor(change: number): string {
+  if (Math.abs(change * 100) < 1) return 'text-zinc-500'
   return change >= 0 ? 'text-[#01FF55]' : 'text-red-500'
 }
 
@@ -53,7 +54,7 @@ export function CryptoCard({ data, variant = 'default' }: CryptoCardProps) {
                   className={baseSymbol === 'HEX' ? '' : 'rounded-full'}
                 />
               )}
-              <div className="text-xl font-bold">{baseSymbol}</div>
+              <div className="text-xl font-bold">{data.symbol}</div>
             </div>
             <div className="flex items-baseline gap-2">
               {!hasPriceData ? (
@@ -61,10 +62,10 @@ export function CryptoCard({ data, variant = 'default' }: CryptoCardProps) {
               ) : (
                 <div className="flex items-center gap-2">
                   <div className="text-2xl font-bold">
-                    {formatPrice(priceData.price)}
+                    {priceData.price === 0 ? "N/A" : formatPrice(priceData.price)}
                   </div>
-                  <div className={`text-sm font-bold ${getPriceChangeColor(priceData.priceChange24h)}`}>
-                    {formatNumber(priceData.priceChange24h, { decimals: 1, percentage: true })}
+                  <div className={`text-xs font-bold ${getPriceChangeColor(priceData.priceChange24h)}`}>
+                    {priceData.price === 0 ? "" : formatNumber(priceData.priceChange24h, { decimals: 1, percentage: true })}
                   </div>
                 </div>
               )}
@@ -88,7 +89,7 @@ export function CryptoCard({ data, variant = 'default' }: CryptoCardProps) {
               className={baseSymbol === 'HEX' ? '' : 'rounded-full'}
             />
           )}
-          <div className="text-xl font-bold">{baseSymbol}</div>
+          <div className="text-xl font-bold">{data.symbol}</div>
         </div>
       </div>
 
@@ -99,25 +100,25 @@ export function CryptoCard({ data, variant = 'default' }: CryptoCardProps) {
           ) : (
             <div className="flex items-center gap-2">
               <div className="text-2xl font-bold">
-                {formatPrice(priceData.price)}
+                {priceData.price === 0 ? "N/A" : formatPrice(priceData.price)}
               </div>
-              <div className={`text-sm font-bold ${getPriceChangeColor(priceData.priceChange24h)}`}>
-                {formatNumber(priceData.priceChange24h, { decimals: 1, percentage: true })}
+              <div className={`text-xs font-bold ${getPriceChangeColor(priceData.priceChange24h)}`}>
+                {priceData.price === 0 ? "" : formatNumber(priceData.priceChange24h, { decimals: 1, percentage: true })}
               </div>
             </div>
           )}
         </div>
         <div className="text-sm text-zinc-500">
-          {!hasRatioData ? (
+          {!hasRatioData || ratioLoading ? (
             <Skeleton>1.18 HEX</Skeleton>
           ) : (
-            formatHexRatio(ratioData.hexRatio) + " HEX"
+            ratioData.hexRatio === 0 ? "N/A HEX" : formatHexRatio(ratioData.hexRatio) + " HEX"
           )}
         </div>
         {showBacking && (
           <>
             <hr className="border-zinc-800 my-2" />
-            {!hasBackingData ? (
+            {!hasBackingData || backingLoading ? (
               <div className="space-y-2 text-sm text-zinc-500">
                 <Skeleton>Stake backing: 1.92</Skeleton>
                 <Skeleton>Backing discount: -38.46%</Skeleton>
@@ -125,10 +126,10 @@ export function CryptoCard({ data, variant = 'default' }: CryptoCardProps) {
             ) : (
               <>
                 <div className="text-sm text-zinc-500">
-                  Stake backing: {formatNumber(backingData.backingStakeRatioInverse, { decimals: 2 })}
+                  Stake backing: {formatNumber(backingData.backingStakeRatio, { decimals: 2 })}
                 </div>
                 <div className="text-sm text-zinc-500">
-                  Backing discount: {formatNumber(backingData.backingDiscount, { decimals: 2, percentage: true })}
+                  Backing discount: {backingData.backingDiscount === null ? "N/A" : formatNumber(backingData.backingDiscount, { decimals: 2, percentage: true })}
                 </div>
               </>
             )}

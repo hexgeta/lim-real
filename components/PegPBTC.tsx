@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from 'react'
+import { Skeleton } from "@/components/ui/skeleton2"
 
 const PBTCPerformanceVisual: React.FC = () => {
   const [tokenData, setTokenData] = useState<{
@@ -61,10 +62,9 @@ const PBTCPerformanceVisual: React.FC = () => {
           targetPrice,
           percentageToTarget
         });
-        setLoading(false);
       } catch (error) {
-        console.error('Detailed error in fetchData:', error);
         setError(error.message);
+      } finally {
         setLoading(false);
       }
     };
@@ -73,15 +73,26 @@ const PBTCPerformanceVisual: React.FC = () => {
   }, []);
 
   if (loading) {
-    return <div className="text-center">Loading...</div>
+    return (
+      <div className="bg-black p-6 rounded-lg border border-white/20">
+        <div className="space-y-4">
+          <Skeleton className="h-6 w-32" />
+          <div className="space-y-2">
+            <Skeleton className="h-8 w-48" />
+            <Skeleton className="h-4 w-24" />
+          </div>
+          <Skeleton className="h-4 w-full" />
+        </div>
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="text-center text-red-500">Error: {error}</div>
+    return <div className="text-red-500">Error: {error}</div>;
   }
 
   if (!tokenData) {
-    return <div className="text-center">No data available</div>
+    return <div>No data available</div>;
   }
 
   return (
