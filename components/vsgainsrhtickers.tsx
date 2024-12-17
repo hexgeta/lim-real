@@ -457,7 +457,7 @@ const VsGainsRHTickers: React.FC = () => {
   }
 
   return (
-    <div className="w-full h-[650px] sm:h-[450px] md:h-[400px] lg:h-[450px] my-10 relative">
+    <div className="w-full h-[650px] sm:h-[450px] md:h-[400px] lg:h-[550px] my-10 relative">
       {!isChartReady ? (
         <Skeleton variant="chart" />
       ) : (

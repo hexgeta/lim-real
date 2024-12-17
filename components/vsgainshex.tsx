@@ -294,7 +294,7 @@ const VsGainsHEX: React.FC = () => {
     <div className="w-full  h-[550px] sm:h-[350px] md:h-[400px] lg:h-[450px] my-10 p-4 bg-black border border-white/20 rounded-lg text-white relative">
       <div className="flex flex-col gap-1.5 mb-2.5 ml-10">
         <h2 className="text-sm sm:text-2xl font-bold">
-          <u>HEX</u> vs the rest
+          <u>HEX</u> vs BTC, Eth & SOL
         </h2>
         <p className="text-xs sm:text-sm text-gray-400">
           From the HEX bear market bottom

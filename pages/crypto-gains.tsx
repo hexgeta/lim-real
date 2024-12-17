@@ -2,6 +2,8 @@ import React from 'react';
 import VsGainsHEX from '../components/vsgainshex';
 import VsGainsRHTickers from '../components/vsgainsrhtickers';
 import VsGainsEverything from '../components/vsgainseverything';
+import VsGainsTop20 from '../components/vsgainstop20';
+
 
 
 const CryptoGains = () => {
@@ -12,7 +14,8 @@ const CryptoGains = () => {
         These charts plot performance of important assets against one another from their local lows or a custom date.
       </p> 
       <div>     
-      <VsGainsHEX/>
+     <VsGainsTop20/>
+     <VsGainsHEX/>
     <VsGainsRHTickers/>
      <VsGainsEverything/>
       </div>

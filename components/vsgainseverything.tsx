@@ -495,7 +495,7 @@ const VsGainsEverything: React.FC = () => {
           <div className="flex justify-between items-start mb-2.5 px-6">
             <div className="flex flex-col gap-1">
               <h2 className="text-white text-sm lg:text-2xl m-0 pr-2.5 font-bold">
-                <u>Everything</u> vs everything
+                <u>RH Tickers</u> vs BTC, ETH & SOL
               </h2>
               <p className="text-xs sm:text-sm text-gray-400">
                 From any token's market bottom
