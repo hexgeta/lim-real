@@ -74,12 +74,12 @@ const formatPrice = (price: number, symbol: string) => {
   }
 
   // Mid value coins (2 decimals)
-  if (symbol === 'SOL' || symbol === 'TON' || symbol === 'AVAX' || symbol === 'DOT' || symbol === 'BCH' || symbol === 'SUI' || symbol === 'DOGE' || symbol === 'XLM') {
+  if (symbol === 'SOL' || symbol === 'TON' || symbol === 'AVAX' || symbol === 'DOT' || symbol === 'BCH' || symbol === 'SUI' || symbol === 'DOGE' || symbol === 'XLM' || symbol === 'ADA') {
     return price.toFixed(2);
   }
 
   // Lower-mid value coins (3 decimals)
-  if (symbol === 'pHEX' || symbol === 'eHEX' || symbol === 'UNI' || symbol === 'ADA' || symbol === 'HBAR') {
+  if (symbol === 'pHEX' || symbol === 'eHEX' || symbol === 'UNI' || symbol === 'HBAR') {
     return price.toFixed(3);
   }
 
@@ -389,6 +389,134 @@ const VsGainsTop20: React.FC = () => {
         todayData.sol_price = parseFloat(solData?.pair?.priceUsd) || lastKnownPrices.sol_price;
       } catch (error) {
         console.error('Error fetching SOL price:', error);
+      }
+
+      try {
+        const avaxResponse = await fetch('https://api.dexscreener.com/latest/dex/pairs/beam/0xa53dafae314075c6a22f44eeb7df792d672f89d5');
+        const avaxData = await avaxResponse.json();
+        todayData.avalanche_price = parseFloat(avaxData?.pair?.priceUsd) || lastKnownPrices.avalanche_price;
+      } catch (error) {
+        console.error('Error fetching AVAX price:', error);
+      }
+
+      try {
+        const xrpResponse = await fetch('https://api.dexscreener.com/latest/dex/pairs/bsc/0xd15b00e81f98a7db25f1dc1ba6e983a4316c4cac');
+        const xrpData = await xrpResponse.json();
+        todayData.xrp_price = parseFloat(xrpData?.pair?.priceUsd) || lastKnownPrices.xrp_price;
+      } catch (error) {
+        console.error('Error fetching XRP price:', error);
+      }
+
+      try {
+        const bnbResponse = await fetch('https://api.dexscreener.com/latest/dex/pairs/solana/cmyuzjeneotnsd5mjlmtzlapocpnszzcwwkiebbud3ez');
+        const bnbData = await bnbResponse.json();
+        todayData.bnb_price = parseFloat(bnbData?.pair?.priceUsd) || lastKnownPrices.bnb_price;
+      } catch (error) {
+        console.error('Error fetching BNB price:', error);
+      }
+
+      try {
+        const dogeResponse = await fetch('https://api.dexscreener.com/latest/dex/pairs/bsc/0xce6160bb594fc055c943f59de92cee30b8c6b32c');
+        const dogeData = await dogeResponse.json();
+        todayData.dogecoin_price = parseFloat(dogeData?.pair?.priceUsd) || lastKnownPrices.dogecoin_price;
+      } catch (error) {
+        console.error('Error fetching DOGE price:', error);
+      }
+
+      try {
+        const adaResponse = await fetch('https://api.dexscreener.com/latest/dex/pairs/bsc/0x673516e510d702ab5f2bbf0c6b545111a85f7ea7');
+        const adaData = await adaResponse.json();
+        todayData.cardano_price = parseFloat(adaData?.pair?.priceUsd) || lastKnownPrices.cardano_price;
+      } catch (error) {
+        console.error('Error fetching ADA price:', error);
+      }
+
+      try {
+        const trxResponse = await fetch('https://api.dexscreener.com/latest/dex/pairs/ethereum/0x99950bae3d0b79b8bee86a8a208ae1b087b9dcb0');
+        const trxData = await trxResponse.json();
+        todayData.tron_price = parseFloat(trxData?.pair?.priceUsd) || lastKnownPrices.tron_price;
+      } catch (error) {
+        console.error('Error fetching TRX price:', error);
+      }
+
+      try {
+        const linkResponse = await fetch('https://api.dexscreener.com/latest/dex/pairs/ethereum/0xa6cc3c2531fdaa6ae1a3ca84c2855806728693e8');
+        const linkData = await linkResponse.json();
+        todayData.chainlink_price = parseFloat(linkData?.pair?.priceUsd) || lastKnownPrices.chainlink_price;
+      } catch (error) {
+        console.error('Error fetching LINK price:', error);
+      }
+
+      try {
+        const shibResponse = await fetch('https://api.dexscreener.com/latest/dex/pairs/bsc/0xe8df1539b380274f1f8205a8f45a7cc266793518');
+        const shibData = await shibResponse.json();
+        todayData.shibainu_price = parseFloat(shibData?.pair?.priceUsd) || lastKnownPrices.shibainu_price;
+      } catch (error) {
+        console.error('Error fetching SHIB price:', error);
+      }
+
+      try {
+        const tonResponse = await fetch('https://api.dexscreener.com/latest/dex/pairs/ethereum/0x4b62fa30fea125e43780dc425c2be5acb4ba743b');
+        const tonData = await tonResponse.json();
+        todayData.toncoin_price = parseFloat(tonData?.pair?.priceUsd) || lastKnownPrices.toncoin_price;
+      } catch (error) {
+        console.error('Error fetching TON price:', error);
+      }
+
+      try {
+        const xlmResponse = await fetch('https://api.dexscreener.com/latest/dex/pairs/xrpl/xlm.rkicet8sdvwxpxnagyarfuxmh1zcpz432y_xrp');
+        const xlmData = await xlmResponse.json();
+        todayData.stellar_price = parseFloat(xlmData?.pair?.priceUsd) || lastKnownPrices.stellar_price;
+      } catch (error) {
+        console.error('Error fetching XLM price:', error);
+      }
+
+      try {
+        const dotResponse = await fetch('https://api.dexscreener.com/latest/dex/pairs/bsc/0x62f0546cbcd684f7c394d8549119e072527c41bc');
+        const dotData = await dotResponse.json();
+        todayData.polkadot_price = parseFloat(dotData?.pair?.priceUsd) || lastKnownPrices.polkadot_price;
+      } catch (error) {
+        console.error('Error fetching DOT price:', error);
+      }
+
+      try {
+        const hbarResponse = await fetch('https://api.dexscreener.com/latest/dex/pairs/hedera/0x7cf5854c73e0ae210143d65c8a5b52f47668c092');
+        const hbarData = await hbarResponse.json();
+        todayData.hedera_price = parseFloat(hbarData?.pair?.priceUsd) || lastKnownPrices.hedera_price;
+      } catch (error) {
+        console.error('Error fetching HBAR price:', error);
+      }
+
+      try {
+        const bchResponse = await fetch('https://api.dexscreener.com/latest/dex/pairs/cronos/0x69d3a652a65dfc18cd1ef6b6307fbae1f2ab1fac');
+        const bchData = await bchResponse.json();
+        todayData.bitcoincash_price = parseFloat(bchData?.pair?.priceUsd) || lastKnownPrices.bitcoincash_price;
+      } catch (error) {
+        console.error('Error fetching BCH price:', error);
+      }
+
+      try {
+        const pepeResponse = await fetch('https://api.dexscreener.com/latest/dex/pairs/ethereum/0xa43fe16908251ee70ef74718545e4fe6c5ccec9f');
+        const pepeData = await pepeResponse.json();
+        todayData.pepe_price = parseFloat(pepeData?.pair?.priceUsd) || lastKnownPrices.pepe_price;
+      } catch (error) {
+        console.error('Error fetching PEPE price:', error);
+      }
+
+      try {
+        const uniResponse = await fetch('https://api.dexscreener.com/latest/dex/pairs/ethereum/0x1d42064fc4beb5f8aaf85f4617ae8b3b5b8bd801');
+        const uniData = await uniResponse.json();
+        todayData.uniswap_price = parseFloat(uniData?.pair?.priceUsd) || lastKnownPrices.uniswap_price;
+      } catch (error) {
+        console.error('Error fetching UNI price:', error);
+      }
+
+      try {
+        const suiResponse = await fetch('https://api.dexscreener.com/latest/dex/pairs/cronos/0x140c7545d2e46ff2dc3ba7b1d3c4ba41698816fb');
+        const suiData = await suiResponse.json();
+        todayData.sui_price = parseFloat(suiData?.pair?.priceUsd) || lastKnownPrices.sui_price;
+      } catch (error) {
+        console.error('Error fetching SUI price:', error);
       }
 
       // If last data point is from today, replace it with new prices

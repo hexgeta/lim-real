@@ -6,7 +6,6 @@ import BtcEthInc from '@/components/BtcEthInc';
 import PDAIPerformanceVisual from '@/components/PegPdai';
 import PBTCPerformanceVisual from '@/components/PegPBTC';
 import PstETHPerformanceVisual from '@/components/PegPstETH';
-import VsGainsTop20 from '../components/vsgainstop20';
 
 
 const BtcEthHex2 = () => {
@@ -19,7 +18,6 @@ const BtcEthHex2 = () => {
       <PDAIPerformanceVisual/>
       <PBTCPerformanceVisual/>
       <PstETHPerformanceVisual/>
-      <VsGainsTop20/>
     </div>
   );
 };
